@@ -54,9 +54,9 @@ npx create-next-app@14 gh-releases-dashboard --typescript --tailwind --app
 
 ### Check It Works
 
-- [ ] `npm run dev` starts
-- [ ] Open localhost:3000
-- [ ] See Next.js welcome page
+- [x] `npm run dev` starts
+- [x] Open localhost:3000
+- [x] See Next.js welcome page
 - [ ] Make first commit
 
 ---
