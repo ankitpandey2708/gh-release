@@ -194,8 +194,8 @@ export const env = {
 
 ### Check It Works
 
-- [ ] `.env.local` not in git
-- [ ] Env vars load in code
+- [x] `.env.local` not in git
+- [x] Env vars load in code
 
 ---
 
