@@ -141,8 +141,8 @@ export interface Stats {
 
 ### Check It Works
 
-- [ ] Folders exist
-- [ ] TypeScript compiles
+- [x] Folders exist
+- [x] TypeScript compiles
 
 ---
 
