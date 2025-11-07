@@ -45,16 +45,6 @@ export class GitHubApiError extends Error implements ApiError {
 }
 
 /**
- * Rate limit information interface
- */
-export interface RateLimitInfo {
-  limit: number;
-  remaining: number;
-  reset: number;
-  used: number;
-}
-
-/**
  * Request configuration interface
  */
 export interface RequestConfig {
