@@ -2,12 +2,14 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { validateRepositoryFormat, debouncedValidate, ValidationState, type ValidationResult } from "@/utils/validation";
+import { useRepositoryMetadata } from "@/hooks/useRepositoryMetadata";
+import { parseRepositoryString } from "@/hooks/useRepositoryMetadata";
 import ValidationIcon from "./ValidationIcon";
 import ErrorMessage from "./ErrorMessage";
+import RepositoryMetadataDisplay from "./RepositoryMetadataDisplay";
 
 export default function RepositoryInput() {
   const [inputValue, setInputValue] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
   const [validationState, setValidationState] = useState<ValidationState>(ValidationState.EMPTY);
   const [validationMessage, setValidationMessage] = useState<string>("");
@@ -19,6 +21,9 @@ export default function RepositoryInput() {
   const submitButtonRef = useRef<HTMLButtonElement>(null);
   const clearButtonRef = useRef<HTMLButtonElement>(null);
   const liveRegionRef = useRef<HTMLDivElement>(null);
+  
+  // Repository metadata hook
+  const { metadata, isLoading, error, fetchMetadata, clearMetadata, clearError } = useRepositoryMetadata();
   
   // Keyboard shortcut state
   const lastSubmissionTime = useRef<number>(0);
@@ -101,23 +106,30 @@ export default function RepositoryInput() {
       return;
     }
 
-    setIsLoading(true);
+    // Parse repository string
+    const parsed = parseRepositoryString(inputValue.trim());
+    if (!parsed) {
+      setValidationState(ValidationState.INVALID);
+      setValidationMessage("Invalid repository format. Expected format: username/repository-name");
+      return;
+    }
+
+    // Clear any previous metadata
+    clearMetadata();
+    clearError();
     
-    // TODO: Implement actual repository analysis
-    // For now, just simulate a delay
-    setTimeout(() => {
-      setIsLoading(false);
-      console.log("Analyzing repository:", inputValue);
-    }, 2000);
+    // Fetch repository metadata
+    await fetchMetadata(parsed.owner, parsed.repo);
   };
 
   const handleReset = () => {
     setInputValue("");
-    setIsLoading(false);
     setIsFocused(false);
     setValidationState(ValidationState.EMPTY);
     setValidationMessage("");
     setIsValidating(false);
+    clearMetadata();
+    clearError();
     
     // Clear debounce timeout
     if (debounceTimeoutRef.current) {
@@ -136,7 +148,7 @@ export default function RepositoryInput() {
 
   // Get border color based on validation state
   const getBorderColor = () => {
-    if (isLoading) return 'border-gray-300 dark:border-gray-600';
+    if (isLoading) return 'border-blue-500 dark:border-blue-600';
     if (!inputValue.trim()) return 'border-gray-300 dark:border-gray-600';
     if (validationState === ValidationState.VALID) return 'border-green-500 dark:border-green-600';
     if (validationState === ValidationState.INVALID) return 'border-red-500 dark:border-red-600';
@@ -253,15 +265,18 @@ export default function RepositoryInput() {
             
             {/* Validation Icon */}
             <ValidationIcon 
-              state={validationState}
+              state={isLoading ? ValidationState.PENDING : validationState}
+              size="lg"
+              showHover={true}
+              isInteractive={true}
               className="right-3"
             />
           </div>
           
           {/* Error Message */}
           <ErrorMessage 
-            message={validationMessage}
-            isVisible={validationState === ValidationState.INVALID && !!validationMessage}
+            message={validationMessage || error || undefined}
+            isVisible={(validationState === ValidationState.INVALID && !!validationMessage) || !!error}
             className="mt-2"
           />
           
@@ -294,7 +309,7 @@ export default function RepositoryInput() {
             {isLoading ? (
               <div className="flex items-center justify-center gap-2">
                 <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                Analyzing...
+                Fetching metadata...
               </div>
             ) : validationState === ValidationState.PENDING ? (
               <div className="flex items-center justify-center gap-2">
@@ -352,6 +367,14 @@ export default function RepositoryInput() {
           </div>
         </details>
       </form>
+
+      {/* Repository Metadata Display */}
+      <RepositoryMetadataDisplay
+        metadata={metadata}
+        isLoading={isLoading}
+        error={error}
+        className="mt-8"
+      />
     </div>
   );
 }

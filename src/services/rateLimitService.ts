@@ -265,7 +265,7 @@ class RateLimitService {
         type: 'queue_full',
         timestamp: Date.now(),
         remaining: this.state.info?.remaining || 0,
-        resetTime: new Date(this.state.info?.reset * 1000 || Date.now()),
+        resetTime: new Date((this.state.info?.reset || 0) * 1000),
         message: `Request queue is full (max: ${this.config.queueSize})`,
         details: { queueSize: this.requestQueue.length },
       });
@@ -288,7 +288,7 @@ class RateLimitService {
             type: 'success',
             timestamp: Date.now(),
             remaining: this.state.info?.remaining || 0,
-            resetTime: new Date(this.state.info?.reset * 1000 || Date.now()),
+            resetTime: new Date((this.state.info?.reset || 0) * 1000),
             message: 'Request completed successfully',
             details: { queuePosition: this.requestQueue.indexOf(requestFn) },
           });
@@ -403,7 +403,7 @@ class RateLimitService {
             type: 'retry',
             timestamp: Date.now(),
             remaining: this.state.info?.remaining || 0,
-            resetTime: new Date(this.state.info?.reset * 1000 || Date.now()),
+            resetTime: new Date((this.state.info?.reset || 0) * 1000),
             message: `Rate limited. Retrying in ${delay}ms (attempt ${attempt}/${this.config.maxRetries})`,
             details: { attempt, delay, context },
           });

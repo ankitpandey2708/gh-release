@@ -1,164 +1,104 @@
 /**
- * Utility functions for formatting numbers and data display
+ * Utility functions for formatting numbers and text display
  */
 
 /**
- * Format star count with K/M abbreviations
- * @param count - The star count number
- * @returns Formatted string (e.g., "1.2K", "5.6M", "42")
+ * Format large numbers with K, M, B abbreviations
+ * @param count - The number to format
+ * @returns Formatted string (e.g., "1.2K", "3.4M")
  */
 export function formatStarCount(count: number): string {
   if (count === 0) return "0";
   
-  if (count < 1000) {
-    return count.toString();
-  } else if (count < 1000000) {
-    // Thousands
-    const thousands = count / 1000;
-    return `${thousands.toFixed(thousands < 10 ? 1 : 0)}K`;
+  const billion = Math.pow(10, 9);
+  const million = Math.pow(10, 6);
+  const thousand = Math.pow(10, 3);
+
+  if (count >= billion) {
+    return (count / billion).toFixed(1).replace(/\.0$/, '') + 'B';
+  } else if (count >= million) {
+    return (count / million).toFixed(1).replace(/\.0$/, '') + 'M';
+  } else if (count >= thousand) {
+    return (count / thousand).toFixed(1).replace(/\.0$/, '') + 'K';
+  }
+  
+  return count.toString();
+}
+
+/**
+ * Format repository star count with proper locale support
+ * @param count - The star count number
+ * @param locale - Locale string for number formatting (default: 'en-US')
+ * @returns Formatted string with proper separators
+ */
+export function formatStarCountWithLocale(count: number, locale: string = 'en-US'): string {
+  if (count === 0) return "0";
+  
+  if (count >= 1000) {
+    return formatStarCount(count);
+  }
+  
+  return new Intl.NumberFormat(locale).format(count);
+}
+
+/**
+ * Format date to a human-readable relative time
+ * @param date - The date to format
+ * @param locale - Locale string for date formatting (default: 'en-US')
+ * @returns Human-readable relative time string
+ */
+export function formatRelativeTime(date: string | Date, locale: string = 'en-US'): string {
+  const now = new Date();
+  const targetDate = new Date(date);
+  const diffInSeconds = Math.floor((now.getTime() - targetDate.getTime()) / 1000);
+
+  const rtf = new Intl.RelativeTimeFormat(locale, { numeric: 'auto' });
+
+  if (diffInSeconds < 60) {
+    return rtf.format(-diffInSeconds, 'second');
+  } else if (diffInSeconds < 3600) {
+    return rtf.format(-Math.floor(diffInSeconds / 60), 'minute');
+  } else if (diffInSeconds < 86400) {
+    return rtf.format(-Math.floor(diffInSeconds / 3600), 'hour');
+  } else if (diffInSeconds < 2592000) {
+    return rtf.format(-Math.floor(diffInSeconds / 86400), 'day');
+  } else if (diffInSeconds < 31536000) {
+    return rtf.format(-Math.floor(diffInSeconds / 2592000), 'month');
   } else {
-    // Millions
-    const millions = count / 1000000;
-    return `${millions.toFixed(millions < 10 ? 1 : 0)}M`;
+    return rtf.format(-Math.floor(diffInSeconds / 31536000), 'year');
   }
 }
 
 /**
- * Format numbers with locale-aware formatting
- * @param number - The number to format
- * @param locale - The locale to use (default: 'en-US')
- * @returns Formatted number string
+ * Format date to a short date string
+ * @param date - The date to format
+ * @param locale - Locale string for date formatting (default: 'en-US')
+ * @returns Formatted date string (e.g., "Jan 15, 2023")
  */
-export function formatNumberWithLocale(number: number, locale: string = 'en-US'): string {
-  return new Intl.NumberFormat(locale).format(number);
-}
-
-/**
- * Format date in a human-readable format
- * @param date - Date string or Date object
- * @param format - Format style: 'short', 'medium', 'long', 'full'
- * @returns Formatted date string
- */
-export function formatDate(date: string | Date, format: 'short' | 'medium' | 'long' | 'full' = 'medium'): string {
-  const dateObj = typeof date === 'string' ? new Date(date) : date;
-  
-  const options: any = {
+export function formatDateShort(date: string | Date, locale: string = 'en-US'): string {
+  return new Intl.DateTimeFormat(locale, {
     year: 'numeric',
-    month: format === 'short' ? 'numeric' : 'short',
-    day: 'numeric',
-  };
-  
-  if (format === 'long' || format === 'full') {
-    options.weekday = 'long';
-  }
-  
-  return new Intl.DateTimeFormat('en-US', options).format(dateObj);
+    month: 'short',
+    day: 'numeric'
+  }).format(new Date(date));
 }
 
 /**
- * Format relative time (e.g., "2 days ago", "in 3 hours")
- * @param date - Date string or Date object
- * @param referenceDate - Reference date (default: now)
- * @returns Relative time string
+ * Format a boolean value for display
+ * @param value - The boolean value
+ * @param trueText - Text to show when true (default: 'Yes')
+ * @param falseText - Text to show when false (default: 'No')
+ * @returns Display text for the boolean value
  */
-export function formatRelativeTime(
-  date: string | Date, 
-  referenceDate: Date = new Date()
-): string {
-  const dateObj = typeof date === 'string' ? new Date(date) : date;
-  const now = referenceDate;
-  const diffInSeconds = Math.floor((now.getTime() - dateObj.getTime()) / 1000);
-  
-  if (diffInSeconds < 0) {
-    // Future date
-    return formatFutureTime(Math.abs(diffInSeconds));
-  } else {
-    // Past date
-    return formatPastTime(diffInSeconds);
-  }
-}
-
-function formatPastTime(seconds: number): string {
-  const intervals = [
-    { label: 'year', seconds: 31536000 },
-    { label: 'month', seconds: 2592000 },
-    { label: 'day', seconds: 86400 },
-    { label: 'hour', seconds: 3600 },
-    { label: 'minute', seconds: 60 },
-    { label: 'second', seconds: 1 },
-  ];
-  
-  for (const interval of intervals) {
-    const count = Math.floor(seconds / interval.seconds);
-    if (count > 0) {
-      return `${count} ${interval.label}${count > 1 ? 's' : ''} ago`;
-    }
-  }
-  
-  return 'just now';
-}
-
-function formatFutureTime(seconds: number): string {
-  const intervals = [
-    { label: 'year', seconds: 31536000 },
-    { label: 'month', seconds: 2592000 },
-    { label: 'day', seconds: 86400 },
-    { label: 'hour', seconds: 3600 },
-    { label: 'minute', seconds: 60 },
-    { label: 'second', seconds: 1 },
-  ];
-  
-  for (const interval of intervals) {
-    const count = Math.floor(seconds / interval.seconds);
-    if (count > 0) {
-      return `in ${count} ${interval.label}${count > 1 ? 's' : ''}`;
-    }
-  }
-  
-  return 'in a moment';
-}
-
-/**
- * Format repository language with proper capitalization
- * @param language - Language string from GitHub API
- * @returns Properly formatted language string
- */
-export function formatLanguage(language: string | null): string {
-  if (!language) return 'Not specified';
-  
-  // Special cases for common language names
-  const languageMap: Record<string, string> = {
-    'c#': 'C#',
-    'c++': 'C++',
-    'javascript': 'JavaScript',
-    'typescript': 'TypeScript',
-    'html': 'HTML',
-    'css': 'CSS',
-    'php': 'PHP',
-    'ruby': 'Ruby',
-    'python': 'Python',
-    'java': 'Java',
-    'go': 'Go',
-    'rust': 'Rust',
-    'swift': 'Swift',
-    'kotlin': 'Kotlin',
-    'dart': 'Dart',
-    'scala': 'Scala',
-    'haskell': 'Haskell',
-    'elixir': 'Elixir',
-    'clojure': 'Clojure',
-    'f#': 'F#',
-  };
-  
-  const lowerLang = language.toLowerCase();
-  return languageMap[lowerLang] || language.charAt(0).toUpperCase() + language.slice(1);
+export function formatBoolean(value: boolean, trueText: string = 'Yes', falseText: string = 'No'): string {
+  return value ? trueText : falseText;
 }
 
 /**
  * Truncate text to a specified length with ellipsis
- * @param text - Text to truncate
- * @param maxLength - Maximum length
- * @param suffix - Suffix to add (default: '...')
+ * @param text - The text to truncate
+ * @param maxLength - Maximum length before truncation
+ * @param suffix - Suffix to add when truncating (default: '...')
  * @returns Truncated text
  */
 export function truncateText(text: string, maxLength: number, suffix: string = '...'): string {
@@ -167,114 +107,84 @@ export function truncateText(text: string, maxLength: number, suffix: string = '
 }
 
 /**
- * Format file size in human-readable format
- * @param bytes - Size in bytes
- * @param decimals - Number of decimal places
- * @returns Formatted file size string
+ * Format repository language for display
+ * @param language - The language string (can be null)
+ * @returns Display text for the language
  */
-export function formatFileSize(bytes: number, decimals: number = 2): string {
-  if (bytes === 0) return '0 Bytes';
-  
-  const k = 1024;
-  const dm = decimals < 0 ? 0 : decimals;
-  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB'];
-  
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
-  
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+export function formatRepositoryLanguage(language: string | null): string {
+  if (!language) return 'Not specified';
+  return language;
 }
 
 /**
- * Generate repository display name
- * @param fullName - Repository full name (owner/repo)
- * @returns Display name for UI
+ * Format repository name for display
+ * @param fullName - The full repository name (owner/repo)
+ * @returns Display name without owner prefix
  */
 export function formatRepositoryDisplayName(fullName: string): string {
-  return fullName;
+  return fullName.split('/').pop() || fullName;
 }
 
 /**
- * Generate repository description with fallback
- * @param description - Repository description
- * @param fullName - Repository full name for fallback
- * @returns Display description
+ * Format repository description with fallback
+ * @param description - Repository description (can be null)
+ * @param repoName - Repository name for fallback
+ * @returns Formatted description or default text
  */
-export function formatRepositoryDescription(
-  description: string | null, 
-  fullName: string
-): string {
-  if (description && description.trim()) {
-    return description.trim();
+export function formatRepositoryDescription(description: string | null, repoName: string): string {
+  if (description) {
+    return truncateText(description, 150);
   }
-  
-  return `Repository ${fullName} - no description available`;
+  return `This repository ${repoName} doesn't have a description yet.`;
 }
 
 /**
- * Format access status (public/private)
+ * Format access status for repository
  * @param isPrivate - Whether repository is private
- * @returns Access status text
+ * @returns Formatted access status text
  */
 export function formatAccessStatus(isPrivate: boolean): string {
   return isPrivate ? 'Private' : 'Public';
 }
 
 /**
- * Format commit message for display
- * @param message - Commit message
- * @param maxLength - Maximum length
- * @returns Formatted commit message
+ * Format date to readable format
+ * @param date - Date string or Date object
+ * @param locale - Locale for formatting (default: 'en-US')
+ * @returns Formatted date string
  */
-export function formatCommitMessage(message: string, maxLength: number = 80): string {
-  const cleanMessage = message.replace(/\n/g, ' ').trim();
-  return truncateText(cleanMessage, maxLength);
+export function formatDate(date: string | Date, locale: string = 'en-US'): string {
+  return new Intl.DateTimeFormat(locale, {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  }).format(new Date(date));
 }
 
 /**
- * Format duration in milliseconds to human readable
- * @param duration - Duration in milliseconds
- * @returns Formatted duration string
+ * Format language for display
+ * @param language - Language string (can be null)
+ * @returns Formatted language string
  */
-export function formatDuration(duration: number): string {
-  const seconds = Math.floor(duration / 1000);
-  const minutes = Math.floor(seconds / 60);
-  const hours = Math.floor(minutes / 60);
-  const days = Math.floor(hours / 24);
-  
-  if (days > 0) {
-    return `${days}d ${hours % 24}h`;
-  } else if (hours > 0) {
-    return `${hours}h ${minutes % 60}m`;
-  } else if (minutes > 0) {
-    return `${minutes}m ${seconds % 60}s`;
-  } else {
-    return `${seconds}s`;
-  }
+export function formatLanguage(language: string | null): string {
+  return formatRepositoryLanguage(language);
 }
 
 /**
- * Format percentage with proper decimal places
- * @param value - Value between 0 and 1
- * @param decimals - Number of decimal places
- * @returns Formatted percentage string
+ * Create accessible label text for repository metadata
+ * @param metadata - Repository metadata object
+ * @returns Object with accessible labels for screen readers
  */
-export function formatPercentage(value: number, decimals: number = 1): string {
-  return `${(value * 100).toFixed(decimals)}%`;
-}
-
-/**
- * Format large numbers with appropriate units
- * @param value - The numeric value
- * @returns Formatted string with appropriate units
- */
-export function formatLargeNumber(value: number): string {
-  if (value < 1000) {
-    return value.toString();
-  } else if (value < 1000000) {
-    return `${(value / 1000).toFixed(1)}K`;
-  } else if (value < 1000000000) {
-    return `${(value / 1000000).toFixed(1)}M`;
-  } else {
-    return `${(value / 1000000000).toFixed(1)}B`;
-  }
+export function createRepositoryMetadataLabels(metadata: any) {
+  return {
+    name: `Repository name: ${metadata.name}`,
+    description: metadata.description 
+      ? `Description: ${truncateText(metadata.description, 100)}`
+      : 'No description provided',
+    stars: `Stargazers count: ${formatStarCountWithLocale(metadata.stargazersCount)}`,
+    language: `Primary language: ${formatRepositoryLanguage(metadata.language)}`,
+    visibility: `Visibility: ${formatBoolean(metadata.private, 'Private', 'Public')}`,
+    created: `Created: ${formatDateShort(metadata.createdAt)}`,
+    updated: `Last updated: ${formatRelativeTime(metadata.updatedAt)}`
+  };
 }

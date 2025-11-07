@@ -1,519 +1,425 @@
-/**
- * GitHub API Client for repository and release data fetching
- */
+"use client";
 
-import type { 
-  RepositoryMetadata, 
-  Release, 
-  RateLimitInfo, 
-  ApiError,
-  ApiResponse 
-} from '@/lib/types';
+import type { RepositoryMetadata, Release } from "@/lib/types";
 
-// Configuration
-const GITHUB_API_BASE_URL = 'https://api.github.com';
-const DEFAULT_TIMEOUT = 10000; // 10 seconds
-const DEFAULT_HEADERS = {
-  'Accept': 'application/vnd.github.v3+json',
-  'User-Agent': 'GitHub-Release-Analyzer/1.0.0',
-};
+// GitHub API Configuration
+const GITHUB_API_BASE_URL = "https://api.github.com";
+const GITHUB_API_VERSION = "application/vnd.github.v3+json";
+const REQUEST_TIMEOUT = 10000; // 10 seconds
+const MAX_RETRIES = 3;
+const RETRY_DELAY = 1000; // 1 second base delay
 
-/**
- * API Error class for GitHub API specific errors
- */
-export class GitHubApiError extends Error implements ApiError {
-  public status?: number;
-  public statusText?: string;
-  public url?: string;
-  public response?: any;
-  public rateLimitInfo?: RateLimitInfo;
+// Rate Limiting Configuration
+const RATE_LIMIT_WARNING_THRESHOLD = 0.8; // 80% of rate limit
+const RATE_LIMIT_CRITICAL_THRESHOLD = 0.95; // 95% of rate limit
 
+// API Response Types
+export interface GitHubApiResponse<T> {
+  data: T;
+  status: number;
+  statusText: string;
+  headers: Record<string, string>;
+}
+
+export interface GitHubRateLimit {
+  limit: number;
+  remaining: number;
+  reset: number;
+  used: number;
+  resource: string;
+}
+
+export interface GitHubRateLimitResponse {
+  resources: {
+    core: GitHubRateLimit;
+    search: GitHubRateLimit;
+    graphql: GitHubRateLimit;
+    integration_manifest: GitHubRateLimit;
+  };
+  rate: GitHubRateLimit;
+}
+
+// Error Types
+export class GitHubApiError extends Error {
   constructor(
-    message: string, 
-    status?: number, 
-    statusText?: string, 
-    url?: string,
-    response?: any
+    message: string,
+    public status: number,
+    public statusText: string,
+    public url: string,
+    public response?: any
   ) {
     super(message);
-    this.name = 'GitHubApiError';
-    this.status = status;
-    this.statusText = statusText;
-    this.url = url;
-    this.response = response;
+    this.name = "GitHubApiError";
   }
 }
 
-/**
- * Request configuration interface
- */
-export interface RequestConfig {
+export class RateLimitError extends GitHubApiError {
+  constructor(
+    message: string,
+    status: number,
+    statusText: string,
+    url: string,
+    public rateLimitInfo?: GitHubRateLimit | null
+  ) {
+    super(message, status, statusText, url);
+    this.name = "RateLimitError";
+  }
+}
+
+export class AuthenticationError extends GitHubApiError {
+  constructor(message: string, url: string) {
+    super(message, 401, "Unauthorized", url);
+    this.name = "AuthenticationError";
+  }
+}
+
+export class NotFoundError extends GitHubApiError {
+  constructor(message: string, url: string) {
+    super(message, 404, "Not Found", url);
+    this.name = "NotFoundError";
+  }
+}
+
+// Configuration and Authentication
+interface GitHubApiConfig {
+  token?: string;
+  baseUrl?: string;
   timeout?: number;
-  retries?: number;
-  retryDelay?: number;
-  headers?: Record<string, string>;
+  maxRetries?: number;
+  enableLogging?: boolean;
 }
 
-/**
- * GitHub API Client class
- */
-export class GitHubApiClient {
-  private baseURL: string;
-  private defaultHeaders: Record<string, string>;
-  private authToken?: string;
-  private rateLimitInfo?: RateLimitInfo;
-  private requestQueue: Array<() => Promise<any>> = [];
-  private isProcessingQueue = false;
+class GitHubApiClient {
+  private config: Required<GitHubApiConfig>;
+  private rateLimitInfo: GitHubRateLimit | null = null;
 
-  constructor(config: {
-    baseURL?: string;
-    authToken?: string;
-    defaultHeaders?: Record<string, string>;
-  } = {}) {
-    this.baseURL = config.baseURL || GITHUB_API_BASE_URL;
-    this.defaultHeaders = { ...DEFAULT_HEADERS, ...config.defaultHeaders };
-    this.authToken = config.authToken || process.env.NEXT_PUBLIC_GITHUB_TOKEN;
+  constructor(config: GitHubApiConfig = {}) {
+    this.config = {
+      token: (process.env.NEXT_PUBLIC_GITHUB_TOKEN || process.env.GITHUB_TOKEN) ?? "",
+      baseUrl: config.baseUrl || GITHUB_API_BASE_URL,
+      timeout: config.timeout || REQUEST_TIMEOUT,
+      maxRetries: config.maxRetries || MAX_RETRIES,
+      enableLogging: config.enableLogging || process.env.NODE_ENV === "development"
+    };
     
-    if (this.authToken) {
-      this.defaultHeaders.Authorization = `token ${this.authToken}`;
+    this.validateConfiguration();
+  }
+
+  private validateConfiguration(): void {
+    if (!this.config.token) {
+      console.warn("GitHub API token not provided. API calls will be rate-limited to 60 requests/hour.");
     }
   }
 
-  /**
-   * Update authentication token
-   */
-  setAuthToken(token: string) {
-    this.authToken = token;
-    if (token) {
-      this.defaultHeaders.Authorization = `token ${token}`;
-    } else {
-      delete this.defaultHeaders.Authorization;
-    }
-  }
-
-  /**
-   * Get current rate limit information
-   */
-  getRateLimitInfo(): RateLimitInfo | undefined {
-    return this.rateLimitInfo;
-  }
-
-  /**
-   * Check if we're approaching rate limits
-   */
-  isApproachingRateLimit(threshold: number = 10): boolean {
-    if (!this.rateLimitInfo) return false;
-    return this.rateLimitInfo.remaining <= threshold;
-  }
-
-  /**
-   * Get rate limit reset time
-   */
-  getRateLimitResetTime(): Date | undefined {
-    if (!this.rateLimitInfo) return undefined;
-    return new Date(this.rateLimitInfo.reset * 1000);
-  }
-
-  /**
-   * Configure request with timeout
-   */
-  private createRequestController(timeout: number = DEFAULT_TIMEOUT): AbortController {
-    return new AbortController();
-  }
-
-  /**
-   * Add request to queue for rate limiting
-   */
-  private queueRequest<T>(requestFn: () => Promise<T>): Promise<T> {
-    return new Promise((resolve, reject) => {
-      this.requestQueue.push(async () => {
-        try {
-          const result = await requestFn();
-          resolve(result);
-        } catch (error) {
-          reject(error);
-        }
-      });
-      
-      if (!this.isProcessingQueue) {
-        this.processQueue();
-      }
-    });
-  }
-
-  /**
-   * Process queued requests with rate limiting
-   */
-  private async processQueue() {
-    if (this.isProcessingQueue || this.requestQueue.length === 0) return;
-    
-    this.isProcessingQueue = true;
-    
-    while (this.requestQueue.length > 0) {
-      // Check rate limits before processing next request
-      if (this.isApproachingRateLimit()) {
-        const resetTime = this.getRateLimitResetTime();
-        if (resetTime) {
-          const waitTime = Math.max(0, resetTime.getTime() - Date.now() + 1000);
-          console.warn(`Rate limit approaching. Waiting ${waitTime}ms before next request.`);
-          await new Promise(resolve => setTimeout(resolve, waitTime));
-        }
-      }
-      
-      const request = this.requestQueue.shift();
-      if (request) {
-        await request();
-        // Small delay between requests to be respectful
-        await new Promise(resolve => setTimeout(resolve, 100));
-      }
-    }
-    
-    this.isProcessingQueue = false;
-  }
-
-  /**
-   * Generic request method with retry logic
-   */
-  private async request<T>(
-    endpoint: string, 
-    config: RequestConfig = {}
-  ): Promise<T> {
-    const {
-      timeout = DEFAULT_TIMEOUT,
-      retries = 3,
-      retryDelay = 1000,
-      headers = {}
-    } = config;
-
-    const url = `${this.baseURL}${endpoint}`;
-    const finalHeaders = { ...this.defaultHeaders, ...headers };
-    const controller = this.createRequestController(timeout);
-
-    const attemptRequest = async (attempt: number = 1): Promise<T> => {
-      try {
-        console.log(`[GitHub API] Making request to: ${url} (attempt ${attempt})`);
-        
-        const response = await fetch(url, {
-          method: 'GET',
-          headers: finalHeaders,
-          signal: controller.signal,
-        });
-
-        // Update rate limit information
-        this.updateRateLimitInfo(response);
-
-        // Handle rate limiting
-        if (response.status === 403) {
-          const remaining = response.headers.get('X-RateLimit-Remaining');
-          const reset = response.headers.get('X-RateLimit-Reset');
-          
-          if (remaining === '0') {
-            const resetTime = reset ? new Date(parseInt(reset) * 1000) : undefined;
-            throw new GitHubApiError(
-              'GitHub API rate limit exceeded',
-              403,
-              'Rate Limit Exceeded',
-              url,
-              { remaining, reset }
-            );
-          }
-        }
-
-        if (!response.ok) {
-          const errorData = await response.json().catch(() => ({}));
-          throw new GitHubApiError(
-            `GitHub API error: ${response.status} ${response.statusText}`,
-            response.status,
-            response.statusText,
-            url,
-            errorData
-          );
-        }
-
-        const data = await response.json();
-        console.log(`[GitHub API] Success: ${url}`);
-        return data as T;
-
-      } catch (error) {
-        if (error instanceof GitHubApiError) {
-          throw error;
-        }
-
-        // Handle timeout
-        if (error instanceof Error && error.name === 'AbortError') {
-          throw new GitHubApiError(
-            'Request timeout',
-            408,
-            'Request Timeout',
-            url
-          );
-        }
-
-        // Handle network errors
-        if (attempt < retries) {
-          console.warn(`[GitHub API] Request failed (attempt ${attempt}), retrying...`, error);
-          
-          // Exponential backoff
-          const delay = retryDelay * Math.pow(2, attempt - 1);
-          await new Promise(resolve => setTimeout(resolve, delay));
-          
-          return attemptRequest(attempt + 1);
-        }
-
-        throw new GitHubApiError(
-          `Request failed after ${retries} attempts: ${error instanceof Error ? error.message : 'Unknown error'}`,
-          0,
-          'Network Error',
-          url,
-          error
-        );
-      }
+  private getDefaultHeaders(): Record<string, string> {
+    const headers: Record<string, string> = {
+      "Accept": GITHUB_API_VERSION,
+      "User-Agent": "GitHub-Release-Tracker/1.0.0",
+      "Content-Type": "application/json"
     };
 
-    // Use queue for rate limiting
-    return this.queueRequest(() => attemptRequest());
+    if (this.config.token) {
+      headers["Authorization"] = `token ${this.config.token}`;
+    }
+
+    return headers;
   }
 
-  /**
-   * Update rate limit information from response headers
-   */
-  private updateRateLimitInfo(response: Response) {
-    const limit = response.headers.get('X-RateLimit-Limit');
-    const remaining = response.headers.get('X-RateLimit-Remaining');
-    const reset = response.headers.get('X-RateLimit-Reset');
-    const used = response.headers.get('X-RateLimit-Used');
+  private logRequest(url: string, options: RequestInit): void {
+    if (!this.config.enableLogging) return;
+    
+    console.log(`[GitHub API] ${options.method || "GET"} ${url}`);
+    if (this.config.token) {
+      console.log("[GitHub API] Using authentication token");
+    }
+  }
 
-    if (limit && remaining && reset) {
+  private logResponse(response: Response, url: string): void {
+    if (!this.config.enableLogging) return;
+    
+    const statusColor = response.status >= 400 ? "\x1b[31m" : "\x1b[32m";
+    console.log(`[GitHub API] ${statusColor}${response.status} ${response.statusText}\x1b[0m ${url}`);
+    
+    // Log rate limit info if available
+    const rateLimit = response.headers.get("X-RateLimit-Remaining");
+    const rateLimitReset = response.headers.get("X-RateLimit-Reset");
+    if (rateLimit) {
+      console.log(`[GitHub API] Rate limit remaining: ${rateLimit}${rateLimitReset ? ` (resets at ${new Date(Number(rateLimitReset) * 1000).toISOString()})` : ""}`);
+    }
+  }
+
+  private updateRateLimitInfo(headers: Headers): void {
+    const remaining = headers.get("X-RateLimit-Remaining");
+    const limit = headers.get("X-RateLimit-Limit");
+    const reset = headers.get("X-RateLimit-Reset");
+    const used = headers.get("X-RateLimit-Used");
+
+    if (remaining && limit && reset) {
       this.rateLimitInfo = {
-        limit: parseInt(limit),
-        remaining: parseInt(remaining),
-        reset: parseInt(reset),
-        used: used ? parseInt(used) : 0,
+        limit: Number(limit),
+        remaining: Number(remaining),
+        reset: Number(reset),
+        used: used ? Number(used) : 0,
+        resource: "core"
       };
     }
   }
 
-  /**
-   * Fetch repository metadata
-   */
-  async fetchRepository(owner: string, repo: string): Promise<RepositoryMetadata> {
-    const data = await this.request<any>(`/repos/${owner}/${repo}`);
-    
-    return {
-      name: data.name,
-      fullName: data.full_name,
-      description: data.description,
-      stargazersCount: data.stargazers_count,
-      language: data.language,
-      url: data.html_url,
-      private: data.private,
-      createdAt: data.created_at,
-      updatedAt: data.updated_at,
-    };
-  }
-
-  /**
-   * Parse Link header for pagination
-   */
-  private parseLinkHeader(linkHeader: string | null): { next?: string; last?: string; prev?: string; first?: string } {
-    if (!linkHeader) return {};
-    
-    const links: Record<string, string> = {};
-    const parts = linkHeader.split(',');
-    
-    for (const part of parts) {
-      const match = part.match(/<([^>]+)>;\s*rel="([^"]+)"/);
-      if (match) {
-        const [, url, rel] = match;
-        links[rel] = url;
-      }
+  private getRateLimitStatus(): { warning: boolean; critical: boolean; message: string } {
+    if (!this.rateLimitInfo) {
+      return { warning: false, critical: false, message: "Rate limit info not available" };
     }
-    
-    return links;
-  }
 
-  /**
-   * Extract page number from URL
-   */
-  private extractPageFromUrl(url: string): number {
-    const match = url.match(/[?&]page=(\d+)/);
-    return match ? parseInt(match[1]) : 1;
-  }
+    const { limit, remaining } = this.rateLimitInfo;
+    const usageRatio = (limit - remaining) / limit;
 
-  /**
-   * Fetch releases for a repository with pagination
-   */
-  async fetchReleases(
-    owner: string, 
-    repo: string, 
-    page: number = 1,
-    perPage: number = 30,
-    timeout?: number
-  ): Promise<{
-    releases: Release[];
-    hasNextPage: boolean;
-    nextPageUrl?: string;
-    totalPages?: number;
-    currentPage: number;
-    rateLimitInfo?: RateLimitInfo;
-  }> {
-    const url = `/repos/${owner}/${repo}/releases?page=${page}&per_page=${perPage}`;
-    const response = await this.request<any>(url, { timeout: timeout || DEFAULT_TIMEOUT });
-    const data = Array.isArray(response) ? response : [];
-    
-    // Use the internal request method to get access to headers
-    const actualResponse = await fetch(`${this.baseURL}${url}`, {
-      method: 'GET',
-      headers: this.defaultHeaders,
-      signal: AbortSignal.timeout(timeout || DEFAULT_TIMEOUT)
-    });
-
-    // Update rate limit info
-    this.updateRateLimitInfo(actualResponse);
-    
-    // Parse Link header for proper pagination
-    const links = this.parseLinkHeader(actualResponse.headers.get('Link'));
-    const hasNextPage = !!links.next;
-    const totalPages = links.last ? this.extractPageFromUrl(links.last) : undefined;
-
-    // Process and sort releases by date (newest first)
-    const releases: Release[] = data.map(release => ({
-      id: release.id,
-      tagName: release.tag_name,
-      name: release.name,
-      body: release.body,
-      publishedAt: new Date(release.published_at),
-      createdAt: new Date(release.created_at),
-      draft: release.draft,
-      prerelease: release.prerelease,
-      author: {
-        login: release.author?.login || 'Unknown',
-        avatarUrl: release.author?.avatar_url || '',
-        url: release.author?.html_url || '',
-      },
-      zipballUrl: release.zipball_url,
-      tarballUrl: release.tarball_url,
-    }));
-
-    releases.sort((a, b) => b.publishedAt.getTime() - a.publishedAt.getTime());
+    if (usageRatio >= RATE_LIMIT_CRITICAL_THRESHOLD) {
+      return {
+        warning: true,
+        critical: true,
+        message: `Critical rate limit warning: ${remaining}/${limit} requests remaining`
+      };
+    } else if (usageRatio >= RATE_LIMIT_WARNING_THRESHOLD) {
+      return {
+        warning: true,
+        critical: false,
+        message: `Rate limit warning: ${remaining}/${limit} requests remaining`
+      };
+    }
 
     return {
-      releases,
-      hasNextPage,
-      nextPageUrl: links.next,
-      totalPages,
-      currentPage: page,
-      rateLimitInfo: this.rateLimitInfo,
+      warning: false,
+      critical: false,
+      message: `Rate limit: ${remaining}/${limit} requests remaining`
     };
   }
 
-  /**
-   * Fetch all releases for a repository (with pagination)
-   */
-  async fetchAllReleases(
-    owner: string, 
-    repo: string,
-    onProgress?: (current: number, total?: number) => void
-  ): Promise<Release[]> {
-    const allReleases: Release[] = [];
-    let page = 1;
-    const perPage = 30;
-    let hasMore = true;
+  private async executeWithRetry(
+    url: string, 
+    options: RequestInit, 
+    retryCount: number = 0
+  ): Promise<Response> {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), this.config.timeout);
 
-    while (hasMore) {
-      try {
-        const { releases, hasNextPage } = await this.fetchReleases(owner, repo, page, perPage);
-        
-        allReleases.push(...releases);
-        hasMore = hasNextPage;
-        page++;
+    try {
+      this.logRequest(url, options);
+      
+      const finalOptions: RequestInit = {
+        ...options,
+        headers: {
+          ...this.getDefaultHeaders(),
+          ...options.headers
+        },
+        signal: controller.signal
+      };
 
-        // Report progress
-        if (onProgress) {
-          onProgress(allReleases.length);
-        }
+      const response = await fetch(url, finalOptions);
+      clearTimeout(timeoutId);
+      
+      this.logResponse(response, url);
+      this.updateRateLimitInfo(response.headers);
 
-        // Add delay between pages to respect rate limits
-        if (hasMore) {
-          await new Promise(resolve => setTimeout(resolve, 200));
-        }
-
-      } catch (error) {
-        if (error instanceof GitHubApiError && error.status === 404) {
-          throw new GitHubApiError(
-            `Repository "${owner}/${repo}" not found or has no releases`,
-            404,
-            'Not Found'
+      // Handle rate limiting
+      if (response.status === 403) {
+        const remaining = response.headers.get("X-RateLimit-Remaining");
+        if (remaining === "0") {
+          const rateLimitInfo = this.rateLimitInfo;
+          throw new RateLimitError(
+            "Rate limit exceeded",
+            response.status,
+            response.statusText,
+            url,
+            rateLimitInfo
           );
         }
-        throw error;
+      }
+
+      // Handle authentication errors
+      if (response.status === 401) {
+        throw new AuthenticationError("Invalid GitHub token", url);
+      }
+
+      // Handle not found errors
+      if (response.status === 404) {
+        throw new NotFoundError("Resource not found", url);
+      }
+
+      // Handle other error responses
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new GitHubApiError(
+          `GitHub API error: ${response.status} ${response.statusText}`,
+          response.status,
+          response.statusText,
+          url,
+          errorText
+        );
+      }
+
+      return response;
+
+    } catch (error) {
+      clearTimeout(timeoutId);
+
+      // Handle abort timeout
+      if (error instanceof Error && error.name === "AbortError") {
+        throw new GitHubApiError(
+          "Request timeout",
+          408,
+          "Request Timeout",
+          url
+        );
+      }
+
+      // Retry logic for temporary failures
+      if (retryCount < this.config.maxRetries && 
+          error instanceof GitHubApiError && 
+          [408, 429, 500, 502, 503, 504].includes(error.status)) {
+        
+        const delay = RETRY_DELAY * Math.pow(2, retryCount); // Exponential backoff
+        console.log(`[GitHub API] Retry ${retryCount + 1}/${this.config.maxRetries} after ${delay}ms delay`);
+        
+        await new Promise(resolve => setTimeout(resolve, delay));
+        return this.executeWithRetry(url, options, retryCount + 1);
+      }
+
+      throw error;
+    }
+  }
+
+  private async parseResponse<T>(response: Response): Promise<GitHubApiResponse<T>> {
+    let data: T;
+    const contentType = response.headers.get("content-type");
+    
+    if (contentType && contentType.includes("application/json")) {
+      data = await response.json() as T;
+    } else {
+      const text = await response.text();
+      data = text as unknown as T;
+    }
+
+    return {
+      data,
+      status: response.status,
+      statusText: response.statusText,
+      headers: Object.fromEntries(response.headers.entries())
+    };
+  }
+
+  // Repository Metadata Fetching
+  async fetchRepository(owner: string, repo: string): Promise<GitHubApiResponse<RepositoryMetadata>> {
+    const url = `${this.config.baseUrl}/repos/${owner}/${repo}`;
+    
+    try {
+      const response = await this.executeWithRetry(url, { method: "GET" });
+      return await this.parseResponse<RepositoryMetadata>(response);
+    } catch (error) {
+      console.error(`[GitHub API] Failed to fetch repository: ${owner}/${repo}`, error);
+      throw error;
+    }
+  }
+
+  // Release Data Fetching with Pagination
+  async fetchReleases(owner: string, repo: string, page: number = 1, perPage: number = 30): Promise<GitHubApiResponse<Release[]>> {
+    const params = new URLSearchParams({
+      page: page.toString(),
+      per_page: perPage.toString(),
+      sort: "created",
+      direction: "desc"
+    });
+    
+    const url = `${this.config.baseUrl}/repos/${owner}/${repo}/releases?${params}`;
+    
+    try {
+      const response = await this.executeWithRetry(url, { method: "GET" });
+      return await this.parseResponse<Release[]>(response);
+    } catch (error) {
+      console.error(`[GitHub API] Failed to fetch releases: ${owner}/${repo} (page ${page})`, error);
+      throw error;
+    }
+  }
+
+  // Fetch all releases with pagination
+  async fetchAllReleases(owner: string, repo: string): Promise<Release[]> {
+    const allReleases: Release[] = [];
+    let page = 1;
+    let hasMorePages = true;
+
+    while (hasMorePages) {
+      try {
+        const response = await this.fetchReleases(owner, repo, page);
+        const releases = response.data;
+
+        if (releases.length === 0) {
+          hasMorePages = false;
+        } else {
+          allReleases.push(...releases);
+          page++;
+          
+          // Check rate limits
+          const rateLimitStatus = this.getRateLimitStatus();
+          if (rateLimitStatus.critical) {
+            console.warn(`[GitHub API] ${rateLimitStatus.message}. Stopping pagination.`);
+            hasMorePages = false;
+          }
+        }
+      } catch (error) {
+        if (error instanceof RateLimitError) {
+          console.warn("[GitHub API] Rate limit exceeded during pagination");
+          hasMorePages = false;
+        } else {
+          console.error(`[GitHub API] Error during pagination at page ${page}:`, error);
+          hasMorePages = false;
+        }
       }
     }
 
     return allReleases;
   }
 
-  /**
-   * Check if a repository exists
-   */
-  async checkRepositoryExists(owner: string, repo: string): Promise<boolean> {
-    try {
-      await this.request(`/repos/${owner}/${repo}`, { timeout: 5000 });
-      return true;
-    } catch (error) {
-      if (error instanceof GitHubApiError && error.status === 404) {
-        return false;
-      }
-      throw error;
-    }
+  // Get current rate limit information
+  getRateLimitInfo(): GitHubRateLimit | null {
+    return this.rateLimitInfo;
   }
 
-  /**
-   * Validate client configuration
-   */
-  validateConfiguration(): { isValid: boolean; errors: string[] } {
-    const errors: string[] = [];
+  // Get rate limit status
+  getRateLimitStatusMessage(): { warning: boolean; critical: boolean; message: string } {
+    return this.getRateLimitStatus();
+  }
 
-    if (!this.baseURL) {
-      errors.push('Base URL is required');
-    }
+  // Get time until rate limit reset
+  getRateLimitResetTime(): Date | null {
+    if (!this.rateLimitInfo) return null;
+    return new Date(this.rateLimitInfo.reset * 1000);
+  }
 
-    if (!this.defaultHeaders['Accept']) {
-      errors.push('Accept header is required');
-    }
+  // Check if authenticated
+  isAuthenticated(): boolean {
+    return !!this.config.token;
+  }
 
-    if (!this.defaultHeaders['User-Agent']) {
-      errors.push('User-Agent header is required');
-    }
-
-    return {
-      isValid: errors.length === 0,
-      errors,
-    };
+  // Get client configuration (for debugging)
+  getConfig(): Required<GitHubApiConfig> {
+    return { ...this.config };
   }
 }
 
-/**
- * Default client instance
- */
-export const githubApiClient = new GitHubApiClient();
+// Export singleton instance
+export const githubApi = new GitHubApiClient();
 
-/**
- * Factory function to create a new client instance
- */
-export function createGitHubClient(config: {
-  baseURL?: string;
-  authToken?: string;
-  defaultHeaders?: Record<string, string>;
-} = {}): GitHubApiClient {
+// Export helper functions for specific use cases
+export const createGitHubApiClient = (config: GitHubApiConfig): GitHubApiClient => {
   return new GitHubApiClient(config);
-}
-
-/**
- * Export utility functions
- */
-export {
-  GITHUB_API_BASE_URL,
-  DEFAULT_TIMEOUT,
-  DEFAULT_HEADERS,
 };
+
+export const fetchRepositoryMetadata = (owner: string, repo: string): Promise<GitHubApiResponse<RepositoryMetadata>> => {
+  return githubApi.fetchRepository(owner, repo);
+};
+
+export const fetchRepositoryReleases = (owner: string, repo: string, page: number = 1, perPage: number = 30): Promise<GitHubApiResponse<Release[]>> => {
+  return githubApi.fetchReleases(owner, repo, page, perPage);
+};
+
+// Export types for external use
+export type { GitHubApiConfig };
