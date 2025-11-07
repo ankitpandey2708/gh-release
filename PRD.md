@@ -1,257 +1,254 @@
-# GitHub Releases Dashboard - Product Requirements Document
+# GitHub Releases Dashboard - Product Requirements
 
-**Version:** 1.0
+**Version:** 2.0
 **Date:** November 7, 2025
-**Status:** Ready for Development
+**For:** Development team
 
 ---
 
-## Document Overview
+## What This Document Does
 
-This PRD translates business requirements into detailed product specs.
+This PRD tells developers exactly what to build.
 
-**Source:** BRD.md v2.0
-**Target:** Development team
-**Timeline:** 16 weeks (5 phases)
-
----
-
-## 1. Feature Breakdown (Kano Model)
-
-We classify features by user satisfaction impact.
-
-### Basic Features (Must Have)
-
-Users expect these. Missing them causes dissatisfaction.
-
-| Feature ID | Feature Name | Category | Priority | Release |
-|------------|--------------|----------|----------|---------|
-| F-001 | Repository Input | Basic | P0 | MVP |
-| F-002 | GitHub API Integration | Basic | P0 | MVP |
-| F-003 | Chart Visualization | Basic | P0 | MVP |
-| F-004 | Release Statistics | Basic | P0 | MVP |
-| F-005 | Error Handling | Basic | P0 | MVP |
-| F-006 | Performance Baseline | Basic | P0 | MVP |
-| F-007 | Accessibility Support | Basic | P0 | MVP |
-| F-008 | Browser Compatibility | Basic | P0 | MVP |
-| F-009 | Security Baseline | Basic | P0 | MVP |
-| F-010 | Basic UI/UX | Basic | P0 | MVP |
-
-**Kano insight:** These are table stakes. No delight, but required.
+**Source:** BRD.md
+**Output:** Working product in 16 weeks
+**Format:** Specs + tests + timeline
 
 ---
 
-### Performance Features (Should Have)
+## 1. Features to Build
 
-Better performance = higher satisfaction. Linear relationship.
+All features, grouped by release.
 
-| Feature ID | Feature Name | Category | Priority | Release |
-|------------|--------------|----------|----------|---------|
-| F-011 | Multiple Chart Types | Performance | P1 | v1.1 |
-| F-012 | Pre-release Filtering | Performance | P1 | v1.1 |
-| F-013 | Date Range Selection | Performance | P1 | v1.1 |
-| F-014 | Hover Tooltips | Performance | P1 | v1.2 |
-| F-015 | Shareable URLs | Performance | P1 | v1.2 |
-| F-016 | Export Capabilities | Performance | P1 | v1.2 |
-| F-017 | Enhanced Stats Panel | Performance | P1 | v1.3 |
-| F-018 | Recent Search History | Performance | P2 | v1.3 |
+### MVP Features (Week 11)
 
-**Kano insight:** More features = more value. Predictable satisfaction boost.
+Build these 10 features for launch.
+
+**F-001: Input Box**
+- Text field for repo names
+- Format: "username/repo-name"
+- Validates on blur
+- Shows error if wrong format
+- Submit button (or press Enter)
+
+**F-002: GitHub API**
+- Fetch releases from GitHub
+- Parse JSON response
+- Cache for 24 hours
+- Handle rate limits
+- Show errors if fails
+
+**F-003: Bar Chart**
+- Shows releases per month
+- X-axis: months
+- Y-axis: release count
+- Responsive (mobile + desktop)
+- Renders in <1.5 seconds
+
+**F-004: Stats Cards**
+- Total releases
+- Average days between releases
+- Releases per month
+- Last release date
+
+**F-005: Error Messages**
+- Repo not found
+- Rate limit hit
+- Network error
+- Invalid input
+
+**F-006: Fast Loading**
+- Page loads in <2 seconds
+- Chart renders in <1.5 seconds
+- Smooth animations (60fps)
+
+**F-007: Keyboard Works**
+- Tab through all elements
+- Enter to submit
+- Visible focus outline
+- Screen reader support
+
+**F-008: All Browsers**
+- Chrome 120+
+- Firefox 121+
+- Safari 17+
+- Edge 120+
+- Mobile browsers
+
+**F-009: Secure**
+- HTTPS only
+- No API keys in code
+- Sanitize user input
+- No user data stored
+
+**F-010: Clean UI**
+- Simple layout
+- Professional colors
+- Clear fonts
+- Mobile responsive
+- Loading spinners
 
 ---
 
-### Excitement Features (Could Have)
+### v1.1 Features (Week 13)
 
-Unexpected features. High delight when present, no harm when absent.
+Add these 3 features after launch.
 
-| Feature ID | Feature Name | Category | Priority | Release |
-|------------|--------------|----------|----------|---------|
-| F-019 | Multi-Repo Comparison | Excitement | P2 | v2.0 |
-| F-020 | Repository Autocomplete | Excitement | P2 | v2.0 |
-| F-021 | Calendar Heatmap View | Excitement | P2 | v2.0 |
-| F-022 | Embed Code Generator | Excitement | P2 | v2.1 |
-| F-023 | Dark Mode | Excitement | P2 | v2.1 |
-| F-024 | Predictive Analytics | Excitement | P3 | v2.2 |
-| F-025 | Release Notifications | Excitement | P3 | v2.2 |
-| F-026 | Private Repo Access | Excitement | P3 | v2.3 |
+**F-011: Chart Types**
+- Bar chart (default)
+- Timeline view
+- Line chart (cumulative)
+- Toggle button to switch
 
-**Kano insight:** These create "wow" moments. Build after basics are solid.
+**F-012: Filter Pre-releases**
+- Checkbox to hide betas
+- Tag pre-releases in chart
+- Update stats when toggled
+
+**F-013: Date Filters**
+- "Last 6 months" button
+- "Last year" button
+- "All time" button
+- Custom date picker
 
 ---
 
-## 2. Functional Requirements
+### v1.2 Features (Week 15)
 
-Detailed specs for each feature.
+**F-014: Hover Tooltips**
+- Show details on hover
+- Version number
+- Release date
+- Link to GitHub
 
-### F-001: Repository Input
+**F-015: Shareable Links**
+- URL includes repo name
+- Example: ?repo=facebook/react
+- Copy URL button
 
-**What it does:**
-Accepts GitHub repo names and validates format.
+**F-016: Export**
+- Download chart as PNG
+- Export data as CSV
+- Copy to clipboard
 
-**Functional specs:**
+---
 
-**FR-001-01: Input Field**
-- Single text input field
-- Placeholder: "username/repo-name"
-- Auto-focus on page load
-- Supports copy-paste
+### v1.3 Features (Week 16)
 
-**FR-001-02: Format Validation**
-- Pattern: `^[a-zA-Z0-9_-]+/[a-zA-Z0-9_.-]+$`
-- Real-time validation (on blur)
-- Show error icon for invalid format
-- Disable submit until valid
+**F-017: Better Stats**
+- Longest gap between releases
+- Trend (speeding up/slowing down)
+- Consistency score
 
-**FR-001-03: Submit Mechanism**
-- Submit button labeled "Analyze"
-- Enter key triggers submit
-- Button disabled during loading
-- Show loading state
+**F-018: Recent Searches**
+- Show last 5 repos
+- Click to reload
+- Store in browser
 
-**FR-001-04: Error Messages**
-- "Invalid format. Use: username/repo-name"
-- "Repository not found"
-- "Private repo or no releases available"
+---
 
-**FR-001-05: Examples**
-- Show 3 example repos below input
-- Click example to auto-populate
-- Examples: facebook/react, vuejs/core, angular/angular
+## 2. Technical Specs
 
-**Input behavior:**
+How to build each feature.
+
+### F-001: Input Box
+
+**HTML structure:**
+```html
+<form>
+  <input
+    type="text"
+    placeholder="username/repo-name"
+    pattern="[a-zA-Z0-9_-]+/[a-zA-Z0-9_.-]+"
+    required
+  />
+  <button type="submit">Analyze</button>
+</form>
 ```
-Valid inputs:
-✓ facebook/react
-✓ microsoft/vscode
-✓ apache/kafka
-✓ my-org/my-repo
 
-Invalid inputs:
-✗ facebook (missing repo)
-✗ /react (missing owner)
-✗ facebook/react/extra (too many slashes)
-✗ facebook react (space not allowed)
+**Validation:**
+```javascript
+function validate(input) {
+  const pattern = /^[a-zA-Z0-9_-]+\/[a-zA-Z0-9_.-]+$/;
+  return pattern.test(input);
+}
 ```
 
-**Dependencies:** None
+**Error states:**
+- Empty → Disable button
+- Invalid format → Show "Use: username/repo-name"
+- Valid → Enable button
+
+**Test:**
+- Enter "facebook/react" → Valid
+- Enter "invalid" → Error
+- Press Enter → Submit
 
 ---
 
-### F-002: GitHub API Integration
+### F-002: GitHub API
 
-**What it does:**
-Fetches release data from GitHub REST API.
-
-**Functional specs:**
-
-**FR-002-01: API Endpoint**
-- Endpoint: `GET https://api.github.com/repos/{owner}/{repo}/releases`
-- Method: GET
-- Timeout: 10 seconds
-- Retry: 2 attempts with exponential backoff
-
-**FR-002-02: Request Headers**
+**Endpoint:**
 ```
-Accept: application/vnd.github.v3+json
-User-Agent: GitHub-Releases-Dashboard/1.0
+GET https://api.github.com/repos/{owner}/{repo}/releases
 ```
 
-**FR-002-03: Response Parsing**
-Extract these fields:
-- `tag_name` → Version number
-- `name` → Release title
-- `published_at` → Release date (ISO 8601)
-- `created_at` → Creation date
-- `prerelease` → Boolean flag
-- `draft` → Boolean flag (ignore drafts)
+**Request:**
+```javascript
+async function fetchReleases(owner, repo) {
+  const url = `https://api.github.com/repos/${owner}/${repo}/releases`;
 
-**FR-002-04: Data Filtering**
-- Exclude draft releases
-- Include pre-releases by default
-- Sort by `published_at` descending
+  const response = await fetch(url, {
+    headers: {
+      'Accept': 'application/vnd.github.v3+json',
+      'User-Agent': 'GitHub-Releases-Dashboard'
+    }
+  });
 
-**FR-002-05: Error Handling**
-- 404: "Repository not found"
-- 403: "Rate limit exceeded. Try again in X minutes."
-- 500: "GitHub API error. Try again later."
-- Network error: "Connection failed. Check your internet."
-
-**FR-002-06: Rate Limit Management**
-- Check `X-RateLimit-Remaining` header
-- Show warning at 10 requests remaining
-- Display reset time from `X-RateLimit-Reset`
-- Cache responses (see caching spec)
-
-**FR-002-07: Caching Strategy**
-- Cache key: `releases:{owner}:{repo}`
-- TTL: 24 hours (86400 seconds)
-- Use ETags for conditional requests
-- Store in Redis
-
-**API response structure:**
-```json
-[
-  {
-    "tag_name": "v19.0.0",
-    "name": "19.0.0 (Nov 1, 2025)",
-    "published_at": "2025-11-01T14:30:00Z",
-    "prerelease": false,
-    "draft": false
+  if (!response.ok) {
+    throw new Error(response.status);
   }
-]
+
+  return response.json();
+}
 ```
 
-**Dependencies:** Redis cache, GitHub API access
+**Parse response:**
+```javascript
+function parseReleases(data) {
+  return data
+    .filter(r => !r.draft)
+    .map(r => ({
+      version: r.tag_name,
+      date: new Date(r.published_at),
+      prerelease: r.prerelease
+    }));
+}
+```
+
+**Caching:**
+- Key: `releases:{owner}:{repo}`
+- TTL: 24 hours (86400 seconds)
+- Use Redis (Upstash)
+
+**Error handling:**
+- 404 → "Repository not found"
+- 403 → "Rate limit. Resets in X minutes."
+- 500 → "GitHub error. Try again."
+- Network → "Connection failed."
+
+**Test:**
+- Fetch "facebook/react" → Get 200+ releases
+- Fetch "invalid/repo" → Get 404
+- Check cache → Hit on 2nd request
 
 ---
 
-### F-003: Chart Visualization
+### F-003: Bar Chart
 
-**What it does:**
-Displays release frequency as an interactive chart.
+**Library:** Recharts
 
-**Functional specs:**
-
-**FR-003-01: Chart Library**
-- Use Recharts (React charting library)
-- Responsive container
-- SVG rendering
-
-**FR-003-02: Primary Chart Type**
-- Type: Bar chart
-- X-axis: Time periods (months)
-- Y-axis: Number of releases
-- Bars: Colored by frequency (gradient)
-
-**FR-003-03: Time Aggregation**
-- Group releases by month
-- Show last 12 months by default
-- Auto-adjust if data is < 12 months
-- Format: "Jan 2025", "Feb 2025"
-
-**FR-003-04: Chart Styling**
-- Primary color: #3b82f6 (blue-500)
-- Grid lines: Light gray (#e5e7eb)
-- Font: System font stack
-- Bar radius: 4px (rounded corners)
-
-**FR-003-05: Responsive Behavior**
-- Desktop: 800px width
-- Tablet: 600px width
-- Mobile: 100% width (min 320px)
-- Maintain aspect ratio 16:9
-
-**FR-003-06: Empty State**
-- Show message: "No releases found"
-- Display helper text
-- Show example repos
-
-**FR-003-07: Chart Interactions**
-- Hover: Highlight bar
-- Click: Show release details
-- Touch: Same as click (mobile)
-
-**Chart data format:**
+**Data format:**
 ```javascript
 [
   { month: "Jan 2025", count: 3 },
@@ -260,1520 +257,807 @@ Displays release frequency as an interactive chart.
 ]
 ```
 
-**Dependencies:** F-002 (API data)
+**Transform releases to monthly data:**
+```javascript
+function groupByMonth(releases) {
+  const groups = {};
+
+  releases.forEach(release => {
+    const month = format(release.date, 'MMM yyyy');
+    groups[month] = (groups[month] || 0) + 1;
+  });
+
+  return Object.entries(groups).map(([month, count]) => ({
+    month,
+    count
+  }));
+}
+```
+
+**Chart component:**
+```jsx
+<BarChart data={monthlyData} width={800} height={400}>
+  <XAxis dataKey="month" />
+  <YAxis />
+  <Bar dataKey="count" fill="#3b82f6" />
+</BarChart>
+```
+
+**Responsive:**
+- Desktop: 800px width
+- Tablet: 600px width
+- Mobile: 100% width (min 320px)
+
+**Test:**
+- Render 100+ releases → Fast
+- Check mobile → Fits screen
+- Measure time → <1.5 seconds
 
 ---
 
-### F-004: Release Statistics
+### F-004: Stats Cards
 
-**What it does:**
-Calculates and displays key metrics.
+**Calculate stats:**
+```javascript
+function calculateStats(releases) {
+  const sorted = releases.sort((a, b) => a.date - b.date);
 
-**Functional specs:**
+  const total = releases.length;
+  const first = sorted[0].date;
+  const last = sorted[total - 1].date;
 
-**FR-004-01: Total Releases**
-- Count all non-draft releases
-- Display as: "142 releases"
-- Prominent display
+  const daysDiff = (last - first) / (1000 * 60 * 60 * 24);
+  const avgDays = daysDiff / (total - 1);
 
-**FR-004-02: Average Time Between Releases**
-- Calculate: Total days / (releases - 1)
-- Display as: "14 days average"
-- Handle edge cases (0 or 1 release)
+  const monthsDiff = daysDiff / 30;
+  const perMonth = total / monthsDiff;
 
-**FR-004-03: Releases Per Month**
-- Calculate: Total releases / months active
-- Display as: "2.3 per month"
-- Round to 1 decimal
-
-**FR-004-04: Last Release Date**
-- Show most recent release date
-- Format: "Last release: 3 days ago"
-- Use relative time (moment.js style)
-
-**FR-004-05: First Release Date**
-- Show oldest release date
-- Format: "First release: Jan 15, 2020"
-- Absolute date format
-
-**FR-004-06: Statistics Layout**
-- 2x2 grid on desktop
-- 1 column on mobile
-- Cards with icons
-- Hover effect
-
-**Calculation examples:**
-```
-Total: 142 releases
-First: Jan 1, 2020
-Last: Nov 1, 2025
-Days active: 2130 days
-
-Average: 2130 / 141 = 15.1 days
-Per month: 142 / 71 = 2.0 per month
+  return {
+    total,
+    avgDays: Math.round(avgDays),
+    perMonth: perMonth.toFixed(1),
+    lastRelease: formatRelative(last)
+  };
+}
 ```
 
-**Dependencies:** F-002 (API data)
+**Display format:**
+```
+┌─────────────────┐  ┌─────────────────┐
+│ 142 releases    │  │ 15 days average │
+└─────────────────┘  └─────────────────┘
+
+┌─────────────────┐  ┌─────────────────┐
+│ 2.0 per month   │  │ 3 days ago      │
+└─────────────────┘  └─────────────────┘
+```
+
+**Test:**
+- Check math → Accurate
+- Verify format → Clear
+- Test edge case → 1 release shows "N/A"
 
 ---
 
-### F-005: Error Handling
+### F-005: Error Messages
 
-**What it does:**
-Shows user-friendly errors for all failure scenarios.
+**Error types:**
 
-**Functional specs:**
+| Code | Trigger | Message |
+|------|---------|---------|
+| E-001 | Invalid input | "Invalid format. Use: username/repo-name" |
+| E-002 | 404 from API | "Repository not found" |
+| E-003 | 403 from API | "Rate limit exceeded. Resets in 45 min." |
+| E-004 | Network fail | "Connection failed. Check internet." |
+| E-005 | 500 from API | "GitHub error. Try again later." |
+| E-006 | No releases | "No releases found" |
 
-**FR-005-01: Error Types**
-
-| Error Code | Message | Action |
-|------------|---------|--------|
-| ERR-001 | "Invalid format. Use: username/repo-name" | Show inline error |
-| ERR-002 | "Repository not found" | Show error card |
-| ERR-003 | "Rate limit exceeded. Resets in 45 minutes." | Show error card + timer |
-| ERR-004 | "Network error. Check your connection." | Show error card + retry |
-| ERR-005 | "GitHub API unavailable. Try again later." | Show error card + retry |
-| ERR-006 | "No releases found for this repo" | Show empty state |
-
-**FR-005-02: Error Display**
-- Toast notification for minor errors
-- Error card for major errors
-- Inline validation for input errors
-- Console logging for debugging
-
-**FR-005-03: Error Recovery**
-- Retry button for network errors
-- Clear button to reset
-- Auto-retry for transient errors (max 2 attempts)
-
-**FR-005-04: Error Logging**
-- Log to console (dev mode)
-- Log to Sentry (production)
-- Include context: repo name, timestamp, user agent
-
-**Error UI components:**
-```
-┌─────────────────────────────┐
-│ ⚠️  Error                    │
-│                             │
-│ Repository not found        │
-│                             │
-│ [Try Another Repo] [Clear]  │
-└─────────────────────────────┘
+**Display:**
+```jsx
+<div className="error-card">
+  <Icon name="alert" />
+  <p>{errorMessage}</p>
+  <button onClick={retry}>Try Again</button>
+</div>
 ```
 
-**Dependencies:** Sentry (error tracking)
+**Test:**
+- Trigger each error → See message
+- Click retry → Attempts again
+- Check console → Logged
 
 ---
 
-### F-006: Performance Baseline
+### F-006: Fast Loading
 
-**What it does:**
-Ensures fast load and render times.
+**Targets:**
+- Page load: <2 seconds
+- Chart render: <1.5 seconds
+- API call: <3 seconds
+- Animations: 60fps
 
-**Functional specs:**
+**Optimize:**
+- Code split Recharts (lazy load)
+- Use Next.js Image component
+- Purge unused CSS
+- Compress assets
 
-**FR-006-01: Page Load Performance**
-- First Contentful Paint (FCP): < 1.5s
-- Largest Contentful Paint (LCP): < 2.5s
-- Time to Interactive (TTI): < 3.5s
-- Cumulative Layout Shift (CLS): < 0.1
+**Measure:**
+- Lighthouse: Score >90
+- Real user monitoring: Vercel Analytics
+- Set up alerts: If score <85
 
-**FR-006-02: Chart Render Performance**
-- Initial render: < 1.5s
-- Re-render on filter: < 500ms
-- Animation: 60fps (16.67ms per frame)
-
-**FR-006-03: API Response Time**
-- Cache hit: < 100ms
-- Cache miss (GitHub API): < 3s
-- Timeout threshold: 10s
-
-**FR-006-04: Asset Optimization**
-- Code splitting: Lazy load Recharts
-- Image optimization: Next.js Image component
-- Font loading: System fonts (no web fonts)
-- CSS: Tailwind purge (< 10kb)
-
-**FR-006-05: Bundle Size**
-- Total JS: < 150kb gzipped
-- Initial load: < 50kb gzipped
-- Recharts: Lazy loaded on demand
-
-**FR-006-06: Performance Monitoring**
-- Real User Monitoring (RUM)
-- Lighthouse CI on every deploy
-- Minimum score: 90
-- Alert if score drops below 85
-
-**Performance budget:**
-```
-Max sizes:
-- HTML: 5kb
-- CSS: 10kb
-- JS (initial): 50kb
-- JS (total): 150kb
-- Images: 0kb (none in MVP)
-```
-
-**Dependencies:** Vercel Analytics, Lighthouse CI
+**Test:**
+- Run Lighthouse → Check score
+- Test on slow 3G → Still works
+- Monitor in production → Track metrics
 
 ---
 
-### F-007: Accessibility Support
+### F-007: Keyboard Works
 
-**What it does:**
-Makes the app usable for all users.
+**Tab order:**
+1. Input field
+2. Submit button
+3. Chart (if rendered)
+4. Stats cards
+5. Example links
 
-**Functional specs:**
+**Shortcuts:**
+- Tab: Next element
+- Shift+Tab: Previous element
+- Enter: Submit form
+- Escape: Clear input
 
-**FR-007-01: Keyboard Navigation**
-- Tab through all interactive elements
-- Enter to submit form
-- Escape to close modals/tooltips
-- Arrow keys for chart navigation
-
-**FR-007-02: Screen Reader Support**
-- Semantic HTML elements
-- ARIA labels on all inputs
-- ARIA live regions for dynamic content
-- Alt text for all images (if any)
-
-**FR-007-03: Focus Management**
-- Visible focus indicators
-- Focus outline: 2px solid #3b82f6
-- Focus trap in modals
-- Skip to content link
-
-**FR-007-04: Color Contrast**
-- Text: 4.5:1 minimum ratio
-- Large text: 3:1 minimum
-- Interactive elements: 3:1
-- Test with WCAG contrast checker
-
-**FR-007-05: Text Scaling**
-- Support up to 200% zoom
-- No horizontal scrolling
-- Responsive breakpoints
-- Min font size: 14px
-
-**FR-007-06: Motion Preferences**
-- Respect `prefers-reduced-motion`
-- Disable animations if set
-- Instant transitions instead
-
-**ARIA labels example:**
+**Screen reader:**
 ```html
 <input
-  type="text"
   aria-label="GitHub repository name"
   aria-describedby="input-help"
-  aria-invalid={hasError}
 />
 <button aria-label="Analyze repository">
   Analyze
 </button>
 ```
 
-**Dependencies:** Testing with screen readers (NVDA, VoiceOver)
+**Test:**
+- Unplug mouse → Use keyboard only
+- Test with NVDA → Hear announcements
+- Check focus → Visible outline
 
 ---
 
-### F-008: Browser Compatibility
+### F-008: All Browsers
 
-**What it does:**
-Works on all modern browsers.
-
-**Functional specs:**
-
-**FR-008-01: Supported Browsers**
+**Support:**
 - Chrome 120+ (Dec 2023)
 - Firefox 121+ (Dec 2023)
 - Safari 17+ (Sep 2023)
 - Edge 120+ (Dec 2023)
-
-**FR-008-02: Mobile Browsers**
 - iOS Safari 17+
 - Chrome Mobile 120+
-- Samsung Internet 23+
 
-**FR-008-03: Feature Detection**
-- Check for Fetch API
-- Check for ES6 support
-- Show upgrade message if missing
-- Graceful degradation
+**Test matrix:**
+```
+Desktop:
+- Windows: Chrome, Firefox, Edge
+- Mac: Chrome, Firefox, Safari
+- Linux: Chrome, Firefox
 
-**FR-008-04: Polyfills**
-- None needed (Next.js handles this)
-- Target ES2020 compilation
+Mobile:
+- iOS: Safari, Chrome
+- Android: Chrome, Samsung Internet
+```
 
-**FR-008-05: Testing Matrix**
-- BrowserStack for manual testing
-- Playwright for automated tests
-- Test on real devices (iOS, Android)
-
-**Unsupported browsers:**
-- IE 11 (show upgrade message)
-- Chrome < 90
-- Safari < 14
-
-**Dependencies:** BrowserStack, Playwright
+**Test:**
+- Manual: Check each browser
+- Automated: Playwright tests
+- Real devices: BrowserStack
 
 ---
 
-### F-009: Security Baseline
+### F-009: Secure
 
-**What it does:**
-Protects users and the application.
-
-**Functional specs:**
-
-**FR-009-01: HTTPS Only**
+**HTTPS:**
 - Force HTTPS redirect
 - HSTS header enabled
-- Secure cookies only
+- Secure cookies
 
-**FR-009-02: Content Security Policy**
+**Content Security Policy:**
 ```
-Content-Security-Policy:
-  default-src 'self';
-  script-src 'self';
-  style-src 'self' 'unsafe-inline';
-  connect-src 'self' https://api.github.com;
-  img-src 'self' data:;
+default-src 'self';
+script-src 'self';
+style-src 'self' 'unsafe-inline';
+connect-src 'self' https://api.github.com;
 ```
 
-**FR-009-03: No Sensitive Data Storage**
-- No cookies with user data
-- LocalStorage: Only search history
-- No PII collected
-
-**FR-009-04: API Key Protection**
-- No API keys in frontend
-- Server-side API calls only
-- GitHub API requests via Next.js API routes
-
-**FR-009-05: Input Sanitization**
-- Sanitize all user inputs
-- Prevent XSS attacks
-- Escape special characters
-
-**FR-009-06: Dependency Security**
-- Dependabot alerts enabled
-- npm audit on every PR
-- No critical vulnerabilities
-
-**FR-009-07: Rate Limiting**
-- Client-side: 10 requests/minute
-- Server-side: 100 requests/hour per IP
-- Show friendly message when limited
-
-**Security headers:**
-```
-X-Frame-Options: DENY
-X-Content-Type-Options: nosniff
-X-XSS-Protection: 1; mode=block
-Referrer-Policy: strict-origin-when-cross-origin
+**Input sanitization:**
+```javascript
+function sanitize(input) {
+  return input
+    .replace(/[<>]/g, '')
+    .trim()
+    .slice(0, 100);
+}
 ```
 
-**Dependencies:** Next.js security features, Snyk
+**No secrets:**
+- API calls via server
+- No keys in frontend
+- No user data stored
+
+**Test:**
+- Try XSS: `<script>alert('x')</script>` → Blocked
+- Check headers → CSP enabled
+- Scan code → No hardcoded secrets
 
 ---
 
-### F-010: Basic UI/UX
+### F-010: Clean UI
 
-**What it does:**
-Provides clean, intuitive interface.
-
-**Functional specs:**
-
-**FR-010-01: Layout Structure**
+**Layout:**
 ```
-┌─────────────────────────────────────┐
-│ Header: Logo + Title                │
-├─────────────────────────────────────┤
-│ Input Section                        │
-│ ┌─────────────────────┐              │
-│ │ username/repo-name  │ [Analyze]    │
-│ └─────────────────────┘              │
-├─────────────────────────────────────┤
-│ Stats Cards (4 metrics)              │
-├─────────────────────────────────────┤
-│ Chart Visualization                  │
-│                                      │
-│   ████████                           │
-│   ██████████                         │
-│   ████████████                       │
-│                                      │
-└─────────────────────────────────────┘
+┌─────────────────────────────┐
+│ GitHub Releases Dashboard   │  ← Header
+├─────────────────────────────┤
+│ [username/repo-name] [Go]   │  ← Input
+├─────────────────────────────┤
+│ [142]  [15 days]            │  ← Stats
+│ [2.0/mo]  [3 days ago]      │
+├─────────────────────────────┤
+│                             │
+│    █████                    │  ← Chart
+│    ███████                  │
+│    █████████                │
+│                             │
+└─────────────────────────────┘
 ```
 
-**FR-010-02: Color Palette**
-- Primary: #3b82f6 (blue-500)
-- Secondary: #8b5cf6 (violet-500)
-- Success: #10b981 (green-500)
-- Error: #ef4444 (red-500)
-- Background: #ffffff (white)
-- Text: #1f2937 (gray-800)
+**Colors:**
+- Primary: Blue (#3b82f6)
+- Background: White (#ffffff)
+- Text: Dark gray (#1f2937)
+- Error: Red (#ef4444)
 
-**FR-010-03: Typography**
-- Font family: System UI stack
-- Heading: 24px, 600 weight
-- Body: 16px, 400 weight
-- Small: 14px, 400 weight
+**Typography:**
+- Font: System UI
+- Heading: 24px
+- Body: 16px
+- Small: 14px
 
-**FR-010-04: Spacing**
-- Base unit: 4px
-- Padding: 16px (4 units)
-- Margin: 24px (6 units)
-- Gap: 16px (4 units)
+**Spacing:**
+- Padding: 16px
+- Gap: 16px
+- Margin: 24px
 
-**FR-010-05: Loading States**
-- Spinner on button during fetch
-- Skeleton loaders for chart
-- Progress indicator for slow loads
-
-**FR-010-06: Mobile Responsive**
-- Breakpoints: 640px, 768px, 1024px
-- Stack layout on mobile
-- Touch-friendly buttons (44px min)
-
-**FR-010-07: Animations**
-- Fade in: 200ms ease
-- Slide in: 300ms ease-out
-- Chart render: 500ms ease-in-out
-- Respect reduced motion
-
-**Component hierarchy:**
-```
-Page
-├── Header
-│   ├── Logo
-│   └── Title
-├── InputSection
-│   ├── Input
-│   └── Button
-├── StatsGrid
-│   ├── StatCard (Total)
-│   ├── StatCard (Average)
-│   ├── StatCard (Per Month)
-│   └── StatCard (Last Release)
-└── ChartSection
-    └── BarChart
-```
-
-**Dependencies:** Tailwind CSS, Headless UI
+**Test:**
+- Check on phone → Looks good
+- Test on tablet → Readable
+- Verify colors → High contrast
 
 ---
 
-## 3. Non-Functional Requirements
+## 3. Test Cases
 
-System-wide quality attributes.
+How to verify each feature works.
 
-### NFR-001: Performance
+### F-001: Input Box
 
-**Metrics:**
-- Page load: < 2s (p95)
-- Chart render: < 1.5s
-- API response: < 3s
-- Time to Interactive: < 3.5s
-
-**How we achieve it:**
-- Next.js SSR for fast initial load
-- Code splitting for smaller bundles
-- Redis caching for API responses
-- CDN (Vercel Edge) for static assets
-- Lazy loading for chart library
-
-**Measurement:**
-- Lighthouse CI: Minimum score 90
-- Real User Monitoring: Vercel Analytics
-- Synthetic monitoring: Hourly checks
-
----
-
-### NFR-002: Scalability
-
-**Capacity:**
-- 10,000 daily active users
-- 50,000 chart views/day
-- 100,000 API requests/day
-
-**Scaling strategy:**
-- Serverless functions (auto-scale)
-- Redis caching (reduce API calls by 90%)
-- CDN for static content
-- GitHub API rate limit: 5000/hour (authenticated)
-
-**Bottlenecks:**
-- GitHub API rate limits (mitigated with caching)
-- Redis memory (scale vertically if needed)
-
----
-
-### NFR-003: Reliability
-
-**Uptime target:** 99.5% (43 hours downtime/year)
-
-**Failure scenarios:**
-- GitHub API down: Show cached data + warning
-- Redis down: Fallback to direct API calls
-- Vercel down: Deploy on backup (Netlify)
-
-**Monitoring:**
-- Uptime checks: Every 5 minutes (UptimeRobot)
-- Error tracking: Sentry (95% threshold)
-- Alerts: Slack webhook
-
----
-
-### NFR-004: Security
-
-**Standards:**
-- OWASP Top 10 compliance
-- HTTPS everywhere
-- No sensitive data storage
-- CSP headers enabled
-
-**Audits:**
-- npm audit: Weekly
-- Snyk scan: On every PR
-- Security review: Before launch
-
-**Incident response:**
-- P0 (critical): Fix within 4 hours
-- P1 (high): Fix within 24 hours
-- P2 (medium): Fix within 1 week
-
----
-
-### NFR-005: Accessibility
-
-**Standard:** WCAG 2.1 AA
-
-**Requirements:**
-- Keyboard navigation
-- Screen reader support
-- Color contrast 4.5:1
-- Focus indicators
-- Alt text for images
-
-**Testing:**
-- Lighthouse accessibility: Score > 90
-- Manual testing: NVDA, VoiceOver
-- Automated tests: axe-core
-
----
-
-### NFR-006: Maintainability
-
-**Code quality:**
-- TypeScript for type safety
-- ESLint + Prettier for consistency
-- Test coverage: > 70%
-- Documentation: All components
-
-**Architecture:**
-- Component-based (React)
-- Clear separation of concerns
-- No circular dependencies
-- Modular design
-
-**Deployment:**
-- CI/CD: GitHub Actions
-- Automated tests on PR
-- Preview deployments
-- Zero-downtime releases
-
----
-
-### NFR-007: Compatibility
-
-**Browsers:**
-- Last 2 versions of major browsers
-- 95% browser coverage (caniuse.com)
-
-**Devices:**
-- Desktop: 1920x1080 to 1280x720
-- Tablet: 1024x768 to 768x1024
-- Mobile: 375x667 to 414x896
-
-**Networks:**
-- Fast 3G minimum
-- Offline: Show cached data
-
----
-
-## 4. User Workflows & Journeys
-
-Detailed flows for each user type.
-
-### Workflow 1: First-Time User
-
-**User type:** Developer evaluating a library
-
-**Goal:** Check if a library is actively maintained
-
-**Journey:**
-
+**Test 1: Valid input**
 ```
-1. Land on homepage
-   ↓
-2. See input field + examples
-   ↓
-3. Click example "facebook/react"
-   OR
-   Type own repo name
-   ↓
-4. Click "Analyze" button
-   ↓
-5. [Loading state]
-   ↓
-6. View results:
-   - Stats card shows "Last release: 2 days ago"
-   - Chart shows consistent releases
-   ↓
-7. Decision: Library is active ✓
-   ↓
-8. [Optional] Bookmark URL
-   ↓
-9. Close tab (task complete)
+1. Open homepage
+2. Type "facebook/react"
+3. Click "Analyze"
+Expected: Form submits, chart loads
 ```
 
-**Pain points:**
-- Unclear input format → Fix: Show examples
-- Slow loading → Fix: <3s target
-- Can't share results → Fix: Shareable URLs (v1.2)
-
-**Success criteria:**
-- User completes journey in < 30 seconds
-- User understands result immediately
-- > 90% task completion rate
-
----
-
-### Workflow 2: Engineering Manager
-
-**User type:** Engineering Manager
-
-**Goal:** Track team's release velocity
-
-**Journey:**
-
+**Test 2: Invalid input**
 ```
-1. Bookmark team's repo URL
-   ↓
-2. Visit bookmark weekly
-   ↓
-3. Check stats:
-   - "2.3 releases per month"
-   - "Last release: 5 days ago"
-   ↓
-4. View chart trends:
-   - Compare to last month
-   - Spot slowdowns
-   ↓
-5. [Optional] Export chart for presentation
-   ↓
-6. Share URL with team/executives
-   ↓
-7. Return next week
+1. Type "invalid"
+2. Blur input field
+Expected: See error message
 ```
 
-**Pain points:**
-- Can't export chart → Fix: Export feature (v1.2)
-- Can't compare to history → Fix: Date range filter (v1.1)
-- Manual weekly check → Fix: Notifications (v2.2)
-
-**Success criteria:**
-- < 10 seconds to get insights
-- Shareable with stakeholders
-- 25% return rate
-
----
-
-### Workflow 3: OSS Maintainer
-
-**User type:** Open Source Maintainer
-
-**Goal:** Prove project health to potential users
-
-**Journey:**
-
+**Test 3: Empty input**
 ```
-1. Generate chart for own project
-   ↓
-2. Copy shareable URL
-   ↓
-3. Add to README:
-   "📊 [Release History](link)"
-   ↓
-4. Potential users click link
-   ↓
-5. See active project:
-   - Regular releases
-   - Recent activity
-   ↓
-6. Increased trust → More adoption
+1. Leave input empty
+2. Click button
+Expected: Button disabled, no submit
 ```
 
-**Pain points:**
-- Can't embed chart → Fix: Embed codes (v2.1)
-- URL is long → Fix: Short links (v2.1)
-- No badge → Fix: Badge generator (v2.1)
-
-**Success criteria:**
-- Easy to share in README
-- Builds credibility
-- Increases project adoption
-
----
-
-### User Story Map
-
+**Test 4: Enter key**
 ```
-                BACKBONE: USER GOALS
-                ┌─────────────────────────────────────┐
-                │  Discover   Analyze   Understand    │
-                │  Project    Releases  Patterns      │
-                └─────────────────────────────────────┘
-                           ↓
-WALKING         ┌─────────────────────────────────────┐
-SKELETON        │  Enter repo → View chart → Read stats│
-(MVP)           └─────────────────────────────────────┘
-                           ↓
-RELEASE 1.1     ┌─────────────────────────────────────┐
-                │  Filter dates → Switch chart types  │
-                │  Hide pre-releases                   │
-                └─────────────────────────────────────┘
-                           ↓
-RELEASE 1.2     ┌─────────────────────────────────────┐
-                │  Share URL → Export chart → Hover   │
-                │  details → Recent searches           │
-                └─────────────────────────────────────┘
-                           ↓
-RELEASE 2.0     ┌─────────────────────────────────────┐
-                │  Compare repos → Autocomplete →     │
-                │  Calendar view → Dark mode           │
-                └─────────────────────────────────────┘
+1. Type "vuejs/core"
+2. Press Enter
+Expected: Form submits
 ```
 
 ---
 
-## 5. Technical Architecture
+### F-002: GitHub API
 
-High-level system design.
-
-### Architecture Diagram
-
+**Test 1: Successful fetch**
 ```
-┌─────────────────────────────────────────────────────────┐
-│                        CLIENT                           │
-│  ┌────────────────────────────────────────────────┐     │
-│  │  Next.js 14 (React)                            │     │
-│  │  ├── Pages: / (index)                          │     │
-│  │  ├── Components: Input, Chart, Stats, Error    │     │
-│  │  ├── Hooks: useReleaseData, useChart           │     │
-│  │  └── Utils: formatDate, calculateStats         │     │
-│  └────────────────────────────────────────────────┘     │
-│                        ↓ HTTP                           │
-└─────────────────────────────────────────────────────────┘
-                         ↓
-┌─────────────────────────────────────────────────────────┐
-│                   API LAYER (Vercel)                    │
-│  ┌────────────────────────────────────────────────┐     │
-│  │  Next.js API Routes                            │     │
-│  │  ├── /api/releases/[owner]/[repo]              │     │
-│  │  │   ├── Check cache                           │     │
-│  │  │   ├── Fetch from GitHub if miss             │     │
-│  │  │   └── Return data                           │     │
-│  │  └── /api/health (monitoring)                  │     │
-│  └────────────────────────────────────────────────┘     │
-│                        ↓                                │
-└─────────────────────────────────────────────────────────┘
-                         ↓
-┌──────────────────────┐      ┌──────────────────────────┐
-│   CACHE (Redis)      │      │  EXTERNAL API (GitHub)   │
-│  ┌────────────────┐  │      │ ┌──────────────────────┐ │
-│  │ Upstash Redis  │  │      │ │ api.github.com       │ │
-│  │ TTL: 24h       │  │      │ │ /repos/:owner/:repo/ │ │
-│  │ Key: repo name │  │      │ │ /releases            │ │
-│  └────────────────┘  │      │ └──────────────────────┘ │
-└──────────────────────┘      └──────────────────────────┘
-         ↑                                  ↑
-         └──────── Cache hit ───────────────┘
+1. Request "facebook/react"
+Expected: Get 200+ releases, cache data
 ```
 
-### Component Architecture
+**Test 2: Not found**
+```
+1. Request "invalid/repo"
+Expected: Get 404 error, show message
+```
 
+**Test 3: Rate limit**
+```
+1. Make 61 requests in 1 hour
+Expected: Get 403, show reset time
+```
+
+**Test 4: Cache hit**
+```
+1. Request "facebook/react"
+2. Request again within 24h
+Expected: Return cached data in <100ms
+```
+
+---
+
+### F-003: Bar Chart
+
+**Test 1: Render chart**
+```
+1. Load "facebook/react"
+Expected: See bar chart with months
+```
+
+**Test 2: Empty data**
+```
+1. Load repo with 0 releases
+Expected: See "No releases found"
+```
+
+**Test 3: Mobile view**
+```
+1. Open on iPhone (375px)
+Expected: Chart fits screen
+```
+
+**Test 4: Performance**
+```
+1. Load 1000 releases
+Expected: Renders in <1.5 seconds
+```
+
+---
+
+### F-004: Stats Cards
+
+**Test 1: Calculate total**
+```
+Given: 142 releases
+Expected: Shows "142 releases"
+```
+
+**Test 2: Calculate average**
+```
+Given: First = Jan 1, 2020, Last = Nov 1, 2025
+Expected: Shows "~15 days"
+```
+
+**Test 3: Edge case**
+```
+Given: 1 release
+Expected: Shows "N/A" for average
+```
+
+---
+
+### F-005: Error Messages
+
+**Test 1: Network error**
+```
+1. Disconnect internet
+2. Try to fetch data
+Expected: See "Connection failed"
+```
+
+**Test 2: Invalid input**
+```
+1. Type "invalid-format"
+2. Submit
+Expected: See "Invalid format"
+```
+
+---
+
+### F-006: Fast Loading
+
+**Test 1: Page load**
+```
+1. Open homepage
+2. Measure with Lighthouse
+Expected: Score >90
+```
+
+**Test 2: Chart render**
+```
+1. Load chart
+2. Measure time
+Expected: <1.5 seconds
+```
+
+---
+
+### F-007: Keyboard Works
+
+**Test 1: Tab navigation**
+```
+1. Press Tab
+Expected: Focus moves to input
+2. Press Tab
+Expected: Focus moves to button
+```
+
+**Test 2: Screen reader**
+```
+1. Start NVDA
+2. Tab to input
+Expected: Hears "GitHub repository name"
+```
+
+---
+
+### F-008: All Browsers
+
+**Test 1: Chrome**
+```
+1. Open in Chrome 120
+Expected: All features work
+```
+
+**Test 2: Mobile Safari**
+```
+1. Open on iPhone
+Expected: Touch works, chart renders
+```
+
+---
+
+### F-009: Secure
+
+**Test 1: HTTPS**
+```
+1. Visit http://site.com
+Expected: Redirect to https://
+```
+
+**Test 2: XSS prevention**
+```
+1. Enter "<script>alert('xss')</script>"
+Expected: Script doesn't execute
+```
+
+---
+
+### F-010: Clean UI
+
+**Test 1: Mobile layout**
+```
+1. Open on phone (375px)
+Expected: Stats stack vertically
+```
+
+**Test 2: Loading state**
+```
+1. Click "Analyze"
+Expected: See spinner on button
+```
+
+---
+
+## 4. How to Build It
+
+Step-by-step implementation.
+
+### Setup (Week 1)
+
+**Install tools:**
+```bash
+# Create Next.js app
+npx create-next-app@14 gh-releases-dashboard
+
+# Install dependencies
+npm install recharts date-fns
+npm install -D @types/node typescript
+
+# Set up Redis
+# Sign up at upstash.com
+# Get Redis URL and token
+```
+
+**Environment variables:**
+```
+REDIS_URL=redis://...
+REDIS_TOKEN=xxx
+GITHUB_TOKEN=ghp_xxx (optional)
+```
+
+**Project structure:**
 ```
 src/
 ├── app/
-│   ├── page.tsx                 # Main page
-│   ├── layout.tsx               # Root layout
+│   ├── page.tsx
 │   └── api/
 │       └── releases/
 │           └── [owner]/
 │               └── [repo]/
-│                   └── route.ts  # API endpoint
+│                   └── route.ts
 ├── components/
-│   ├── RepoInput.tsx            # Input form
-│   ├── ReleaseChart.tsx         # Chart component
-│   ├── StatsGrid.tsx            # Stats cards
-│   ├── ErrorMessage.tsx         # Error display
-│   └── LoadingSpinner.tsx       # Loading state
-├── hooks/
-│   ├── useReleaseData.ts        # Data fetching
-│   └── useChartData.ts          # Data transformation
-├── lib/
-│   ├── github.ts                # GitHub API client
-│   ├── cache.ts                 # Redis cache
-│   ├── stats.ts                 # Calculations
-│   └── types.ts                 # TypeScript types
-└── utils/
-    ├── format.ts                # Date formatting
-    └── validate.ts              # Input validation
-```
-
-### Data Flow
-
-```
-1. User enters repo name
-   ↓
-2. Client validates format
-   ↓
-3. Client calls /api/releases/[owner]/[repo]
-   ↓
-4. Server checks Redis cache
-   ├─ Cache hit → Return data (100ms)
-   └─ Cache miss ↓
-      ├─ Call GitHub API
-      ├─ Store in cache (TTL: 24h)
-      └─ Return data (2-3s)
-   ↓
-5. Client receives data
-   ↓
-6. Client transforms data:
-   ├─ Calculate stats
-   └─ Group by month
-   ↓
-7. Client renders:
-   ├─ Stats cards
-   └─ Chart
-```
-
-### Technology Decisions
-
-| Component | Technology | Why |
-|-----------|-----------|-----|
-| Framework | Next.js 14 | SSR, API routes, optimized |
-| UI Library | React 18 | Component model, ecosystem |
-| Styling | Tailwind CSS | Fast, utility-first, small |
-| Charts | Recharts | React-native, customizable |
-| Cache | Redis (Upstash) | Fast, serverless-friendly |
-| Hosting | Vercel | Next.js optimized, CDN |
-| Monitoring | Sentry + Vercel | Error tracking + analytics |
-| Testing | Jest + Playwright | Unit + E2E coverage |
-
-### Scalability Plan
-
-**Current capacity:**
-- 10K DAU
-- 50K requests/day
-
-**Scaling triggers:**
-- > 80% CPU → Add serverless capacity (auto)
-- > 80% Redis memory → Upgrade plan
-- > 80% API quota → Add GitHub auth
-
-**Scaling path:**
-```
-MVP (10K DAU)
-  ↓
-v1.x (50K DAU) → Add CDN caching
-  ↓
-v2.x (100K DAU) → Add read replicas
-  ↓
-v3.x (500K DAU) → Microservices split
+│   ├── input.tsx
+│   ├── chart.tsx
+│   ├── stats.tsx
+│   └── error.tsx
+└── lib/
+    ├── github.ts
+    ├── cache.ts
+    └── stats.ts
 ```
 
 ---
 
-## 6. Acceptance Criteria (Gherkin)
-
-Testable specs for each feature.
-
-### Feature: F-001 Repository Input
-
-**Scenario 1: Valid repo name**
-```gherkin
-Given I am on the homepage
-When I enter "facebook/react" in the input field
-And I click the "Analyze" button
-Then the input should be accepted
-And the API should be called with "facebook/react"
-And the chart should be displayed
-```
-
-**Scenario 2: Invalid format**
-```gherkin
-Given I am on the homepage
-When I enter "invalid-format" in the input field
-And I click the "Analyze" button
-Then I should see an error message
-And the message should say "Invalid format. Use: username/repo-name"
-And the API should not be called
-```
-
-**Scenario 3: Empty input**
-```gherkin
-Given I am on the homepage
-When I leave the input field empty
-And I click the "Analyze" button
-Then the button should be disabled
-And no error message should appear
-```
-
-**Scenario 4: Submit with Enter key**
-```gherkin
-Given I am on the homepage
-When I enter "vuejs/core" in the input field
-And I press the Enter key
-Then the form should submit
-And the chart should load
-```
-
----
-
-### Feature: F-002 GitHub API Integration
-
-**Scenario 1: Successful API call**
-```gherkin
-Given the GitHub API is available
-When I request data for "facebook/react"
-Then the API should return 200 OK
-And the response should contain release data
-And the data should be cached for 24 hours
-```
-
-**Scenario 2: Repository not found**
-```gherkin
-Given I request data for "invalid/notfound"
-When the GitHub API returns 404
-Then I should see "Repository not found"
-And no chart should be displayed
-```
-
-**Scenario 3: Rate limit exceeded**
-```gherkin
-Given I have exceeded the GitHub API rate limit
-When I request data for any repository
-Then the API should return 403
-And I should see "Rate limit exceeded. Resets in X minutes."
-And the reset time should be displayed
-```
-
-**Scenario 4: Cache hit**
-```gherkin
-Given "facebook/react" data is cached
-And the cache has not expired
-When I request "facebook/react"
-Then the data should be returned from cache
-And the response time should be < 100ms
-And GitHub API should not be called
-```
-
-**Scenario 5: Cache miss**
-```gherkin
-Given "vuejs/core" data is not cached
-When I request "vuejs/core"
-Then the GitHub API should be called
-And the response should be cached
-And subsequent requests should hit cache
-```
-
----
-
-### Feature: F-003 Chart Visualization
-
-**Scenario 1: Display bar chart**
-```gherkin
-Given I have loaded release data for "facebook/react"
-When the chart renders
-Then I should see a bar chart
-And the X-axis should show months
-And the Y-axis should show release counts
-And bars should be colored blue
-```
-
-**Scenario 2: Empty data**
-```gherkin
-Given a repository has no releases
-When I load the chart
-Then I should see "No releases found"
-And no bars should be displayed
-And example repos should be suggested
-```
-
-**Scenario 3: Mobile responsive**
-```gherkin
-Given I am on a mobile device (375px width)
-When I view the chart
-Then the chart should fit the screen width
-And all labels should be readable
-And no horizontal scrolling should occur
-```
-
-**Scenario 4: Chart renders within time**
-```gherkin
-Given I have release data
-When the chart starts rendering
-Then it should complete within 1.5 seconds
-And animations should be smooth (60fps)
-```
-
----
-
-### Feature: F-004 Release Statistics
-
-**Scenario 1: Calculate total releases**
-```gherkin
-Given a repo has 142 releases
-When I view the stats
-Then "Total releases" should show "142"
-And the count should exclude draft releases
-```
-
-**Scenario 2: Calculate average time**
-```gherkin
-Given a repo has:
-  | First release | Jan 1, 2020  |
-  | Last release  | Nov 1, 2025  |
-  | Total releases| 142          |
-When I view the stats
-Then "Average time" should show "15 days"
-And the calculation should be accurate
-```
-
-**Scenario 3: Handle edge case (single release)**
-```gherkin
-Given a repo has only 1 release
-When I view the stats
-Then "Average time" should show "N/A"
-And "Releases per month" should show "0.1"
-```
-
----
-
-### Feature: F-005 Error Handling
-
-**Scenario 1: Network error**
-```gherkin
-Given my internet connection is lost
-When I try to fetch repo data
-Then I should see "Network error. Check your connection."
-And a "Retry" button should appear
-And clicking retry should attempt again
-```
-
-**Scenario 2: GitHub API down**
-```gherkin
-Given GitHub API returns 500 error
-When I fetch repo data
-Then I should see "GitHub API unavailable. Try again later."
-And the error should be logged to Sentry
-```
-
----
-
-### Feature: F-006 Performance
-
-**Scenario 1: Page load time**
-```gherkin
-Given I visit the homepage
-When the page loads
-Then First Contentful Paint should occur < 1.5s
-And Largest Contentful Paint should occur < 2.5s
-And Time to Interactive should be < 3.5s
-```
-
-**Scenario 2: Lighthouse score**
-```gherkin
-Given the site is deployed
-When I run Lighthouse audit
-Then Performance score should be > 90
-And Accessibility score should be > 90
-And Best Practices score should be > 90
-```
-
----
-
-### Feature: F-007 Accessibility
-
-**Scenario 1: Keyboard navigation**
-```gherkin
-Given I am on the homepage
-When I press Tab
-Then focus should move to the input field
-And a visible focus outline should appear
-When I press Tab again
-Then focus should move to the button
-When I press Enter
-Then the form should submit
-```
-
-**Scenario 2: Screen reader**
-```gherkin
-Given I am using a screen reader
-When I navigate the page
-Then the input should announce "GitHub repository name"
-And the button should announce "Analyze repository"
-And chart data should be announced as a table
-```
-
-**Scenario 3: Color contrast**
-```gherkin
-Given the page is rendered
-When I check color contrast
-Then all text should have 4.5:1 ratio
-And interactive elements should have 3:1 ratio
-And Lighthouse accessibility should score > 90
-```
-
----
-
-### Feature: F-008 Browser Compatibility
-
-**Scenario 1: Chrome desktop**
-```gherkin
-Given I am using Chrome 120
-When I visit the site
-Then all features should work
-And no console errors should appear
-```
-
-**Scenario 2: Safari iOS**
-```gherkin
-Given I am using Safari on iPhone 13
-When I visit the site
-Then the layout should be responsive
-And touch interactions should work
-And the chart should render correctly
-```
-
----
-
-### Feature: F-009 Security
-
-**Scenario 1: HTTPS enforcement**
-```gherkin
-Given I visit http://example.com
-When the page loads
-Then I should be redirected to https://example.com
-And the connection should be secure
-```
-
-**Scenario 2: XSS prevention**
-```gherkin
-Given I enter "<script>alert('xss')</script>" in input
-When the input is processed
-Then the script should not execute
-And the input should be sanitized
-```
-
-**Scenario 3: No API keys exposed**
-```gherkin
-Given the site is deployed
-When I view page source
-Then no API keys should be visible
-And all API calls should go through server
-```
-
----
-
-### Feature: F-010 Basic UI
-
-**Scenario 1: Mobile layout**
-```gherkin
-Given I am on a mobile device (375px)
-When I view the page
-Then stats should stack vertically
-And the input should be full-width
-And buttons should be at least 44px tall
-```
-
-**Scenario 2: Loading state**
-```gherkin
-Given I click "Analyze"
-When data is fetching
-Then the button should show a spinner
-And the button should be disabled
-And "Loading..." text should appear
-```
-
----
-
-## 7. Release Strategy & Roadmap
-
-Incremental rollout plan.
-
-### Release Timeline
-
-```
-MVP (Week 11)
-  └─ All "Must Have" features
-  └─ Core functionality only
-  └─ 100 beta users
-     ↓
-v1.1 (Week 13)
-  └─ Multiple chart types
-  └─ Pre-release filtering
-  └─ Date range selection
-     ↓
-v1.2 (Week 15)
-  └─ Shareable URLs
-  └─ Export capabilities
-  └─ Hover tooltips
-     ↓
-v1.3 (Week 16)
-  └─ Enhanced stats
-  └─ Recent searches
-     ↓
-v2.0 (Month 5)
-  └─ Multi-repo comparison
-  └─ Autocomplete
-  └─ Calendar view
-     ↓
-v2.1 (Month 6)
-  └─ Embed codes
-  └─ Dark mode
-```
-
-### Feature Release Matrix
-
-| Feature | MVP | v1.1 | v1.2 | v1.3 | v2.0 |
-|---------|-----|------|------|------|------|
-| F-001: Repo Input | ✅ | | | | |
-| F-002: API Integration | ✅ | | | | |
-| F-003: Chart Display | ✅ | | | | |
-| F-004: Stats | ✅ | | | | |
-| F-005: Error Handling | ✅ | | | | |
-| F-006: Performance | ✅ | | | | |
-| F-007: Accessibility | ✅ | | | | |
-| F-008: Browser Support | ✅ | | | | |
-| F-009: Security | ✅ | | | | |
-| F-010: Basic UI | ✅ | | | | |
-| F-011: Multiple Charts | | ✅ | | | |
-| F-012: Filter Pre-releases | | ✅ | | | |
-| F-013: Date Range | | ✅ | | | |
-| F-014: Hover Tooltips | | | ✅ | | |
-| F-015: Shareable URLs | | | ✅ | | |
-| F-016: Export | | | ✅ | | |
-| F-017: Enhanced Stats | | | | ✅ | |
-| F-018: Recent Searches | | | | ✅ | |
-| F-019: Multi-Repo Compare | | | | | ✅ |
-| F-020: Autocomplete | | | | | ✅ |
-| F-021: Calendar View | | | | | ✅ |
-
-### Dependency Map
-
-```
-MVP Foundation
-├─ F-001 → F-002 (Input required for API)
-├─ F-002 → F-003 (Data required for chart)
-├─ F-002 → F-004 (Data required for stats)
-└─ F-010 → ALL (UI wraps everything)
-
-v1.1 Enhancements
-├─ F-011 → F-003 (Extends chart)
-├─ F-012 → F-002 (Filters API data)
-└─ F-013 → F-003 (Filters chart data)
-
-v1.2 Sharing
-├─ F-014 → F-003 (Enhances chart)
-├─ F-015 → F-001 (Enables URL params)
-└─ F-016 → F-003 (Exports chart)
-
-v2.0 Advanced
-├─ F-019 → F-002 (Multiple API calls)
-├─ F-020 → F-001 (Enhances input)
-└─ F-021 → F-003 (New view type)
-```
-
-### Rollout Strategy
-
-**MVP Launch (Week 11):**
-```
-Day 1: Deploy to production
-  ├─ Monitor errors (Sentry)
-  ├─ Check performance (Vercel Analytics)
-  └─ Collect feedback (in-app survey)
-
-Day 1-3: Soft launch
-  ├─ Product Hunt
-  ├─ Hacker News
-  └─ Reddit (r/programming)
-
-Day 4-7: Iterate
-  ├─ Fix critical bugs
-  ├─ Improve based on feedback
-  └─ Monitor metrics
-
-Week 2: Evaluate
-  ├─ Review KPIs
-  ├─ Plan v1.1
-  └─ Prioritize feedback
-```
-
-**Feature Flags:**
-```javascript
-{
-  "multipleCharts": false,      // v1.1
-  "shareableUrls": false,        // v1.2
-  "multiRepoCompare": false,     // v2.0
-  "darkMode": false              // v2.1
+### Sprint 1 (Weeks 3-4)
+
+**Build input form:**
+```tsx
+// components/input.tsx
+export function RepoInput({ onSubmit }) {
+  const [value, setValue] = useState('');
+  const [error, setError] = useState('');
+
+  const validate = (input) => {
+    const pattern = /^[a-zA-Z0-9_-]+\/[a-zA-Z0-9_.-]+$/;
+    return pattern.test(input);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if (!validate(value)) {
+      setError('Invalid format. Use: username/repo-name');
+      return;
+    }
+
+    onSubmit(value);
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <input
+        type="text"
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+        placeholder="username/repo-name"
+      />
+      <button type="submit">Analyze</button>
+      {error && <p>{error}</p>}
+    </form>
+  );
 }
 ```
 
-Enable flags for:
-- Beta users (test new features)
-- A/B testing (compare variants)
-- Gradual rollout (10% → 50% → 100%)
-
-### Success Criteria per Release
-
-**MVP (Week 11):**
-- ✅ 500 users in week 1
-- ✅ < 5% error rate
-- ✅ > 4.0/5 satisfaction
-- ✅ 90% task completion
-
-**v1.1 (Week 13):**
-- ✅ 1,000 weekly active users
-- ✅ 30% use new chart types
-- ✅ 20% use filters
-
-**v1.2 (Week 15):**
-- ✅ 15% share URLs
-- ✅ 10% export charts
-- ✅ 25% returning users
-
-**v1.3 (Week 16):**
-- ✅ Hit all launch targets
-- ✅ Ready for v2.0 planning
-
----
-
-## 8. Risk Management (RAID Log)
-
-### Risks
-
-| ID | Risk | Probability | Impact | Severity | Mitigation | Owner |
-|----|------|-------------|--------|----------|------------|-------|
-| R-001 | GitHub API rate limits | High | High | Critical | 24h cache, ETag, auth | Backend |
-| R-002 | Low user adoption | High | Medium | High | Product Hunt, HN, Reddit | PM |
-| R-003 | GitHub API changes | Low | Critical | High | Monitor changelog, adapter | Lead |
-| R-004 | Performance issues | Medium | Medium | Medium | Load testing, optimization | Frontend |
-| R-005 | Security vulnerability | Medium | High | High | Dependabot, audits | DevOps |
-| R-006 | Browser compatibility | Low | Low | Low | Cross-browser testing | QA |
-| R-007 | Scope creep | High | Medium | Medium | Strict MVP scope | PM |
-| R-008 | Team availability | Medium | High | High | Documentation, backup | Lead |
-
-### Assumptions
-
-| ID | Assumption | Validation | Risk if Wrong | Status |
-|----|------------|------------|---------------|--------|
-| A-001 | Developers care about release tracking | 20 user interviews | Low adoption | To validate |
-| A-002 | GitHub API has sufficient data | API prototype | Missing data | To validate |
-| A-003 | Users accept no signup | User survey | Lower engagement | To validate |
-| A-004 | Bar chart is best visualization | User testing | Poor UX | To validate |
-| A-005 | 24h cache is acceptable | User feedback | Stale data complaints | To validate |
-| A-006 | Vercel hosting is sufficient | Load testing | Scaling issues | To validate |
-| A-007 | No database needed | Architecture review | Future limitations | Validated ✓ |
-| A-008 | Budget covers 16 weeks | Finance approval | Timeline slip | Validated ✓ |
-
-### Issues
-
-| ID | Issue | Status | Impact | Resolution | Owner |
-|----|-------|--------|--------|------------|-------|
-| I-001 | None yet | - | - | - | - |
-
-*To be populated during development*
-
-### Dependencies
-
-| ID | Dependency | Type | Criticality | Status | Mitigation |
-|----|------------|------|-------------|--------|------------|
-| D-001 | GitHub API | External | Critical | Active | Cache + retry logic |
-| D-002 | Vercel hosting | External | Critical | Active | Backup: Netlify |
-| D-003 | Redis (Upstash) | External | High | Active | Fallback: Direct API |
-| D-004 | Recharts library | External | Medium | Active | Alternative: D3.js |
-| D-005 | Next.js 14 | External | High | Active | Stable release |
-| D-006 | BRD approval | Internal | Critical | Pending | This document |
-| D-007 | Budget approval | Internal | Critical | Pending | Finance team |
-| D-008 | Team assignment | Internal | Critical | Pending | Resource planning |
-
----
-
-## 9. Implementation Checklist
-
-Developer handoff checklist.
-
-### Phase 0: Setup (Week 1)
-
-**Environment:**
-- [ ] Create GitHub repository
-- [ ] Set up Next.js 14 project
-- [ ] Configure TypeScript
-- [ ] Set up Tailwind CSS
-- [ ] Configure ESLint + Prettier
-
-**Infrastructure:**
-- [ ] Create Vercel account
-- [ ] Set up Redis (Upstash)
-- [ ] Configure environment variables
-- [ ] Set up Sentry error tracking
-- [ ] Enable Vercel Analytics
-
-**CI/CD:**
-- [ ] Set up GitHub Actions
-- [ ] Configure Lighthouse CI
-- [ ] Add npm audit checks
-- [ ] Set up preview deployments
-
----
-
-### Phase 1: MVP Development (Weeks 3-8)
-
-**Sprint 1 (Weeks 3-4):**
-- [ ] F-001: Build input component
-- [ ] F-001: Add validation
-- [ ] F-002: Create API route
-- [ ] F-002: Integrate GitHub API
-- [ ] F-002: Set up Redis caching
-- [ ] F-005: Add error handling
-
-**Sprint 2 (Weeks 5-6):**
-- [ ] F-003: Install Recharts
-- [ ] F-003: Build chart component
-- [ ] F-003: Add responsiveness
-- [ ] F-004: Calculate statistics
-- [ ] F-004: Build stats grid
-- [ ] F-010: Style all components
-
-**Sprint 3 (Weeks 7-8):**
-- [ ] F-006: Optimize performance
-- [ ] F-006: Add code splitting
-- [ ] F-007: Add keyboard nav
-- [ ] F-007: Add ARIA labels
-- [ ] F-008: Cross-browser testing
-- [ ] F-009: Security review
-- [ ] Write tests (70% coverage)
-- [ ] Documentation
-
----
-
-### Phase 2: Beta Testing (Weeks 9-10)
-
-**Week 9:**
-- [ ] Deploy to production
-- [ ] Invite 100 beta users
-- [ ] Set up feedback form
-- [ ] Monitor Sentry errors
-- [ ] Track Vercel Analytics
-
-**Week 10:**
-- [ ] Fix critical bugs
-- [ ] Improve based on feedback
-- [ ] Write launch blog post
-- [ ] Create demo video
-- [ ] Prepare social posts
-
----
-
-### Phase 3: Launch (Week 11)
-
-**Launch day:**
-- [ ] Final production deploy
-- [ ] Post to Product Hunt
-- [ ] Submit to Hacker News
-- [ ] Post on Reddit
-- [ ] Tweet announcement
-- [ ] Monitor 24/7
-
----
-
-### Phase 4: v1.1-1.3 (Weeks 12-16)
-
-**v1.1 (Week 13):**
-- [ ] F-011: Multiple chart types
-- [ ] F-012: Pre-release filter
-- [ ] F-013: Date range selector
-- [ ] Deploy + announce
-
-**v1.2 (Week 15):**
-- [ ] F-014: Hover tooltips
-- [ ] F-015: Shareable URLs
-- [ ] F-016: Export features
-- [ ] Deploy + announce
-
-**v1.3 (Week 16):**
-- [ ] F-017: Enhanced stats
-- [ ] F-018: Recent searches
-- [ ] Deploy + announce
-- [ ] Review metrics
-
----
-
-## 10. Testing Strategy
-
-### Unit Tests
-
-**Coverage target:** 70%
-
-**Test files:**
-```
-src/
-├── components/
-│   ├── RepoInput.test.tsx
-│   ├── ReleaseChart.test.tsx
-│   ├── StatsGrid.test.tsx
-│   └── ErrorMessage.test.tsx
-├── hooks/
-│   ├── useReleaseData.test.ts
-│   └── useChartData.test.ts
-├── lib/
-│   ├── github.test.ts
-│   ├── cache.test.ts
-│   └── stats.test.ts
-└── utils/
-    ├── format.test.ts
-    └── validate.test.ts
-```
-
-**Example test:**
+**Build API route:**
 ```typescript
-// RepoInput.test.tsx
-describe('RepoInput', () => {
-  it('validates correct format', () => {
-    render(<RepoInput />);
-    const input = screen.getByLabelText('Repository');
+// app/api/releases/[owner]/[repo]/route.ts
+export async function GET(request, { params }) {
+  const { owner, repo } = params;
 
-    fireEvent.change(input, {
-      target: { value: 'facebook/react' }
-    });
+  // Check cache
+  const cached = await redis.get(`releases:${owner}:${repo}`);
+  if (cached) {
+    return Response.json(cached);
+  }
 
-    expect(input).toHaveValue('facebook/react');
-    expect(screen.queryByText('Invalid format')).not.toBeInTheDocument();
+  // Fetch from GitHub
+  const response = await fetch(
+    `https://api.github.com/repos/${owner}/${repo}/releases`
+  );
+
+  if (!response.ok) {
+    return Response.json(
+      { error: 'Repository not found' },
+      { status: 404 }
+    );
+  }
+
+  const data = await response.json();
+
+  // Cache for 24 hours
+  await redis.set(
+    `releases:${owner}:${repo}`,
+    JSON.stringify(data),
+    { ex: 86400 }
+  );
+
+  return Response.json(data);
+}
+```
+
+**Build data fetching hook:**
+```typescript
+// lib/use-releases.ts
+export function useReleases(repo: string) {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    if (!repo) return;
+
+    setLoading(true);
+
+    fetch(`/api/releases/${repo}`)
+      .then(res => {
+        if (!res.ok) throw new Error('Failed');
+        return res.json();
+      })
+      .then(setData)
+      .catch(setError)
+      .finally(() => setLoading(false));
+  }, [repo]);
+
+  return { data, loading, error };
+}
+```
+
+---
+
+### Sprint 2 (Weeks 5-6)
+
+**Build chart:**
+```tsx
+// components/chart.tsx
+import { BarChart, Bar, XAxis, YAxis } from 'recharts';
+
+export function ReleaseChart({ data }) {
+  const monthlyData = groupByMonth(data);
+
+  return (
+    <BarChart data={monthlyData} width={800} height={400}>
+      <XAxis dataKey="month" />
+      <YAxis />
+      <Bar dataKey="count" fill="#3b82f6" />
+    </BarChart>
+  );
+}
+
+function groupByMonth(releases) {
+  const groups = {};
+
+  releases.forEach(release => {
+    const month = format(new Date(release.published_at), 'MMM yyyy');
+    groups[month] = (groups[month] || 0) + 1;
   });
 
-  it('shows error for invalid format', () => {
-    render(<RepoInput />);
-    const input = screen.getByLabelText('Repository');
+  return Object.entries(groups).map(([month, count]) => ({
+    month,
+    count
+  }));
+}
+```
 
-    fireEvent.change(input, {
-      target: { value: 'invalid' }
-    });
+**Build stats:**
+```tsx
+// components/stats.tsx
+export function StatsGrid({ releases }) {
+  const stats = calculateStats(releases);
+
+  return (
+    <div className="grid grid-cols-2 gap-4">
+      <StatCard label="Total releases" value={stats.total} />
+      <StatCard label="Average" value={`${stats.avgDays} days`} />
+      <StatCard label="Per month" value={stats.perMonth} />
+      <StatCard label="Last release" value={stats.lastRelease} />
+    </div>
+  );
+}
+
+function StatCard({ label, value }) {
+  return (
+    <div className="p-4 border rounded">
+      <p className="text-sm text-gray-600">{label}</p>
+      <p className="text-2xl font-bold">{value}</p>
+    </div>
+  );
+}
+```
+
+**Calculate stats:**
+```typescript
+// lib/stats.ts
+export function calculateStats(releases) {
+  const sorted = releases
+    .filter(r => !r.draft)
+    .sort((a, b) => new Date(a.published_at) - new Date(b.published_at));
+
+  const total = sorted.length;
+
+  if (total === 0) {
+    return { total: 0, avgDays: 0, perMonth: 0, lastRelease: 'N/A' };
+  }
+
+  const first = new Date(sorted[0].published_at);
+  const last = new Date(sorted[total - 1].published_at);
+
+  const daysDiff = (last - first) / (1000 * 60 * 60 * 24);
+  const avgDays = total > 1 ? daysDiff / (total - 1) : 0;
+
+  const monthsDiff = daysDiff / 30;
+  const perMonth = monthsDiff > 0 ? total / monthsDiff : 0;
+
+  return {
+    total,
+    avgDays: Math.round(avgDays),
+    perMonth: perMonth.toFixed(1),
+    lastRelease: formatRelative(last)
+  };
+}
+```
+
+---
+
+### Sprint 3 (Weeks 7-8)
+
+**Optimize performance:**
+```typescript
+// Lazy load chart
+const ReleaseChart = dynamic(() => import('@/components/chart'), {
+  loading: () => <p>Loading chart...</p>,
+  ssr: false
+});
+
+// Add loading states
+{loading && <Spinner />}
+{error && <Error message={error} />}
+{data && <ReleaseChart data={data} />}
+```
+
+**Add accessibility:**
+```tsx
+<input
+  type="text"
+  aria-label="GitHub repository name"
+  aria-describedby="input-help"
+  aria-invalid={error ? 'true' : 'false'}
+/>
+
+<button
+  type="submit"
+  aria-label="Analyze repository"
+  disabled={loading}
+>
+  {loading ? 'Loading...' : 'Analyze'}
+</button>
+```
+
+**Write tests:**
+```typescript
+// input.test.tsx
+describe('RepoInput', () => {
+  it('validates format', () => {
+    render(<RepoInput />);
+
+    const input = screen.getByRole('textbox');
+    fireEvent.change(input, { target: { value: 'facebook/react' } });
+
+    expect(input).toHaveValue('facebook/react');
+  });
+
+  it('shows error for invalid', () => {
+    render(<RepoInput />);
+
+    const input = screen.getByRole('textbox');
+    fireEvent.change(input, { target: { value: 'invalid' } });
     fireEvent.blur(input);
 
     expect(screen.getByText('Invalid format')).toBeInTheDocument();
@@ -1783,348 +1067,448 @@ describe('RepoInput', () => {
 
 ---
 
-### E2E Tests
+## 5. Release Plan
 
-**Tool:** Playwright
+When to ship what.
 
-**Test scenarios:**
-```typescript
-// e2e/happy-path.spec.ts
-test('user can analyze a repository', async ({ page }) => {
-  // Navigate to homepage
-  await page.goto('/');
+### Week 11: MVP Launch
 
-  // Enter repo name
-  await page.fill('[aria-label="Repository"]', 'facebook/react');
+**Ship:**
+- All 10 MVP features
+- Working product
+- Deployed to production
 
-  // Click analyze
-  await page.click('button:has-text("Analyze")');
-
-  // Wait for chart
-  await page.waitForSelector('[data-testid="chart"]');
-
-  // Verify stats are shown
-  await expect(page.locator('text=Total releases')).toBeVisible();
-  await expect(page.locator('text=Last release')).toBeVisible();
-
-  // Verify chart is rendered
-  const chart = page.locator('[data-testid="chart"]');
-  await expect(chart).toBeVisible();
-});
+**Launch steps:**
 ```
+Day 1:
+1. Final deploy to Vercel
+2. Run smoke tests
+3. Monitor errors (Sentry)
+4. Post to Product Hunt (8am PST)
+5. Submit to Hacker News (9am PST)
+
+Day 2-3:
+1. Respond to feedback
+2. Fix critical bugs
+3. Monitor metrics
+
+Day 4-7:
+1. Analyze data
+2. Plan v1.1
+3. Write blog post
+```
+
+**Success = All pass:**
+- [ ] 500 users in week 1
+- [ ] <5% error rate
+- [ ] >4.0/5 satisfaction
+- [ ] >90% complete their task
 
 ---
 
-### Performance Tests
+### Week 13: v1.1
 
-**Tool:** Lighthouse CI
+**Ship:**
+- Multiple chart types
+- Pre-release filter
+- Date range selector
 
-**Run on every deploy:**
-```yaml
-# .github/workflows/lighthouse.yml
-- name: Lighthouse CI
-  run: |
-    npm install -g @lhci/cli
-    lhci autorun
+**Deploy:**
+```bash
+# Enable feature flags
+FEATURE_MULTIPLE_CHARTS=true
+FEATURE_FILTERS=true
+
+# Deploy
+git push origin main
+
+# Monitor
+# Check error rates
+# Track feature usage
 ```
 
-**Thresholds:**
-```json
-{
-  "ci": {
-    "assert": {
-      "assertions": {
-        "performance": ["error", { "minScore": 0.9 }],
-        "accessibility": ["error", { "minScore": 0.9 }],
-        "first-contentful-paint": ["error", { "maxNumericValue": 1500 }],
-        "largest-contentful-paint": ["error", { "maxNumericValue": 2500 }]
-      }
-    }
+**Success:**
+- [ ] 30% try new charts
+- [ ] 20% use filters
+- [ ] No new bugs
+
+---
+
+### Week 15: v1.2
+
+**Ship:**
+- Shareable URLs
+- Export features
+- Hover tooltips
+
+**Success:**
+- [ ] 15% share URLs
+- [ ] 10% export data
+
+---
+
+### Week 16: v1.3
+
+**Ship:**
+- Enhanced stats
+- Recent searches
+
+**Success:**
+- [ ] Hit all targets
+- [ ] 1,000 weekly users
+- [ ] 25% return rate
+
+---
+
+## 6. What Could Fail
+
+Problems and fixes.
+
+### Problem 1: GitHub API Rate Limits
+
+**Risk:** High
+**Impact:** Critical
+
+**What happens:**
+- Free tier: 60 requests/hour
+- App breaks when limit hit
+- Users see errors
+
+**Fix:**
+```javascript
+// Cache everything for 24h
+await redis.set(key, data, { ex: 86400 });
+
+// Use ETags
+const etag = await redis.get(`etag:${key}`);
+const response = await fetch(url, {
+  headers: { 'If-None-Match': etag }
+});
+
+// Show friendly error
+if (response.status === 403) {
+  const resetTime = response.headers.get('X-RateLimit-Reset');
+  showError(`Rate limit. Resets at ${formatTime(resetTime)}`);
+}
+```
+
+**Backup plan:**
+- Add GitHub OAuth (5000/hour limit)
+- Implement request queue
+- Pay for GitHub API if needed
+
+**Owner:** Backend developer
+
+---
+
+### Problem 2: Low Users
+
+**Risk:** High
+**Impact:** Medium
+
+**What happens:**
+- Nobody uses the app
+- Product fails
+
+**Fix:**
+- Launch on Product Hunt (day 1)
+- Post to Hacker News (day 1)
+- Share on Reddit: r/programming, r/webdev
+- Write technical blog post
+- Create demo video
+- Email developer newsletters
+
+**Measure:**
+- Track daily signups
+- Monitor social mentions
+- Check referral sources
+
+**Backup plan:**
+- Interview users (find real problems)
+- Adjust messaging
+- Try different channels
+
+**Owner:** Product manager
+
+---
+
+### Problem 3: GitHub API Changes
+
+**Risk:** Low
+**Impact:** Critical
+
+**What happens:**
+- API breaks without warning
+- App stops working
+
+**Fix:**
+```javascript
+// Use adapter pattern
+class GitHubAdapter {
+  async getReleases(owner, repo) {
+    // Can swap implementations
+    return this.restApi.getReleases(owner, repo);
   }
 }
+
+// Easy to switch
+if (restApiBroken) {
+  adapter.useGraphQL();
+}
 ```
+
+**Monitor:**
+- Subscribe to GitHub changelog
+- Set up health checks
+- Get alerts on failures
+
+**Backup plan:**
+- Switch to GraphQL API
+- Have migration plan ready
+- Communicate with users fast
+
+**Owner:** Tech lead
 
 ---
 
-### Accessibility Tests
+### Problem 4: Slow Performance
 
-**Tool:** axe-core + manual testing
+**Risk:** Medium
+**Impact:** Medium
 
-**Automated:**
-```typescript
-// a11y.test.tsx
-import { axe } from 'jest-axe';
+**What happens:**
+- Page loads slow
+- Users leave
 
-test('page has no accessibility violations', async () => {
-  const { container } = render(<HomePage />);
-  const results = await axe(container);
-  expect(results).toHaveNoViolations();
-});
+**Fix before launch:**
+```bash
+# Test with large repos
+npm run test:load -- --repo=kubernetes/kubernetes
+
+# Optimize bundle
+npm run analyze
+# Remove unused code
+
+# Add monitoring
+# Set up Lighthouse CI
+# Track Core Web Vitals
 ```
 
-**Manual checklist:**
-- [ ] Tab navigation works
-- [ ] Screen reader announces correctly (NVDA, VoiceOver)
-- [ ] Color contrast passes (4.5:1)
-- [ ] Focus indicators visible
-- [ ] No keyboard traps
+**Backup plan:**
+- Switch to D3.js (faster than Recharts)
+- Add data sampling for huge repos
+- Implement pagination
+
+**Owner:** Frontend developer
 
 ---
 
-## 11. Documentation Requirements
+### Problem 5: Security Hole
 
-### User Documentation
+**Risk:** Medium
+**Impact:** High
 
-**Help page content:**
-```markdown
-# How to Use
+**What happens:**
+- Vulnerability found
+- Data leak or attack
 
-1. Enter a GitHub repository name
-   - Format: username/repo-name
-   - Example: facebook/react
+**Fix:**
+```bash
+# Automated scanning
+npm audit
+npx snyk test
 
-2. Click "Analyze"
-   - Wait 1-3 seconds for data to load
+# Regular audits
+npm run test:security
 
-3. View results
-   - Chart shows release frequency over time
-   - Stats show key metrics
-
-## FAQ
-
-Q: Why "repository not found"?
-A: Check the repo name is correct and the repo is public.
-
-Q: Why are releases missing?
-A: We only show published releases, not drafts.
-
-Q: How often is data updated?
-A: Data is cached for 24 hours.
+# Update dependencies
+npm update
 ```
+
+**Process:**
+- Run scans weekly
+- Fix critical within 4 hours
+- Fix high within 24 hours
+- Have security policy ready
+
+**Owner:** DevOps
 
 ---
 
-### Developer Documentation
+## 7. Dependencies
 
-**README.md:**
-```markdown
-# GitHub Releases Dashboard
+What we need from others.
 
-## Setup
+### External Dependencies
 
-1. Clone repo
-2. Install dependencies: `npm install`
-3. Copy .env.example to .env
-4. Add Redis URL and GitHub token
-5. Run dev server: `npm run dev`
+**GitHub API**
+- Status: Active
+- Critical: Yes
+- Fallback: Cache + error message
+- Monitor: https://www.githubstatus.com
 
-## Architecture
+**Vercel Hosting**
+- Status: Active
+- Critical: Yes
+- Fallback: Netlify backup
+- Cost: $0-20/month
 
-- Next.js 14 (App Router)
-- React 18
-- Tailwind CSS
-- Recharts
-- Redis (Upstash)
+**Redis (Upstash)**
+- Status: Active
+- Critical: No (can fallback to direct API)
+- Cost: $0-10/month
 
-## API
-
-GET /api/releases/[owner]/[repo]
-
-Returns:
-- 200: Release data
-- 404: Repo not found
-- 403: Rate limited
-- 500: Server error
-
-## Testing
-
-- Unit: `npm test`
-- E2E: `npm run test:e2e`
-- Lint: `npm run lint`
-
-## Deployment
-
-Push to main → Auto-deploy to Vercel
-```
+**Recharts Library**
+- Status: Active
+- Critical: No (can switch to D3.js)
+- Version: ^2.10.0
 
 ---
 
-## 12. Success Metrics
+### Internal Dependencies
 
-Track these KPIs post-launch.
+**BRD Approval**
+- Status: Pending
+- Needed by: Week 1
+- Blocker: Can't start without it
 
-### Primary Metrics
+**Budget Approval**
+- Status: Pending
+- Amount: $80K
+- Needed by: Week 1
 
-| Metric | Target | Measure | Frequency |
-|--------|--------|---------|-----------|
-| Weekly Active Repos | 1,000 | Backend logs | Weekly |
-| Task Completion Rate | > 90% | Funnel analysis | Weekly |
-| User Satisfaction | > 4.2/5 | In-app survey | Monthly |
-| Error Rate | < 5% | Sentry | Daily |
-
-### Secondary Metrics
-
-| Metric | Target | Measure | Frequency |
-|--------|--------|---------|-----------|
-| Page Load (p95) | < 2.5s | Vercel Analytics | Daily |
-| API Success Rate | > 98% | Backend logs | Daily |
-| Returning Users | 25% | Analytics | Weekly |
-| Social Shares | 100/week | UTM tracking | Weekly |
-
-### Feature Adoption (v1.1+)
-
-| Feature | Target Adoption | Measure | Timeline |
-|---------|-----------------|---------|----------|
-| Multiple Charts | 30% | Event tracking | Week 13 |
-| Pre-release Filter | 20% | Event tracking | Week 13 |
-| Shareable URLs | 15% | URL params | Week 15 |
-| Export Chart | 10% | Download events | Week 15 |
+**Team Assignment**
+- Status: Pending
+- Needed by: Week 1
+- Required:
+  - Frontend dev (40h/week)
+  - Backend dev (10h/week)
+  - Designer (20h/week)
+  - QA (20h/week)
+  - DevOps (10h/week)
 
 ---
 
-## 13. Handoff Checklist
+## 8. Quality Checklist
 
-Before starting development, ensure:
+Before each release, verify:
 
-### Documentation
-- [ ] BRD approved by stakeholders
-- [ ] PRD reviewed by engineering team
-- [ ] Design mockups created
-- [ ] Technical architecture validated
+### Code Quality
+- [ ] TypeScript types all correct
+- [ ] No console errors
+- [ ] No unused code
+- [ ] ESLint passes
+- [ ] Prettier formatted
 
-### Resources
-- [ ] Budget approved ($80K)
-- [ ] Team assigned:
-  - [ ] Frontend Developer (40h/week)
-  - [ ] Backend Developer (10h/week)
-  - [ ] UI/UX Designer (20h/week)
-  - [ ] QA Engineer (20h/week)
-  - [ ] DevOps (10h/week)
+### Testing
+- [ ] Unit tests pass (70% coverage)
+- [ ] E2E tests pass
+- [ ] Manual testing done
+- [ ] Tested on all browsers
+- [ ] Tested on mobile
 
-### Infrastructure
-- [ ] GitHub repo created
-- [ ] Vercel account set up
-- [ ] Redis (Upstash) provisioned
-- [ ] Sentry account created
-- [ ] Domain registered (optional)
+### Performance
+- [ ] Lighthouse score >90
+- [ ] Page load <2s
+- [ ] Chart render <1.5s
+- [ ] No memory leaks
 
-### Agreements
-- [ ] Timeline agreed (16 weeks)
-- [ ] Scope agreed (MVP features only)
-- [ ] Success metrics defined
-- [ ] Launch plan approved
+### Accessibility
+- [ ] Keyboard works
+- [ ] Screen reader works
+- [ ] Color contrast passes
+- [ ] Focus visible
+- [ ] Lighthouse a11y >90
 
----
+### Security
+- [ ] npm audit clean
+- [ ] No secrets in code
+- [ ] HTTPS enabled
+- [ ] CSP headers set
+- [ ] Input sanitized
 
-**Document Status:** ✅ Ready for Development Kickoff
-**Version:** 1.0
-**Last Updated:** November 7, 2025
-**Next Review:** Week 8 (pre-beta)
-
----
-
-## Appendix A: API Contracts
-
-### GET /api/releases/:owner/:repo
-
-**Request:**
-```http
-GET /api/releases/facebook/react HTTP/1.1
-Host: dashboard.com
-```
-
-**Response (200):**
-```json
-{
-  "owner": "facebook",
-  "repo": "react",
-  "totalReleases": 142,
-  "firstRelease": "2013-05-29T00:00:00Z",
-  "lastRelease": "2025-11-01T14:30:00Z",
-  "avgDaysBetween": 15.1,
-  "releasesPerMonth": 2.0,
-  "releases": [
-    {
-      "tagName": "v19.0.0",
-      "name": "19.0.0",
-      "publishedAt": "2025-11-01T14:30:00Z",
-      "prerelease": false
-    }
-  ],
-  "monthlyData": [
-    { "month": "2025-11", "count": 2 },
-    { "month": "2025-10", "count": 3 }
-  ]
-}
-```
-
-**Response (404):**
-```json
-{
-  "error": "Repository not found",
-  "code": "REPO_NOT_FOUND"
-}
-```
-
-**Response (403):**
-```json
-{
-  "error": "Rate limit exceeded",
-  "code": "RATE_LIMIT",
-  "resetAt": "2025-11-07T18:00:00Z"
-}
-```
+### Production
+- [ ] Environment vars set
+- [ ] Redis configured
+- [ ] Monitoring enabled
+- [ ] Error tracking on
+- [ ] Analytics tracking
 
 ---
 
-## Appendix B: TypeScript Types
+## 9. Metrics to Track
 
-```typescript
-// lib/types.ts
+What to measure after launch.
 
-export interface GitHubRelease {
-  tag_name: string;
-  name: string;
-  published_at: string;
-  created_at: string;
-  prerelease: boolean;
-  draft: boolean;
-}
+### Daily Checks
+- Error rate (keep <5%)
+- API success rate (keep >98%)
+- Uptime (keep >99.5%)
+- Response time (keep <2.5s)
 
-export interface Release {
-  tagName: string;
-  name: string;
-  publishedAt: string;
-  prerelease: boolean;
-}
+### Weekly Checks
+- Total users
+- Active repos analyzed
+- Feature usage
+- Browser breakdown
+- Device breakdown
 
-export interface ReleaseStats {
-  totalReleases: number;
-  firstRelease: string;
-  lastRelease: string;
-  avgDaysBetween: number;
-  releasesPerMonth: number;
-}
+### Monthly Checks
+- User satisfaction survey
+- Net Promoter Score
+- Task completion rate
+- Returning user rate
+- Growth rate
 
-export interface MonthlyData {
-  month: string;
-  count: number;
-}
+### Targets (Month 3)
+- 5,000 total users
+- 1,000 weekly active repos
+- >4.2/5 satisfaction
+- >90% task completion
+- 25% return rate
 
-export interface ReleaseData {
-  owner: string;
-  repo: string;
-  stats: ReleaseStats;
-  releases: Release[];
-  monthlyData: MonthlyData[];
-}
+---
 
-export interface ApiError {
-  error: string;
-  code: string;
-  resetAt?: string;
-}
-```
+## 10. Developer Handoff
+
+Ready to start? Check these.
+
+### Before Sprint 1
+- [ ] Read BRD
+- [ ] Read PRD
+- [ ] Review design mockups
+- [ ] Access granted:
+  - [ ] GitHub repo
+  - [ ] Vercel account
+  - [ ] Redis dashboard
+  - [ ] Sentry account
+- [ ] Environment set up:
+  - [ ] Node.js 18+
+  - [ ] Git configured
+  - [ ] Editor ready
+  - [ ] Tools installed
+
+### Week 1 Tasks
+- [ ] Clone repo
+- [ ] Install dependencies
+- [ ] Set up environment vars
+- [ ] Run dev server
+- [ ] Deploy to preview
+- [ ] Set up CI/CD
+- [ ] Configure monitoring
+- [ ] Join team channels
+
+### Questions?
+- Technical: Ask tech lead
+- Product: Ask product manager
+- Design: Ask designer
+- Blocked: Escalate immediately
+
+---
+
+**Status:** Ready for development
+**Version:** 2.0
+**Updated:** November 7, 2025
 
 ---
 
