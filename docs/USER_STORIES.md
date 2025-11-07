@@ -57,7 +57,7 @@ npx create-next-app@14 gh-releases-dashboard --typescript --tailwind --app
 - [x] `npm run dev` starts
 - [x] Open localhost:3000
 - [x] See Next.js welcome page
-- [ ] Make first commit
+- [x] Make first commit
 
 ---
 
@@ -92,8 +92,8 @@ npm install -D eslint prettier
 
 ### Check It Works
 
-- [ ] `npm run lint` works
-- [ ] `npm run format` works
+- [x] `npm run lint` works
+- [x] `npm run format` works
 
 ---
 
