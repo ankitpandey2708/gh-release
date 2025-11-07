@@ -9,11 +9,20 @@ export default function RepositoryInput() {
   const [inputValue, setInputValue] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
-  const [validationState, setValidationState] = useState<ValidationState>('empty');
+  const [validationState, setValidationState] = useState<ValidationState>(ValidationState.EMPTY);
   const [validationMessage, setValidationMessage] = useState<string>("");
   const [isValidating, setIsValidating] = useState(false);
+  const [ariaLiveMessage, setAriaLiveMessage] = useState<string>("");
   
   const debounceTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const submitButtonRef = useRef<HTMLButtonElement>(null);
+  const clearButtonRef = useRef<HTMLButtonElement>(null);
+  const liveRegionRef = useRef<HTMLDivElement>(null);
+  
+  // Keyboard shortcut state
+  const lastSubmissionTime = useRef<number>(0);
+  const submissionCooldown = 1000; // 1 second cooldown to prevent multiple submissions
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
@@ -26,14 +35,14 @@ export default function RepositoryInput() {
     
     // Handle empty input
     if (!newValue.trim()) {
-      setValidationState('empty');
+      setValidationState(ValidationState.EMPTY);
       setValidationMessage("");
       setIsValidating(false);
       return;
     }
     
     // Set pending state immediately for visual feedback
-    setValidationState('pending');
+    setValidationState(ValidationState.PENDING);
     setIsValidating(true);
     
     // Debounced validation
@@ -106,7 +115,7 @@ export default function RepositoryInput() {
     setInputValue("");
     setIsLoading(false);
     setIsFocused(false);
-    setValidationState('empty');
+    setValidationState(ValidationState.EMPTY);
     setValidationMessage("");
     setIsValidating(false);
     
@@ -129,21 +138,77 @@ export default function RepositoryInput() {
   const getBorderColor = () => {
     if (isLoading) return 'border-gray-300 dark:border-gray-600';
     if (!inputValue.trim()) return 'border-gray-300 dark:border-gray-600';
-    if (validationState === 'valid') return 'border-green-500 dark:border-green-600';
-    if (validationState === 'invalid') return 'border-red-500 dark:border-red-600';
-    if (validationState === 'pending') return 'border-blue-500 dark:border-blue-600';
+    if (validationState === ValidationState.VALID) return 'border-green-500 dark:border-green-600';
+    if (validationState === ValidationState.INVALID) return 'border-red-500 dark:border-red-600';
+    if (validationState === ValidationState.PENDING) return 'border-blue-500 dark:border-blue-600';
     return 'border-gray-300 dark:border-gray-600';
   };
 
   const getFocusRingColor = () => {
-    if (validationState === 'valid') return 'focus:ring-green-500';
-    if (validationState === 'invalid') return 'focus:ring-red-500';
-    if (validationState === 'pending') return 'focus:ring-blue-500';
+    if (validationState === ValidationState.VALID) return 'focus:ring-green-500';
+    if (validationState === ValidationState.INVALID) return 'focus:ring-red-500';
+    if (validationState === ValidationState.PENDING) return 'focus:ring-blue-500';
     return 'focus:ring-blue-500';
+  };
+
+  // Add comprehensive keyboard navigation
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    // Escape key to clear form
+    if (e.key === 'Escape' && inputValue.trim()) {
+      e.preventDefault();
+      handleReset();
+      setAriaLiveMessage('Form cleared');
+      if (inputRef.current) {
+        inputRef.current.focus();
+      }
+      return;
+    }
+    
+    // Handle tab navigation enhancements
+    if (e.key === 'Tab') {
+      // Ensure proper focus management
+      setTimeout(() => {
+        if (document.activeElement === clearButtonRef.current && !inputValue.trim()) {
+          // If we're at the clear button with empty input, skip to submit button
+          if (submitButtonRef.current) {
+            submitButtonRef.current.focus();
+          }
+        }
+      }, 0);
+    }
+  };
+
+  // Announce validation state changes for screen readers
+  useEffect(() => {
+    if (validationMessage) {
+      setAriaLiveMessage(validationMessage);
+    }
+  }, [validationMessage]);
+
+  // Focus management after form submission
+  const handleFormSubmissionComplete = () => {
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+    setAriaLiveMessage('Repository analysis completed');
   };
 
   return (
     <div className="w-full max-w-2xl mx-auto p-6">
+      {/* Skip Link for Accessibility */}
+      <a 
+        href="#repository-input"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-0 focus:left-0 bg-blue-600 text-white px-4 py-2 rounded-br-lg z-50"
+        onFocus={(e) => {
+          e.target.textContent = "Skip to repository input";
+        }}
+        onBlur={(e) => {
+          e.target.textContent = "";
+        }}
+      >
+        Skip to main content
+      </a>
+
       <form 
         onSubmit={handleSubmit} 
         className="space-y-4"
@@ -159,6 +224,7 @@ export default function RepositoryInput() {
           </label>
           <div className="relative">
             <input
+              ref={inputRef}
               type="text"
               id="repository-input"
               value={inputValue}
@@ -166,6 +232,7 @@ export default function RepositoryInput() {
               onFocus={handleFocus}
               onBlur={handleBlur}
               onKeyPress={handleKeyPress}
+              onKeyDown={handleKeyDown}
               placeholder="username/repository-name"
               className={`
                 w-full px-4 py-3 pr-12 text-gray-900 bg-white border rounded-lg
@@ -178,7 +245,8 @@ export default function RepositoryInput() {
               `}
               aria-label="Enter GitHub repository in the format username/repository-name"
               aria-describedby="repository-help repository-error"
-              aria-invalid={validationState === 'invalid'}
+              aria-invalid={validationState === ValidationState.INVALID}
+              aria-keyshortcuts="Escape"
               tabIndex={0}
               disabled={isLoading}
             />
@@ -193,7 +261,7 @@ export default function RepositoryInput() {
           {/* Error Message */}
           <ErrorMessage 
             message={validationMessage}
-            isVisible={validationState === 'invalid' && !!validationMessage}
+            isVisible={validationState === ValidationState.INVALID && !!validationMessage}
             className="mt-2"
           />
           
@@ -208,17 +276,19 @@ export default function RepositoryInput() {
 
         <div className="flex gap-3" role="group" aria-label="Form actions">
           <button
+            ref={submitButtonRef}
             type="submit"
-            disabled={!inputValue.trim() || isLoading || validationState !== 'valid'}
+            disabled={!inputValue.trim() || isLoading || validationState !== ValidationState.VALID}
             className={`
               flex-1 py-3 px-6 rounded-lg font-medium text-white
               transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2
-              ${(!inputValue.trim() || isLoading || validationState !== 'valid')
+              ${(!inputValue.trim() || isLoading || validationState !== ValidationState.VALID)
                 ? 'bg-gray-400 dark:bg-gray-600 cursor-not-allowed' 
                 : 'bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 hover:transform hover:scale-[1.02]'
               }
             `}
             aria-label={isLoading ? "Analyzing repository, please wait" : "Analyze repository"}
+            aria-keyshortcuts="Enter"
             tabIndex={1}
           >
             {isLoading ? (
@@ -226,7 +296,7 @@ export default function RepositoryInput() {
                 <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
                 Analyzing...
               </div>
-            ) : validationState === 'pending' ? (
+            ) : validationState === ValidationState.PENDING ? (
               <div className="flex items-center justify-center gap-2">
                 <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
                 Validating...
@@ -237,6 +307,7 @@ export default function RepositoryInput() {
           </button>
 
           <button
+            ref={clearButtonRef}
             type="button"
             onClick={handleReset}
             disabled={!inputValue && !isLoading && !isValidating}
@@ -249,11 +320,37 @@ export default function RepositoryInput() {
               }
             `}
             aria-label="Clear form"
+            aria-keyshortcuts="Escape"
             tabIndex={2}
           >
             Clear
           </button>
         </div>
+
+        {/* ARIA Live Region for Screen Reader Announcements */}
+        <div
+          ref={liveRegionRef}
+          aria-live="polite"
+          aria-atomic="true"
+          className="sr-only"
+          role="status"
+        >
+          {ariaLiveMessage}
+        </div>
+
+        {/* Keyboard Shortcuts Help */}
+        <details className="mt-4">
+          <summary className="cursor-pointer text-sm text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200">
+            Keyboard shortcuts
+          </summary>
+          <div className="mt-2 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg text-sm text-gray-700 dark:text-gray-300">
+            <ul className="space-y-1">
+              <li><kbd className="px-2 py-1 bg-white dark:bg-gray-700 border rounded text-xs">Enter</kbd> - Submit form</li>
+              <li><kbd className="px-2 py-1 bg-white dark:bg-gray-700 border rounded text-xs">Escape</kbd> - Clear form</li>
+              <li><kbd className="px-2 py-1 bg-white dark:bg-gray-700 border rounded text-xs">Tab</kbd> - Navigate between elements</li>
+            </ul>
+          </div>
+        </details>
       </form>
     </div>
   );

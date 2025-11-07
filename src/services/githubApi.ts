@@ -313,21 +313,68 @@ export class GitHubApiClient {
   }
 
   /**
+   * Parse Link header for pagination
+   */
+  private parseLinkHeader(linkHeader: string | null): { next?: string; last?: string; prev?: string; first?: string } {
+    if (!linkHeader) return {};
+    
+    const links: Record<string, string> = {};
+    const parts = linkHeader.split(',');
+    
+    for (const part of parts) {
+      const match = part.match(/<([^>]+)>;\s*rel="([^"]+)"/);
+      if (match) {
+        const [, url, rel] = match;
+        links[rel] = url;
+      }
+    }
+    
+    return links;
+  }
+
+  /**
+   * Extract page number from URL
+   */
+  private extractPageFromUrl(url: string): number {
+    const match = url.match(/[?&]page=(\d+)/);
+    return match ? parseInt(match[1]) : 1;
+  }
+
+  /**
    * Fetch releases for a repository with pagination
    */
   async fetchReleases(
     owner: string, 
     repo: string, 
     page: number = 1,
-    perPage: number = 30
+    perPage: number = 30,
+    timeout?: number
   ): Promise<{
     releases: Release[];
     hasNextPage: boolean;
     nextPageUrl?: string;
+    totalPages?: number;
+    currentPage: number;
+    rateLimitInfo?: RateLimitInfo;
   }> {
-    const data = await this.request<any[]>(
-      `/repos/${owner}/${repo}/releases?page=${page}&per_page=${perPage}`
-    );
+    const url = `/repos/${owner}/${repo}/releases?page=${page}&per_page=${perPage}`;
+    const response = await this.request<any>(url, { timeout: timeout || DEFAULT_TIMEOUT });
+    const data = Array.isArray(response) ? response : [];
+    
+    // Use the internal request method to get access to headers
+    const actualResponse = await fetch(`${this.baseURL}${url}`, {
+      method: 'GET',
+      headers: this.defaultHeaders,
+      signal: AbortSignal.timeout(timeout || DEFAULT_TIMEOUT)
+    });
+
+    // Update rate limit info
+    this.updateRateLimitInfo(actualResponse);
+    
+    // Parse Link header for proper pagination
+    const links = this.parseLinkHeader(actualResponse.headers.get('Link'));
+    const hasNextPage = !!links.next;
+    const totalPages = links.last ? this.extractPageFromUrl(links.last) : undefined;
 
     // Process and sort releases by date (newest first)
     const releases: Release[] = data.map(release => ({
@@ -350,14 +397,13 @@ export class GitHubApiClient {
 
     releases.sort((a, b) => b.publishedAt.getTime() - a.publishedAt.getTime());
 
-    // Check for next page using Link header (this would be handled by the calling code)
-    // For now, assume if we got data, there might be more
-    const hasNextPage = data.length === perPage;
-
     return {
       releases,
       hasNextPage,
-      nextPageUrl: hasNextPage ? `page=${page + 1}` : undefined,
+      nextPageUrl: links.next,
+      totalPages,
+      currentPage: page,
+      rateLimitInfo: this.rateLimitInfo,
     };
   }
 
