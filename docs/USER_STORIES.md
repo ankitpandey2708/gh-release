@@ -160,8 +160,8 @@ npm install recharts date-fns @upstash/redis
 
 ### Check It Works
 
-- [ ] `npm run dev` still works
-- [ ] No errors in console
+- [x] `npm run dev` still works
+- [x] No errors in console
 
 ---
 
