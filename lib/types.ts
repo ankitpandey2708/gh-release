@@ -17,6 +17,5 @@ export interface Stats {
   perMonth: string;
   lastRelease: string;
   lastReleaseDate: string;
-  velocity: string;
   consistency: string;
 }

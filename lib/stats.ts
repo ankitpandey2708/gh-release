@@ -22,7 +22,6 @@ export function calculateStats(releases: Release[]) {
       perMonth: '0',
       lastRelease: 'N/A',
       lastReleaseDate: 'N/A',
-      velocity: 'N/A',
       consistency: 'N/A'
     };
   }
@@ -42,7 +41,6 @@ export function calculateStats(releases: Release[]) {
       perMonth: 'N/A',
       lastRelease: formatDistanceToNow(last, { addSuffix: true }),
       lastReleaseDate: format(last, 'MMM d, yyyy'),
-      velocity: 'N/A',
       consistency: 'N/A'
     };
   }
@@ -60,11 +58,7 @@ export function calculateStats(releases: Release[]) {
   // Use accurate month length: 365.25 / 12 = 30.4375 days per month
   const perMonth = totalDays > 0 ? (total / (totalDays / 30.4375)).toFixed(1) : 'N/A';
 
-  // Calculate velocity (releases per week across the filtered range)
-  // Reuse totalDays, no duplication
-  const velocity = totalDays > 0
-    ? ((total / totalDays) * 7).toFixed(2)
-    : 'N/A';
+
 
   // Calculate consistency using Coefficient of Variation (CV)
   const variance = daysBetween.reduce((acc, val) => acc + Math.pow(val - mean, 2), 0) / daysBetween.length;
@@ -85,7 +79,6 @@ export function calculateStats(releases: Release[]) {
     perMonth,
     lastRelease: formatDistanceToNow(last, { addSuffix: true }),
     lastReleaseDate: format(last, 'MMM d, yyyy'),
-    velocity: velocity + '/wk',
     consistency: consistencyScore
   };
 }

@@ -18,7 +18,6 @@ export function StatsGrid({ releases }: { releases: Release[] }) {
       <StatCard label="Avg Days" value={stats.avgDays} delay={50} visible={visible} tooltip="Average days between releases" />
       <StatCard label="Per Month" value={stats.perMonth} delay={100} visible={visible} tooltip="Average releases per month" />
       <StatCard label="Last Release" value={stats.lastRelease} secondaryValue={stats.lastReleaseDate} delay={150} visible={visible} tooltip="Time since last release" />
-      <StatCard label="Velocity" value={stats.velocity} delay={200} visible={visible} tooltip="Release rate (releases per week)" />
       <StatCard label="Consistency" value={stats.consistency} delay={250} visible={visible} tooltip="How consistent the release schedule is" />
     </div>
   );
