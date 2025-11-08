@@ -3,14 +3,15 @@ import { DashboardContent } from '@/components/DashboardContent';
 import { LoadingSkeleton } from '@/components/LoadingSkeleton';
 
 interface PageProps {
-  params: {
+  params: Promise<{
     owner: string;
     repo: string;
-  };
+  }>;
 }
 
-export default function RepoPage({ params }: PageProps) {
-  const repoFullName = `${params.owner}/${params.repo}`;
+export default async function RepoPage({ params }: PageProps) {
+  const { owner, repo } = await params;
+  const repoFullName = `${owner}/${repo}`;
 
   return (
     <Suspense fallback={
