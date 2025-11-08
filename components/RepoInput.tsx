@@ -30,6 +30,13 @@ export function RepoInput({ onSubmit, loading = false }: RepoInputProps) {
     onSubmit(value.trim());
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Escape') {
+      setValue('');
+      setError('');
+    }
+  };
+
   return (
     <form onSubmit={handleSubmit} className="w-full max-w-2xl">
       <div className="flex gap-2">
@@ -37,6 +44,7 @@ export function RepoInput({ onSubmit, loading = false }: RepoInputProps) {
           type="text"
           value={value}
           onChange={(e) => setValue(e.target.value)}
+          onKeyDown={handleKeyDown}
           placeholder="username/repo-name"
           className="flex-1 px-4 py-2 border rounded"
           disabled={loading}
