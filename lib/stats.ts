@@ -21,6 +21,7 @@ export function calculateStats(releases: Release[]) {
       avgDays: 0,
       perMonth: '0',
       lastRelease: 'N/A',
+      lastReleaseDate: 'N/A',
       velocity: 'N/A',
       consistency: 'N/A'
     };
@@ -49,6 +50,7 @@ export function calculateStats(releases: Release[]) {
       avgDays,
       perMonth,
       lastRelease: formatDistanceToNow(last, { addSuffix: true }),
+      lastReleaseDate: format(last, 'MMM d, yyyy'),
       velocity: velocity + '/wk',
       consistency: 'N/A'
     };
@@ -71,6 +73,7 @@ export function calculateStats(releases: Release[]) {
     avgDays,
     perMonth,
     lastRelease: formatDistanceToNow(last, { addSuffix: true }),
+    lastReleaseDate: format(last, 'MMM d, yyyy'),
     velocity: velocity + '/wk',
     consistency: consistencyScore
   };

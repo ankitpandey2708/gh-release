@@ -16,6 +16,7 @@ export interface Stats {
   avgDays: number;
   perMonth: string;
   lastRelease: string;
+  lastReleaseDate: string;
   velocity: string;
   consistency: string;
 }
