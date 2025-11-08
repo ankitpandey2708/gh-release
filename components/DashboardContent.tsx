@@ -7,7 +7,6 @@ import { RepoInput } from '@/components/RepoInput';
 import { StatsGrid } from '@/components/StatsGrid';
 import { ErrorMessage } from '@/components/ErrorMessage';
 import { LoadingSkeleton } from '@/components/LoadingSkeleton';
-import { ThemeToggle } from '@/components/ThemeToggle';
 import { ProgressBar } from '@/components/ProgressBar';
 import { useReleases } from '@/lib/hooks/useReleases';
 import { saveRecentSearch } from '@/lib/localStorage';
@@ -89,13 +88,12 @@ export function DashboardContent({ initialRepo }: DashboardContentProps = {}) {
   };
 
   return (
-    <main id="main" className="min-h-screen p-8 flex flex-col items-center bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white transition-colors">
+    <main id="main" className="min-h-screen p-8 flex flex-col items-center bg-gray-50 text-gray-900 transition-colors">
       <ProgressBar loading={loading} />
-      <ThemeToggle />
       <div className="flex items-center gap-3 mb-8">
         <h1 className="text-3xl font-bold animate-fadeIn">GitHub Releases Dashboard</h1>
         {cached && (
-          <span className="text-xs bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 px-2 py-1 rounded">
+          <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">
             Cached
           </span>
         )}
@@ -119,7 +117,7 @@ export function DashboardContent({ initialRepo }: DashboardContentProps = {}) {
                 type="date"
                 value={startDate}
                 onChange={(e) => setStartDate(e.target.value)}
-                className="px-2 py-1 border rounded bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600"
+                className="px-2 py-1 border rounded bg-white border-gray-300"
               />
             </label>
             <label className="flex items-center gap-2">
@@ -128,7 +126,7 @@ export function DashboardContent({ initialRepo }: DashboardContentProps = {}) {
                 type="date"
                 value={endDate}
                 onChange={(e) => setEndDate(e.target.value)}
-                className="px-2 py-1 border rounded bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600"
+                className="px-2 py-1 border rounded bg-white border-gray-300"
               />
             </label>
             {(startDate || endDate) && (
@@ -137,7 +135,7 @@ export function DashboardContent({ initialRepo }: DashboardContentProps = {}) {
                   setStartDate('');
                   setEndDate('');
                 }}
-                className="text-xs text-blue-600 dark:text-blue-400 hover:underline"
+                className="text-xs text-blue-600 hover:underline"
               >
                 Clear dates
               </button>
@@ -146,7 +144,7 @@ export function DashboardContent({ initialRepo }: DashboardContentProps = {}) {
           <div className="flex gap-2">
             <button
               onClick={exportToCSV}
-              className="px-3 py-1 text-sm bg-green-500 dark:bg-green-600 text-white rounded hover:bg-green-600 dark:hover:bg-green-700 transition-colors"
+              className="px-3 py-1 text-sm bg-green-500 text-white rounded hover:bg-green-600 transition-colors"
             >
               Export CSV
             </button>
@@ -164,13 +162,13 @@ export function DashboardContent({ initialRepo }: DashboardContentProps = {}) {
         </div>
       )}
       {data && !loading && data.length === 0 && (
-        <div className="mt-8 w-full max-w-4xl p-8 bg-blue-50 dark:bg-blue-900 rounded text-center">
+        <div className="mt-8 w-full max-w-4xl p-8 bg-blue-50 rounded text-center">
           <h3 className="font-bold mb-2">No Releases Found</h3>
           <p className="text-sm">This repo has no releases yet</p>
         </div>
       )}
       {filteredData && !loading && filteredData.length === 0 && data && data.length > 0 && (
-        <div className="mt-8 w-full max-w-4xl p-8 bg-yellow-50 dark:bg-yellow-900/20 rounded text-center">
+        <div className="mt-8 w-full max-w-4xl p-8 bg-yellow-50 rounded text-center">
           <h3 className="font-bold mb-2">No Releases Match Filters</h3>
           <p className="text-sm">Try adjusting your filters</p>
         </div>
