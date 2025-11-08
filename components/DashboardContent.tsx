@@ -116,7 +116,7 @@ export function DashboardContent({ initialRepo }: DashboardContentProps = {}) {
       </div>
 
       {/* Primary action area */}
-      <RepoInput onSubmit={setRepo} loading={loading} />
+      <RepoInput onSubmit={setRepo} loading={loading} currentRepo={repo} />
 
       {/* Repository info section - shown when data is loaded */}
       {data && !loading && repo && (

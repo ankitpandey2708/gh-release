@@ -8,9 +8,10 @@ import { getRecentSearches, clearRecentSearches as clearSearches } from '@/lib/l
 interface RepoInputProps {
   onSubmit: (repo: string) => void;
   loading?: boolean;
+  currentRepo?: string | null;
 }
 
-export function RepoInput({ onSubmit, loading = false }: RepoInputProps) {
+export function RepoInput({ onSubmit, loading = false, currentRepo }: RepoInputProps) {
   const [value, setValue] = useState('');
   const [error, setError] = useState('');
   const [recentSearches, setRecentSearches] = useState<string[]>([]);
@@ -18,6 +19,13 @@ export function RepoInput({ onSubmit, loading = false }: RepoInputProps) {
   useEffect(() => {
     setRecentSearches(getRecentSearches());
   }, []);
+
+  // Update input value when currentRepo changes
+  useEffect(() => {
+    if (currentRepo) {
+      setValue(currentRepo);
+    }
+  }, [currentRepo]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
