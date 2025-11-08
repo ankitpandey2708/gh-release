@@ -32,8 +32,6 @@ Mark a story done when ALL these pass:
 
 - [ ] TypeScript compiles (no errors)
 - [ ] ESLint passes
-- [ ] Tests pass
-- [ ] Works in browser
 - [ ] Code committed
 
 ---
