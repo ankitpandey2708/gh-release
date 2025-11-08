@@ -69,10 +69,13 @@ export function calculateStats(releases: Release[]): Stats {
   // Use precise mean, not rounded avgDays
   const coefficientOfVariation = (stdDev / mean) * 100;
 
-  // Industry-standard CV thresholds for consistency
+  // Realistic CV thresholds for release consistency
+  // CV < 100%: stdDev < mean (quite regular, e.g., 10±8 days)
+  // CV < 200%: stdDev < 2x mean (moderately regular, e.g., 10±18 days)
+  // CV >= 200%: stdDev >= 2x mean (irregular, e.g., 10±25+ days)
   const consistencyScore =
-    coefficientOfVariation < 20 ? 'High' :
-    coefficientOfVariation < 50 ? 'Medium' : 'Low';
+    coefficientOfVariation < 100 ? 'High' :
+    coefficientOfVariation < 200 ? 'Medium' : 'Low';
 
   return {
     total,
