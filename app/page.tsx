@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { RepoInput } from '@/components/RepoInput';
 import { ReleaseChart } from '@/components/ReleaseChart';
+import { StatsGrid } from '@/components/StatsGrid';
 import { useReleases } from '@/lib/hooks/useReleases';
 
 export default function Home() {
@@ -15,7 +16,8 @@ export default function Home() {
       <RepoInput onSubmit={setRepo} loading={loading} />
       {error && <p className="text-red-600 mt-4">{error}</p>}
       {data && (
-        <div className="mt-8 w-full max-w-4xl">
+        <div className="mt-8 w-full max-w-4xl space-y-8">
+          <StatsGrid releases={data} />
           <ReleaseChart releases={data} />
         </div>
       )}

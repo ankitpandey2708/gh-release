@@ -1085,7 +1085,7 @@ export function calculateStats(releases: Release[]) {
 
 ### Check It Works
 
-- [ ] Math is correct
+- [x] Math is correct
 
 ---
 
@@ -1134,7 +1134,7 @@ Use it:
 
 ### Check It Works
 
-- [ ] Stats show correctly
+- [x] Stats show correctly
 
 ---
 
