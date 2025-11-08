@@ -13,7 +13,7 @@ export interface Release {
 
 export interface Stats {
   total: number;
-  avgDays: number;
+  avgDays: number | string;
   perMonth: string;
   lastRelease: string;
   lastReleaseDate: string;

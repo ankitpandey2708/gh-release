@@ -33,39 +33,51 @@ export function calculateStats(releases: Release[]) {
   const last = sorted[total - 1].date;
 
   const totalDays = differenceInDays(last, first);
-  const avgDays = total > 1 ? Math.round(totalDays / (total - 1)) : 0;
-  const perMonth = totalDays > 30 ? (total / (totalDays / 30)).toFixed(1) : '0';
 
-  // Calculate velocity (releases per week across the filtered range)
-  const velocityDays = differenceInDays(last, first);
-  const velocity = velocityDays > 0 && total > 0
-    ? ((total / velocityDays) * 7).toFixed(2)
-    : '0';
-
-  // Calculate consistency (standard deviation of days between releases)
-  if (total < 2) {
+  // Single release - can't calculate rates or consistency
+  if (total === 1) {
     return {
-      total,
-      avgDays,
-      perMonth,
+      total: 1,
+      avgDays: 'N/A',
+      perMonth: 'N/A',
       lastRelease: formatDistanceToNow(last, { addSuffix: true }),
       lastReleaseDate: format(last, 'MMM d, yyyy'),
-      velocity: velocity + '/wk',
+      velocity: 'N/A',
       consistency: 'N/A'
     };
   }
 
+  // Calculate days between releases (used for mean and consistency)
   const daysBetween = [];
   for (let i = 1; i < sorted.length; i++) {
     daysBetween.push(differenceInDays(sorted[i].date, sorted[i - 1].date));
   }
 
+  // Calculate mean (avg days between releases) - keep full precision for internal use
   const mean = daysBetween.reduce((a, b) => a + b, 0) / daysBetween.length;
+  const avgDays = Math.round(mean); // Rounded only for display
+
+  // Use accurate month length: 365.25 / 12 = 30.4375 days per month
+  const perMonth = totalDays > 0 ? (total / (totalDays / 30.4375)).toFixed(1) : 'N/A';
+
+  // Calculate velocity (releases per week across the filtered range)
+  // Reuse totalDays, no duplication
+  const velocity = totalDays > 0
+    ? ((total / totalDays) * 7).toFixed(2)
+    : 'N/A';
+
+  // Calculate consistency using Coefficient of Variation (CV)
   const variance = daysBetween.reduce((acc, val) => acc + Math.pow(val - mean, 2), 0) / daysBetween.length;
   const stdDev = Math.sqrt(variance);
 
-  // Consistency score: lower stdDev = more consistent
-  const consistencyScore = stdDev < avgDays * 0.3 ? 'High' : stdDev < avgDays * 0.7 ? 'Medium' : 'Low';
+  // CV = (standard deviation / mean) * 100
+  // Use precise mean, not rounded avgDays
+  const coefficientOfVariation = (stdDev / mean) * 100;
+
+  // Industry-standard CV thresholds for consistency
+  const consistencyScore =
+    coefficientOfVariation < 20 ? 'High' :
+    coefficientOfVariation < 50 ? 'Medium' : 'Low';
 
   return {
     total,
