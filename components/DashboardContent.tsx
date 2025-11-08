@@ -57,6 +57,13 @@ export function DashboardContent({ initialRepo }: DashboardContentProps = {}) {
     }
   };
 
+  const handleReset = () => {
+    setStartDate('');
+    setEndDate('');
+    setShowPreReleases(true);
+    setRepo(null);
+  };
+
   const filteredData = data?.filter(r => {
     if (!showPreReleases && r.prerelease) return false;
     if (startDate && new Date(r.date) < new Date(startDate)) return false;
@@ -104,9 +111,42 @@ export function DashboardContent({ initialRepo }: DashboardContentProps = {}) {
       {/* Primary action area */}
       <RepoInput onSubmit={setRepo} loading={loading} />
 
+      {/* Repository info section - shown when data is loaded */}
+      {data && !loading && repo && (
+        <div className="mt-6 w-full max-w-2xl p-4 bg-white rounded-md border border-neutral-200 shadow-sm">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div className="flex-1">
+              <p className="text-body-sm text-neutral-600 mb-1">Viewing releases for</p>
+              <div className="flex items-center gap-2 flex-wrap">
+                <h2 className="text-h3 font-medium text-neutral-900">{repo}</h2>
+                <a
+                  href={`https://github.com/${repo}/releases`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 text-body-sm text-primary hover:text-primary-hover underline transition-colors"
+                  aria-label={`View ${repo} releases on GitHub`}
+                >
+                  View on GitHub
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                  </svg>
+                </a>
+              </div>
+            </div>
+            <button
+              onClick={handleReset}
+              className="px-4 py-2 text-body-sm font-medium border border-neutral-300 text-neutral-700 bg-white rounded-md hover:bg-neutral-50 hover:border-neutral-400 transition-all duration-200 whitespace-nowrap"
+              aria-label="Analyze a different repository"
+            >
+              Analyze different repo
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Filters section - grouped with consistent spacing */}
       {data && !loading && data.length > 0 && (
-        <div className="mt-8 w-full max-w-2xl space-y-4 p-4 bg-white rounded-md border border-neutral-200">
+        <div className="mt-4 w-full max-w-2xl space-y-4 p-4 bg-white rounded-md border border-neutral-200">
           <h3 className="text-h3 font-medium text-neutral-700">Filters</h3>
 
           <label className="flex items-center gap-2 text-body cursor-pointer hover:text-neutral-900 transition-colors">
