@@ -27,9 +27,10 @@ export function RepoInput({ onSubmit, loading = false }: RepoInputProps) {
       return;
     }
     setError('');
-    const trimmedValue = value.trim();
+    // Use extracted repo (handles GitHub URLs)
+    const repo = result.repo || value.trim();
     // Don't save to recent searches here - only save after successful fetch
-    onSubmit(trimmedValue);
+    onSubmit(repo);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -53,7 +54,7 @@ export function RepoInput({ onSubmit, loading = false }: RepoInputProps) {
           value={value}
           onChange={(e) => setValue(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder="owner/repository (e.g., facebook/react)"
+          placeholder="owner/repo or paste GitHub URL (e.g., facebook/react)"
           className="flex-1 px-4 py-3 border border-neutral-300 rounded-md bg-white text-neutral-900 text-body placeholder:text-neutral-500 focus:border-primary focus:ring-2 focus:ring-primary/20 disabled:bg-neutral-100 disabled:cursor-not-allowed transition-all duration-200"
           disabled={loading}
           aria-label="GitHub repository name"
