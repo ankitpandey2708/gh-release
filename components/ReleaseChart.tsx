@@ -1,11 +1,12 @@
 'use client';
 
+import { useMemo } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from 'recharts';
 import { Release } from '@/lib/types';
 import { groupByMonth } from '@/lib/stats';
 
 export function ReleaseChart({ releases }: { releases: Release[] }) {
-  const data = groupByMonth(releases);
+  const data = useMemo(() => groupByMonth(releases), [releases]);
 
   if (releases.length === 0) {
     return (

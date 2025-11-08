@@ -1,10 +1,11 @@
 'use client';
 
+import { useMemo } from 'react';
 import { Release } from '@/lib/types';
 import { calculateStats } from '@/lib/stats';
 
 export function StatsGrid({ releases }: { releases: Release[] }) {
-  const stats = calculateStats(releases);
+  const stats = useMemo(() => calculateStats(releases), [releases]);
 
   return (
     <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">

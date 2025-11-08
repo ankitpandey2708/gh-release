@@ -1,12 +1,20 @@
 'use client';
 
 import { useState } from 'react';
+import dynamic from 'next/dynamic';
 import { RepoInput } from '@/components/RepoInput';
-import { ReleaseChart } from '@/components/ReleaseChart';
 import { StatsGrid } from '@/components/StatsGrid';
 import { ErrorMessage } from '@/components/ErrorMessage';
 import { LoadingSkeleton } from '@/components/LoadingSkeleton';
 import { useReleases } from '@/lib/hooks/useReleases';
+
+const ReleaseChart = dynamic(
+  () => import('@/components/ReleaseChart').then(m => ({ default: m.ReleaseChart })),
+  {
+    loading: () => <div className="h-64 md:h-96 bg-gray-100 rounded animate-pulse" />,
+    ssr: false,
+  }
+);
 
 export default function Home() {
   const [repo, setRepo] = useState<string | null>(null);
