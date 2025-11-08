@@ -299,9 +299,9 @@ jobs:
 
 ### Check It Works
 
-- [ ] Push code
-- [ ] GitHub Actions runs
-- [ ] Build passes
+- [x] Push code
+- [x] GitHub Actions runs
+- [x] Build passes
 
 ---
 
