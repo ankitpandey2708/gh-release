@@ -1,9 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  experimental: {
-    turbopack: {
-      root: process.cwd(),
-    },
+  turbopack: {
+    root: process.cwd(),
   },
 };
 
