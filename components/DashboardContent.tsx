@@ -76,21 +76,6 @@ export function DashboardContent() {
     URL.revokeObjectURL(url);
   };
 
-  const exportChartAsPNG = async () => {
-    const html2canvas = (await import('html2canvas')).default;
-    const chartElement = document.querySelector('#release-chart') as HTMLElement;
-    if (!chartElement) return;
-
-    const canvas = await html2canvas(chartElement);
-    const url = canvas.toDataURL('image/png');
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `${repo?.replace('/', '-')}-chart.png`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-  };
-
   return (
     <main id="main" className="min-h-screen p-8 flex flex-col items-center bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white transition-colors">
       <ProgressBar loading={loading} />
@@ -153,12 +138,6 @@ export function DashboardContent() {
             >
               Export CSV
             </button>
-            <button
-              onClick={exportChartAsPNG}
-              className="px-3 py-1 text-sm bg-purple-500 dark:bg-purple-600 text-white rounded hover:bg-purple-600 dark:hover:bg-purple-700 transition-colors"
-            >
-              Download PNG
-            </button>
           </div>
         </div>
       )}
@@ -187,9 +166,7 @@ export function DashboardContent() {
       {filteredData && !loading && filteredData.length > 0 && (
         <div className="mt-8 w-full max-w-4xl space-y-8">
           <StatsGrid releases={filteredData} />
-          <div id="release-chart">
-            <ReleaseChart releases={filteredData} />
-          </div>
+          <ReleaseChart releases={filteredData} />
         </div>
       )}
     </main>
