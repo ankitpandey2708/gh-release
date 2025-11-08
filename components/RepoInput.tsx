@@ -57,6 +57,12 @@ export function RepoInput({ onSubmit, loading = false }: RepoInputProps) {
     }
   };
 
+  const clearRecentSearches = () => {
+    if (typeof window === 'undefined') return;
+    localStorage.removeItem(STORAGE_KEY);
+    setRecentSearches([]);
+  };
+
   return (
     <form onSubmit={handleSubmit} className="w-full max-w-2xl">
       <div className="flex gap-2">
@@ -88,7 +94,17 @@ export function RepoInput({ onSubmit, loading = false }: RepoInputProps) {
       
       {recentSearches.length > 0 && (
         <div className="mt-4 text-center">
-          <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">Recent:</p>
+          <div className="flex items-center justify-center gap-2 mb-2">
+            <p className="text-sm text-gray-600 dark:text-gray-400">Recent:</p>
+            <button
+              onClick={clearRecentSearches}
+              className="text-xs text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 hover:underline transition-all duration-200"
+              type="button"
+              aria-label="Clear recent searches"
+            >
+              Clear
+            </button>
+          </div>
           {recentSearches.map((repo) => (
             <button
               key={repo}
