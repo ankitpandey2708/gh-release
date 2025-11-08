@@ -20,11 +20,11 @@ export function ErrorMessage({ message, onRetry }: ErrorMessageProps) {
   const tips = getErrorTips(message);
 
   return (
-    <div className="p-6 bg-red-50 border border-red-200 rounded">
-      <h3 className="font-bold text-red-900 mb-2">Error</h3>
-      <p className="text-sm text-red-700 mb-4">{message}</p>
+    <div className="p-6 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded">
+      <h3 className="font-bold text-red-900 dark:text-red-300 mb-2">Error</h3>
+      <p className="text-sm text-red-700 dark:text-red-400 mb-4">{message}</p>
       {tips.length > 0 && (
-        <ul className="mt-2 mb-4 text-sm text-red-700 space-y-1">
+        <ul className="mt-2 mb-4 text-sm text-red-700 dark:text-red-400 space-y-1">
           {tips.map(tip => (
             <li key={tip} className="flex items-start">
               <span className="mr-2">•</span>
@@ -36,7 +36,7 @@ export function ErrorMessage({ message, onRetry }: ErrorMessageProps) {
       {onRetry && (
         <button
           onClick={onRetry}
-          className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+          className="px-4 py-2 bg-red-600 dark:bg-red-700 text-white rounded hover:bg-red-700 dark:hover:bg-red-800"
         >
           Try Again
         </button>
