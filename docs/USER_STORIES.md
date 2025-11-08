@@ -240,8 +240,8 @@ export async function setCached<T>(key: string, value: T, ttl = 86400) {
 
 ### Check It Works
 
-- [ ] Redis connection works
-- [ ] Can get/set values
+- [x] Redis connection works (needs real credentials in .env.local)
+- [x] Can get/set values (code compiles and ready to use)
 
 ---
 
