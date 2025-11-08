@@ -10,9 +10,6 @@ interface RepoInputProps {
 }
 
 const EXAMPLES = [
-  { repo: 'facebook/react', label: 'React' },
-  { repo: 'vuejs/core', label: 'Vue' },
-  { repo: 'angular/angular', label: 'Angular' },
 ];
 
 const STORAGE_KEY = 'recent-searches';
@@ -70,7 +67,7 @@ export function RepoInput({ onSubmit, loading = false }: RepoInputProps) {
           value={value}
           onChange={(e) => setValue(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder="username/repo-name"
+          placeholder="facebook/react"
           className="flex-1 px-4 py-2 border rounded bg-white dark:bg-gray-800 text-gray-900 dark:text-white border-gray-300 dark:border-gray-600"
           disabled={loading}
           aria-label="GitHub repository name"
