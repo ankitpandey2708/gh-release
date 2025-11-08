@@ -47,7 +47,7 @@ export function RepoInput({ onSubmit, loading = false }: RepoInputProps) {
 
   return (
     <form onSubmit={handleSubmit} className="w-full max-w-2xl">
-      {/* Primary input area */}
+      {/* Primary input area (Design Spec F.7-8) */}
       <div className="flex flex-col sm:flex-row gap-2">
         <input
           type="text"
@@ -55,7 +55,7 @@ export function RepoInput({ onSubmit, loading = false }: RepoInputProps) {
           onChange={(e) => setValue(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder="owner/repo or paste GitHub URL (e.g., facebook/react)"
-          className="flex-1 px-4 py-3 border border-neutral-300 rounded-md bg-white text-neutral-900 text-body placeholder:text-neutral-500 focus:border-primary focus:ring-2 focus:ring-primary/20 disabled:bg-neutral-100 disabled:cursor-not-allowed transition-all duration-200"
+          className="flex-1 px-2 py-1 border border-neutral-300 rounded-md bg-white text-neutral-900 text-body placeholder:text-neutral-400 focus:border-primary disabled:bg-neutral-100 disabled:cursor-not-allowed transition-all duration-200 min-h-[44px]"
           disabled={loading}
           aria-label="GitHub repository name"
           aria-invalid={!!error}
@@ -64,39 +64,39 @@ export function RepoInput({ onSubmit, loading = false }: RepoInputProps) {
         <button
           type="submit"
           disabled={loading || !value.trim()}
-          className="px-6 py-3 bg-primary text-white font-medium text-body rounded-md flex items-center justify-center gap-2 hover:bg-primary-hover disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-sm hover:shadow-md min-w-[120px]"
+          className="px-3 py-1 bg-primary text-white font-medium text-body rounded-md flex items-center justify-center gap-2 hover:bg-primary-hover disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-sm hover:shadow-md min-w-[120px] min-h-[44px]"
         >
           {loading ? <Spinner /> : 'Analyze'}
         </button>
       </div>
 
-      {/* Inline error message - actionable and specific */}
+      {/* Inline error message - actionable and specific (Design Spec H.5) */}
       {error && (
-        <p id="input-error" role="alert" className="text-body-sm text-red-600 mt-2 font-medium">
+        <p id="input-error" role="alert" className="text-body-sm text-error mt-1 font-medium">
           {error}
         </p>
       )}
 
-      {/* Recent searches - lower visual weight */}
+      {/* Recent searches - lower visual weight (Design Spec D.2) */}
       {recentSearches.length > 0 && (
-        <div className="mt-6 p-4 bg-neutral-50 rounded-md border border-neutral-200">
-          <div className="flex items-center gap-2 mb-3">
+        <div className="mt-3 p-2 bg-neutral-50 rounded-md border border-neutral-200">
+          <div className="flex items-center gap-2 mb-2">
             <p className="text-body-sm text-neutral-700 font-medium">Recent searches</p>
             <button
               onClick={handleClearRecentSearches}
-              className="text-body-sm text-neutral-600 hover:text-red-600 underline transition-colors min-h-0"
+              className="text-body-sm text-neutral-600 hover:text-error underline transition-colors min-h-[44px]"
               type="button"
               aria-label="Clear recent searches"
             >
               Clear
             </button>
           </div>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-1">
             {recentSearches.map((repo) => (
               <button
                 key={repo}
                 onClick={() => setValue(repo)}
-                className="px-3 py-1 text-body-sm text-neutral-700 bg-white border border-neutral-300 rounded-md hover:border-primary hover:text-primary transition-all duration-200 min-h-0"
+                className="px-2 py-1 text-body-sm text-neutral-700 bg-white border border-neutral-300 rounded-md hover:border-primary hover:text-primary transition-all duration-200 min-h-[44px]"
                 type="button"
                 aria-label={`Recent search: ${repo}`}
               >

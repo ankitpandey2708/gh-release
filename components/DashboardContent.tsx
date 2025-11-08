@@ -104,27 +104,27 @@ export function DashboardContent({ initialRepo }: DashboardContentProps = {}) {
   return (
     <main
       id="main"
-      className="min-h-screen px-4 py-8 md:px-8 flex flex-col items-center bg-neutral-50 text-neutral-900 transition-colors duration-200"
+      className="min-h-screen px-2 py-4 md:px-4 flex flex-col items-center bg-neutral-50 text-neutral-900 transition-colors duration-200"
     >
       <ProgressBar loading={loading} />
 
-      {/* Header with clear hierarchy */}
-      <div className="flex flex-col sm:flex-row items-center gap-3 mb-8">
+      {/* Header with clear hierarchy (Design Spec D.1-3) */}
+      <div className="flex flex-col sm:flex-row items-center gap-2 mb-4">
         <h1 className="text-h1 font-bold animate-fadeIn">
           GitHub releases dashboard
         </h1>
       </div>
 
-      {/* Primary action area */}
+      {/* Primary action area (Design Spec D.1) */}
       <RepoInput onSubmit={setRepo} loading={loading} />
 
       {/* Repository info section - shown when data is loaded */}
       {data && !loading && repo && (
-        <div className="mt-6 w-full max-w-2xl p-4 bg-white rounded-md border border-neutral-200 shadow-sm">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div className="mt-3 w-full max-w-2xl p-3 bg-white rounded-md border border-neutral-200 shadow-sm">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
             <div className="flex-1">
               <div className="flex items-center gap-2 flex-wrap">
-                <h2 className="text-h3 font-medium text-neutral-900">
+                <h2 className="text-h3 font-semibold text-neutral-900">
                   <a
                     href={`https://github.com/${repo}/releases`}
                     target="_blank"
@@ -134,7 +134,7 @@ export function DashboardContent({ initialRepo }: DashboardContentProps = {}) {
                   </a>
                 </h2>
                 {cached && (
-                  <span className="text-body-sm bg-primary-light text-primary px-3 py-1 rounded-md font-medium">
+                  <span className="text-body-sm bg-primary-light text-primary px-2 py-1 rounded-sm font-medium">
                     Cached
                   </span>
                 )}
@@ -142,7 +142,7 @@ export function DashboardContent({ initialRepo }: DashboardContentProps = {}) {
             </div>
             <button
               onClick={handleReset}
-              className="px-4 py-2 text-body-sm font-medium border border-neutral-300 text-neutral-700 bg-white rounded-md hover:bg-neutral-50 hover:border-neutral-400 transition-all duration-200 whitespace-nowrap"
+              className="px-2 py-0.5 text-body-sm font-medium border border-neutral-300 text-neutral-700 bg-white rounded-md hover:bg-neutral-50 hover:border-neutral-400 transition-all duration-200 whitespace-nowrap min-h-[44px]"
               aria-label="Analyze a different repository"
             >
               Analyze different repo
@@ -151,38 +151,29 @@ export function DashboardContent({ initialRepo }: DashboardContentProps = {}) {
         </div>
       )}
 
-      {/* Filters section - grouped with consistent spacing */}
+      {/* Filters section - grouped with consistent spacing (Design Spec A.2-3) */}
       {data && !loading && data.length > 0 && (
-        <div className="mt-4 w-full max-w-2xl space-y-4 p-4 bg-white rounded-md border border-neutral-200">
-          <h3 className="text-h3 font-medium text-neutral-700">Filters</h3>
+        <div className="mt-2 w-full max-w-2xl space-y-2 p-3 bg-white rounded-md border border-neutral-200">
+          <h3 className="text-h3 font-semibold text-neutral-800">Filters</h3>
 
-          {/* <label className="flex items-center gap-2 text-body cursor-pointer hover:text-neutral-900 transition-colors">
-            <input
-              type="checkbox"
-              checked={showPreReleases}
-              onChange={(e) => setShowPreReleases(e.target.checked)}
-              className="w-5 h-5 text-primary rounded-sm focus:ring-2 focus:ring-primary"
-            />
-            <span>Show pre-releases</span>
-          </label>  */}
-
-          <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
-            <label className="flex items-center gap-2 text-body">
+          {/* Date range filters */}
+          <div className="flex flex-col sm:flex-row gap-2 items-start sm:items-center">
+            <label className="flex items-center gap-1 text-body">
               <span className="text-neutral-700 font-medium">From:</span>
               <input
                 type="date"
                 value={startDate}
                 onChange={(e) => setStartDate(e.target.value)}
-                className="px-3 py-2 border border-neutral-300 rounded-md bg-white text-neutral-900 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-colors"
+                className="px-2 py-1 border border-neutral-300 rounded-md bg-white text-neutral-900 text-body-sm focus:border-primary transition-colors min-h-[44px]"
               />
             </label>
-            <label className="flex items-center gap-2 text-body">
+            <label className="flex items-center gap-1 text-body">
               <span className="text-neutral-700 font-medium">To:</span>
               <input
                 type="date"
                 value={endDate}
                 onChange={(e) => setEndDate(e.target.value)}
-                className="px-3 py-2 border border-neutral-300 rounded-md bg-white text-neutral-900 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-colors"
+                className="px-2 py-1 border border-neutral-300 rounded-md bg-white text-neutral-900 text-body-sm focus:border-primary transition-colors min-h-[44px]"
               />
             </label>
             {(startDate || endDate) && (
@@ -191,18 +182,18 @@ export function DashboardContent({ initialRepo }: DashboardContentProps = {}) {
                   setStartDate("");
                   setEndDate("");
                 }}
-                className="text-body-sm text-primary hover:text-primary-hover underline transition-colors min-h-0"
+                className="text-body-sm text-primary hover:text-primary-hover underline transition-colors min-h-[44px]"
               >
                 Clear dates
               </button>
             )}
           </div>
 
-          {/* Secondary action */}
+          {/* Secondary action (Design Spec D.2) */}
           <div className="flex gap-2 pt-2 border-t border-neutral-200">
             <button
               onClick={exportToCSV}
-              className="px-4 py-2 text-body-sm font-medium border border-neutral-300 text-neutral-700 bg-white rounded-md hover:bg-neutral-50 hover:border-neutral-400 transition-all duration-200"
+              className="px-2 py-1 text-body-sm font-medium border border-neutral-300 text-neutral-700 bg-white rounded-md hover:bg-neutral-50 hover:border-neutral-400 transition-all duration-200 min-h-[44px]"
             >
               Export to CSV
             </button>
@@ -210,24 +201,24 @@ export function DashboardContent({ initialRepo }: DashboardContentProps = {}) {
         </div>
       )}
 
-      {/* Error state */}
+      {/* Error state (Design Spec H.1-5) */}
       {error && (
-        <div className="mt-8 w-full max-w-4xl">
+        <div className="mt-4 w-full max-w-4xl">
           <ErrorMessage message={error} onRetry={() => setRepo(null)} />
         </div>
       )}
 
-      {/* Loading state */}
+      {/* Loading state (Design Spec H.3) */}
       {loading && (
-        <div className="mt-8">
+        <div className="mt-4">
           <LoadingSkeleton />
         </div>
       )}
 
-      {/* Empty state - guide users on next steps */}
+      {/* Empty state - guide users on next steps (Design Spec H.2) */}
       {data && !loading && data.length === 0 && (
-        <div className="mt-8 w-full max-w-4xl p-8 bg-primary-light rounded-md text-center border border-primary/20">
-          <h3 className="text-h3 font-medium text-neutral-900 mb-2">
+        <div className="mt-4 w-full max-w-4xl p-4 bg-primary-light rounded-md text-center border border-primary/20">
+          <h3 className="text-h3 font-semibold text-neutral-900 mb-1">
             No releases found
           </h3>
           <p className="text-body text-neutral-600">
@@ -236,14 +227,14 @@ export function DashboardContent({ initialRepo }: DashboardContentProps = {}) {
         </div>
       )}
 
-      {/* No results after filtering */}
+      {/* No results after filtering (Design Spec H.2) */}
       {filteredData &&
         !loading &&
         filteredData.length === 0 &&
         data &&
         data.length > 0 && (
-          <div className="mt-8 w-full max-w-4xl p-8 bg-yellow-50 rounded-md text-center border border-yellow-200">
-            <h3 className="text-h3 font-medium text-neutral-900 mb-2">
+          <div className="mt-4 w-full max-w-4xl p-4 bg-warning-light rounded-md text-center border border-warning/20">
+            <h3 className="text-h3 font-semibold text-neutral-900 mb-1">
               No releases match filters
             </h3>
             <p className="text-body text-neutral-600">
@@ -252,9 +243,9 @@ export function DashboardContent({ initialRepo }: DashboardContentProps = {}) {
           </div>
         )}
 
-      {/* Main content - staggered with clear vertical rhythm */}
+      {/* Main content - clear vertical rhythm (Design Spec A.3) */}
       {filteredData && !loading && filteredData.length > 0 && (
-        <div className="mt-8 w-full max-w-4xl space-y-8">
+        <div className="mt-4 w-full max-w-4xl space-y-4">
           <StatsGrid releases={filteredData} />
           <ReleaseChart releases={filteredData} />
         </div>

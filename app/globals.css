@@ -2,67 +2,316 @@
 @tailwind components;
 @tailwind utilities;
 
+/* CSS Variables - Design system foundation */
 :root {
   --background: #ffffff;
   --foreground: #0f172a;
+  --spacing-unit: 0.5rem; /* 8px base unit (Design Spec A.1) */
 }
 
 @layer base {
-  /* Design system typography - single font family (system fonts) with 3 weights */
+  /* ===========================================
+     TYPOGRAPHY - Design Spec B
+     =========================================== */
+
+  /* Single font family with system fonts (Design Spec B.1) */
+  * {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+  }
+
   body {
     color: var(--foreground);
     background: var(--background);
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
-    font-size: 1rem;
-    line-height: 1.5;
-    font-weight: 400;
+    font-size: 1rem;           /* 16px base (Design Spec B.2) */
+    line-height: 1.5;          /* Comfortable for body text (Design Spec B.4) */
+    font-weight: 400;          /* Regular weight (Design Spec B.1) */
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
 
-  /* Typography hierarchy - sentence case, clear scale */
+  /* Typography hierarchy - size, weight, and color (Design Spec B.3) */
+  h1, h2, h3, h4, h5, h6 {
+    font-weight: 700;          /* Bold for headings (Design Spec B.1) */
+    color: #0f172a;            /* High contrast (Design Spec C.3) */
+    margin: 0;
+  }
+
   h1 {
-    font-size: 2rem;
+    font-size: 2rem;           /* 32px (Design Spec B.2) */
     line-height: 1.3;
-    font-weight: 700;
+    letter-spacing: -0.02em;
   }
 
   h2 {
-    font-size: 1.5rem;
+    font-size: 1.5rem;         /* 24px (Design Spec B.2) */
     line-height: 1.4;
-    font-weight: 700;
+    letter-spacing: -0.01em;
   }
 
   h3 {
-    font-size: 1.25rem;
+    font-size: 1.25rem;        /* 20px (Design Spec B.2) */
     line-height: 1.4;
-    font-weight: 600;
+    font-weight: 600;          /* Medium weight for h3 (Design Spec B.1) */
+    letter-spacing: -0.01em;
   }
 
-  /* Button reset - ensure consistent minimum size (44px) */
+  /* Paragraph and text elements */
+  p {
+    margin: 0;
+    max-width: 65ch;           /* Limit line length for readability (Design Spec B.5) */
+  }
+
+  /* Secondary text - visually distinct (Design Spec B.7) */
+  small {
+    font-size: 0.875rem;       /* 14px (Design Spec B.2) */
+    color: #64748b;            /* Lighter color for secondary text */
+  }
+
+  /* ===========================================
+     INTERACTIVE ELEMENTS - Design Spec F
+     =========================================== */
+
+  /* Button reset and base styles (Design Spec F.1-6) */
   button {
-    min-height: 44px;
+    min-height: 44px;          /* Minimum tap target (Design Spec F.1) */
+    padding: 0.625rem 1rem;    /* 10px 16px - comfortable padding */
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    transition: all 200ms ease-out;
   }
 
-  /* Focus states for accessibility */
+  button:disabled {
+    opacity: 0.5;              /* Inactive appearance (Design Spec F.6) */
+    cursor: not-allowed;
+  }
+
+  /* Input base styles (Design Spec F.7-8) */
+  input, textarea, select {
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    padding: 0.625rem 1rem;    /* 10px 16px */
+    min-height: 44px;          /* Minimum tap target */
+    border: 1px solid #cbd5e1; /* Neutral border */
+    border-radius: 0.5rem;     /* 8px (Design Spec E.3) */
+    background: #ffffff;
+    color: #0f172a;
+    transition: border-color 200ms ease-out, box-shadow 200ms ease-out;
+  }
+
+  input:focus, textarea:focus, select:focus {
+    outline: none;
+    border-color: #2563eb;     /* Primary color on focus */
+    box-shadow: 0 0 0 3px rgb(37 99 235 / 0.1); /* Focus ring */
+  }
+
+  input::placeholder, textarea::placeholder {
+    color: #94a3b8;            /* Muted placeholder (Design Spec F.7) */
+  }
+
+  input:disabled, textarea:disabled, select:disabled {
+    background: #f1f5f9;       /* Disabled background */
+    color: #94a3b8;            /* Muted text */
+    cursor: not-allowed;
+  }
+
+  /* Checkbox and radio inputs (Design Spec F.7-8) */
+  input[type="checkbox"],
+  input[type="radio"] {
+    min-height: auto;
+    width: 1.25rem;            /* 20px */
+    height: 1.25rem;           /* 20px */
+    padding: 0;
+    cursor: pointer;
+  }
+
+  /* Labels (Design Spec F.7-8) */
+  label {
+    font-weight: 500;          /* Medium weight (Design Spec B.1) */
+    color: #334155;
+    cursor: pointer;
+  }
+
+  /* ===========================================
+     FOCUS STATES - Design Spec F.5
+     =========================================== */
+
   button:focus-visible,
   input:focus-visible,
+  textarea:focus-visible,
+  select:focus-visible,
   a:focus-visible {
     outline: 2px solid #2563eb;
     outline-offset: 2px;
   }
+
+  /* ===========================================
+     LINKS
+     =========================================== */
+
+  a {
+    color: #2563eb;
+    text-decoration: none;
+    transition: color 200ms ease-out;
+  }
+
+  a:hover {
+    color: #1d4ed8;
+    text-decoration: underline;
+  }
+
+  /* ===========================================
+     LISTS
+     =========================================== */
+
+  ul, ol {
+    margin: 0;
+    padding: 0;
+    list-style-position: inside;
+  }
+}
+
+@layer components {
+  /* ===========================================
+     BUTTON HIERARCHY - Design Spec F.3
+     =========================================== */
+
+  /* Primary button - solid (Design Spec F.3) */
+  .btn-primary {
+    background: #2563eb;
+    color: #ffffff;
+    font-weight: 500;
+    border-radius: 0.5rem;     /* 8px */
+    box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    transition: all 200ms ease-out;
+  }
+
+  .btn-primary:hover:not(:disabled) {
+    background: #1d4ed8;
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+  }
+
+  .btn-primary:active:not(:disabled) {
+    background: #1e40af;
+  }
+
+  /* Secondary button - outline (Design Spec F.3) */
+  .btn-secondary {
+    background: #ffffff;
+    color: #334155;
+    font-weight: 500;
+    border: 1px solid #cbd5e1;
+    border-radius: 0.5rem;     /* 8px */
+    transition: all 200ms ease-out;
+  }
+
+  .btn-secondary:hover:not(:disabled) {
+    background: #f8fafc;
+    border-color: #94a3b8;
+  }
+
+  .btn-secondary:active:not(:disabled) {
+    background: #f1f5f9;
+  }
+
+  /* Tertiary button - text only (Design Spec F.3) */
+  .btn-tertiary {
+    background: transparent;
+    color: #2563eb;
+    font-weight: 500;
+    min-height: auto;
+    padding: 0.5rem 1rem;
+    transition: all 200ms ease-out;
+  }
+
+  .btn-tertiary:hover:not(:disabled) {
+    color: #1d4ed8;
+    background: #dbeafe;
+  }
+
+  /* ===========================================
+     CARD COMPONENT - Design Spec A.4, E
+     =========================================== */
+
+  .card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.5rem;     /* 8px (Design Spec E.3) */
+    padding: 1.5rem;           /* 24px - content doesn't touch edges (Design Spec A.4) */
+    box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    transition: box-shadow 200ms ease-out;
+  }
+
+  .card:hover {
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+  }
+
+  /* ===========================================
+     UTILITY CLASSES
+     =========================================== */
+
+  /* Spacing between sections (Design Spec A.3) */
+  .section-spacing {
+    margin-top: 2rem;          /* 32px vertical rhythm */
+  }
+
+  /* Container padding (Design Spec A.4) */
+  .container-padding {
+    padding: 1rem;             /* 16px - no content touches edges */
+  }
 }
 
 @layer utilities {
+  /* Text balance for headings */
   .text-balance {
     text-wrap: balance;
   }
+
+  /* Visually hidden but accessible to screen readers */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+  }
 }
 
-/* Respect user motion preferences */
+/* ===========================================
+   ACCESSIBILITY - Design Spec I.1
+   =========================================== */
+
+/* Respect user motion preferences (Design Spec I.1) */
 @media (prefers-reduced-motion: reduce) {
-  * {
+  *,
+  *::before,
+  *::after {
     animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
+}
+
+/* ===========================================
+   RESPONSIVE DESIGN - Design Spec K
+   =========================================== */
+
+/* Mobile-first approach (Design Spec K.1) */
+/* Base styles are for mobile, use min-width media queries to scale up */
+
+@media (min-width: 640px) {
+  /* Tablet styles */
+}
+
+@media (min-width: 1024px) {
+  /* Desktop styles */
 }

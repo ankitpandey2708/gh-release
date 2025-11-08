@@ -13,10 +13,10 @@ export function StatsGrid({ releases }: { releases: Release[] }) {
   }, []);
 
   return (
-    <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
+    <div className="grid grid-cols-2 lg:grid-cols-3 gap-2">
       <StatCard label="Total releases" value={stats.total} delay={0} visible={visible} />
       <StatCard label="Average days between releases" value={stats.avgDays} delay={50} visible={visible} />
-      <StatCard label="Avg Releases per month" value={stats.perMonth} delay={100} visible={visible} />
+      <StatCard label="Avg releases per month" value={stats.perMonth} delay={100} visible={visible} />
       <StatCard label="Last release" value={stats.lastReleaseDate} secondaryValue={stats.lastRelease} delay={150} visible={visible} />
       <StatCard label="Consistency of release schedule*" value={stats.consistency} delay={200} visible={visible} />
     </div>
@@ -26,18 +26,18 @@ export function StatsGrid({ releases }: { releases: Release[] }) {
 function StatCard({ label, value, secondaryValue, delay, visible }: { label: string; value: string | number; secondaryValue?: string; delay: number; visible: boolean }) {
   return (
     <div
-      className={`bg-white p-6 rounded-md border border-neutral-200 shadow-sm hover:shadow-md transition-all duration-300 ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'}`}
+      className={`bg-white p-3 rounded-md border border-neutral-200 shadow-sm hover:shadow-md transition-all duration-300 ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'}`}
       style={{ transitionDelay: `${delay}ms` }}
     >
-      {/* Label - smaller, muted */}
-      <p className="text-body-sm text-neutral-600 mb-2 font-medium">{label}</p>
+      {/* Label - smaller, muted (Design Spec B.7) */}
+      <p className="text-body-sm text-neutral-600 mb-1 font-medium">{label}</p>
 
-      {/* Primary value - large, bold, high contrast */}
+      {/* Primary value - large, bold, high contrast (Design Spec B.3, C.3) */}
       <p className="text-h1 font-bold text-neutral-900 leading-none">{value}</p>
 
-      {/* Secondary value - even smaller, more muted */}
+      {/* Secondary value - visually distinct (Design Spec B.7) */}
       {secondaryValue && (
-        <p className="text-body-sm text-neutral-500 mt-2">{secondaryValue}</p>
+        <p className="text-body-sm text-neutral-500 mt-1">{secondaryValue}</p>
       )}
     </div>
   );
