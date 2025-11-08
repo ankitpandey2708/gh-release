@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { validateRepo } from '@/lib/validation';
 import { Spinner } from './Spinner';
 
@@ -15,9 +15,31 @@ const EXAMPLES = [
   { repo: 'angular/angular', label: 'Angular' },
 ];
 
+const STORAGE_KEY = 'recent-searches';
+const MAX_RECENT = 5;
+
+function getRecentSearches(): string[] {
+  if (typeof window === 'undefined') return [];
+  const stored = localStorage.getItem(STORAGE_KEY);
+  return stored ? JSON.parse(stored) : [];
+}
+
+function saveRecentSearch(repo: string) {
+  if (typeof window === 'undefined') return;
+  const recent = getRecentSearches();
+  const filtered = recent.filter(r => r !== repo);
+  const updated = [repo, ...filtered].slice(0, MAX_RECENT);
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+}
+
 export function RepoInput({ onSubmit, loading = false }: RepoInputProps) {
   const [value, setValue] = useState('');
   const [error, setError] = useState('');
+  const [recentSearches, setRecentSearches] = useState<string[]>([]);
+
+  useEffect(() => {
+    setRecentSearches(getRecentSearches());
+  }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,7 +49,10 @@ export function RepoInput({ onSubmit, loading = false }: RepoInputProps) {
       return;
     }
     setError('');
-    onSubmit(value.trim());
+    const trimmedValue = value.trim();
+    saveRecentSearch(trimmedValue);
+    setRecentSearches(getRecentSearches());
+    onSubmit(trimmedValue);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -79,6 +104,22 @@ export function RepoInput({ onSubmit, loading = false }: RepoInputProps) {
           </button>
         ))}
       </div>
+      {recentSearches.length > 0 && (
+        <div className="mt-4 text-center">
+          <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">Recent:</p>
+          {recentSearches.map((repo) => (
+            <button
+              key={repo}
+              onClick={() => setValue(repo)}
+              className="text-xs text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:underline mx-2 transition-all duration-200"
+              type="button"
+              aria-label={`Recent search: ${repo}`}
+            >
+              {repo}
+            </button>
+          ))}
+        </div>
+      )}
     </form>
   );
 }
