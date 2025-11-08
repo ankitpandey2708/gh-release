@@ -38,8 +38,9 @@ export async function fetchReleases(owner: string, repo: string) {
     const data: GitHubRelease[] = await response.json();
     allReleases = [...allReleases, ...data];
 
-    // Check if there are more pages
-    hasMore = data.length === 100;
+    // Check for more pages using Link header (proper GitHub pagination)
+    const linkHeader = response.headers.get('Link');
+    hasMore = linkHeader ? linkHeader.includes('rel="next"') : false;
     page++;
   }
 
