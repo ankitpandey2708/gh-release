@@ -61,7 +61,7 @@ export function ReleaseChart({ releases }: { releases: Release[] }) {
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={data} margin={{ top: 5, right: 5, left: 0, bottom: 5 }}>
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="month" angle={-45} textAnchor="end" height={80} />
+            <XAxis dataKey="month" angle={-45} textAnchor="end" height={80} reversed={true} />
             <YAxis />
             <Tooltip content={<CustomTooltip />} />
             <Line type="monotone" dataKey="count" stroke="#3b82f6" strokeWidth={2} />
