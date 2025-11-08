@@ -118,39 +118,6 @@ export function DashboardContent({ initialRepo }: DashboardContentProps = {}) {
       {/* Primary action area */}
       <RepoInput onSubmit={setRepo} loading={loading} currentRepo={repo} />
 
-      {/* Repository info section - shown when data is loaded */}
-      {data && !loading && repo && (
-        <div className="mt-6 w-full max-w-2xl p-4 bg-white rounded-md border border-neutral-200 shadow-sm">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div className="flex-1">
-              <div className="flex items-center gap-2 flex-wrap">
-                <h2 className="text-h3 font-medium text-neutral-900">
-                  <a
-                    href={`https://github.com/${repo}/releases`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {repo}
-                  </a>
-                </h2>
-                {cached && (
-                  <span className="text-body-sm bg-primary-light text-primary px-3 py-1 rounded-md font-medium">
-                    Cached
-                  </span>
-                )}
-              </div>
-            </div>
-            <button
-              onClick={handleReset}
-              className="px-4 py-2 text-body-sm font-medium border border-neutral-300 text-neutral-700 bg-white rounded-md hover:bg-neutral-50 hover:border-neutral-400 transition-all duration-200 whitespace-nowrap"
-              aria-label="Analyze a different repository"
-            >
-              Reset
-            </button>
-          </div>
-        </div>
-      )}
-
       {/* Filters section - grouped with consistent spacing */}
       {data && !loading && data.length > 0 && (
         <div className="mt-4 w-full max-w-2xl space-y-4 p-4 bg-white rounded-md border border-neutral-200">
