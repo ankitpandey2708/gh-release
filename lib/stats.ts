@@ -36,18 +36,10 @@ export function calculateStats(releases: Release[]) {
   const avgDays = total > 1 ? Math.round(totalDays / (total - 1)) : 0;
   const perMonth = totalDays > 30 ? (total / (totalDays / 30)).toFixed(1) : '0';
 
-  // Calculate velocity (releases per week in last 3 months)
-  const threeMonthsAgo = new Date();
-  threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
-  const recentReleases = sorted.filter(r => r.date >= threeMonthsAgo);
-
-  // Use the most recent release date as end point, not today
-  const velocityEndDate = recentReleases.length > 0
-    ? recentReleases[recentReleases.length - 1].date
-    : last;
-  const recentDays = differenceInDays(velocityEndDate, threeMonthsAgo);
-  const velocity = recentDays > 0 && recentReleases.length > 0
-    ? ((recentReleases.length / recentDays) * 7).toFixed(2)
+  // Calculate velocity (releases per week across the filtered range)
+  const velocityDays = differenceInDays(last, first);
+  const velocity = velocityDays > 0 && total > 0
+    ? ((total / velocityDays) * 7).toFixed(2)
     : '0';
 
   // Calculate consistency (standard deviation of days between releases)
