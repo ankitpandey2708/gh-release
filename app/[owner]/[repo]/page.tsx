@@ -15,8 +15,8 @@ export default async function RepoPage({ params }: PageProps) {
 
   return (
     <Suspense fallback={
-      <main className="min-h-screen p-8 flex flex-col items-center bg-gray-50 dark:bg-gray-900">
-        <h1 className="text-3xl font-bold mb-8 text-gray-900 dark:text-white">GitHub Releases Dashboard</h1>
+      <main className="min-h-screen p-8 flex flex-col items-center bg-gray-50">
+        <h1 className="text-3xl font-bold mb-8 text-gray-900">GitHub Releases Dashboard</h1>
         <LoadingSkeleton />
       </main>
     }>
