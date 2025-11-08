@@ -7,12 +7,14 @@ export function useReleases(repo: string | null) {
   const [data, setData] = useState<Release[] | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [cached, setCached] = useState(false);
 
   useEffect(() => {
     if (!repo) return;
 
     setLoading(true);
     setError(null);
+    setCached(false);
 
     fetch(`/api/releases/${repo}`)
       .then(res => res.json())
@@ -21,6 +23,7 @@ export function useReleases(repo: string | null) {
           throw new Error(result.error);
         }
         setData(result.releases);
+        setCached(result.cached || false);
       })
       .catch(err => {
         if (err.message.includes('fetch') || err.message.includes('Failed to fetch')) {
@@ -32,5 +35,5 @@ export function useReleases(repo: string | null) {
       .finally(() => setLoading(false));
   }, [repo]);
 
-  return { data, loading, error };
+  return { data, loading, error, cached };
 }
