@@ -9,8 +9,6 @@ interface RepoInputProps {
   loading?: boolean;
 }
 
-const EXAMPLES = [
-];
 
 const STORAGE_KEY = 'recent-searches';
 const MAX_RECENT = 5;
@@ -87,20 +85,7 @@ export function RepoInput({ onSubmit, loading = false }: RepoInputProps) {
           {error}
         </p>
       )}
-      <div className="mt-4 text-center">
-        <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">Try:</p>
-        {EXAMPLES.map(({ repo, label }) => (
-          <button
-            key={repo}
-            onClick={() => setValue(repo)}
-            className="text-sm text-blue-600 dark:text-blue-400 hover:underline mx-2 transition-all duration-200 hover:scale-105"
-            type="button"
-            aria-label={`Try ${label} repository`}
-          >
-            {label}
-          </button>
-        ))}
-      </div>
+      
       {recentSearches.length > 0 && (
         <div className="mt-4 text-center">
           <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">Recent:</p>
