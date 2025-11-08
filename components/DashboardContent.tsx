@@ -145,7 +145,7 @@ export function DashboardContent({ initialRepo }: DashboardContentProps = {}) {
               className="px-4 py-2 text-body-sm font-medium border border-neutral-300 text-neutral-700 bg-white rounded-md hover:bg-neutral-50 hover:border-neutral-400 transition-all duration-200 whitespace-nowrap"
               aria-label="Analyze a different repository"
             >
-              Analyze different repo
+              Reset
             </button>
           </div>
         </div>
