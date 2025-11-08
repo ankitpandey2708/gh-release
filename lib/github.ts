@@ -20,7 +20,11 @@ export async function fetchReleases(owner: string, repo: string) {
     throw new GitHubError('Repository not found', 404);
   }
   if (response.status === 403) {
-    throw new GitHubError('Rate limit exceeded', 403);
+    const resetTime = response.headers.get('X-RateLimit-Reset');
+    const message = resetTime
+      ? `Rate limit exceeded. Try again in a few minutes.`
+      : 'Rate limit exceeded';
+    throw new GitHubError(message, 403);
   }
   if (!response.ok) {
     throw new GitHubError('Failed to fetch releases', response.status);

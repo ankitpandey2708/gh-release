@@ -22,7 +22,13 @@ export function useReleases(repo: string | null) {
         }
         setData(result.releases);
       })
-      .catch(err => setError(err.message))
+      .catch(err => {
+        if (err.message.includes('fetch') || err.message.includes('Failed to fetch')) {
+          setError('Network error. Check your connection.');
+        } else {
+          setError(err.message);
+        }
+      })
       .finally(() => setLoading(false));
   }, [repo]);
 
