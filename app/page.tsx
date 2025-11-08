@@ -4,6 +4,8 @@ import { useState } from 'react';
 import { RepoInput } from '@/components/RepoInput';
 import { ReleaseChart } from '@/components/ReleaseChart';
 import { StatsGrid } from '@/components/StatsGrid';
+import { ErrorMessage } from '@/components/ErrorMessage';
+import { LoadingSkeleton } from '@/components/LoadingSkeleton';
 import { useReleases } from '@/lib/hooks/useReleases';
 
 export default function Home() {
@@ -14,8 +16,17 @@ export default function Home() {
     <main className="min-h-screen p-8 flex flex-col items-center">
       <h1 className="text-3xl font-bold mb-8">GitHub Releases Dashboard</h1>
       <RepoInput onSubmit={setRepo} loading={loading} />
-      {error && <p className="text-red-600 mt-4">{error}</p>}
-      {data && (
+      {error && (
+        <div className="mt-8 w-full max-w-4xl">
+          <ErrorMessage message={error} onRetry={() => setRepo(null)} />
+        </div>
+      )}
+      {loading && (
+        <div className="mt-8">
+          <LoadingSkeleton />
+        </div>
+      )}
+      {data && !loading && (
         <div className="mt-8 w-full max-w-4xl space-y-8">
           <StatsGrid releases={data} />
           <ReleaseChart releases={data} />
