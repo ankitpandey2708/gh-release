@@ -28,20 +28,20 @@ function StatCard({ label, value, secondaryValue, delay, visible, tooltip }: { l
 
   return (
     <div
-      className={`bg-white dark:bg-gray-800 p-6 rounded border border-gray-300 dark:border-gray-700 transition-all duration-500 ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'} relative cursor-help`}
+      className={`bg-white p-6 rounded border border-gray-300 transition-all duration-500 ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'} relative cursor-help`}
       style={{ transitionDelay: `${delay}ms` }}
       onMouseEnter={() => setShowTooltip(true)}
       onMouseLeave={() => setShowTooltip(false)}
     >
-      <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">{label}</p>
-      <p className="text-3xl font-bold text-gray-900 dark:text-white">{value}</p>
+      <p className="text-sm text-gray-600 mb-1">{label}</p>
+      <p className="text-3xl font-bold text-gray-900">{value}</p>
       {secondaryValue && (
-        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{secondaryValue}</p>
+        <p className="text-xs text-gray-500 mt-1">{secondaryValue}</p>
       )}
       {showTooltip && (
-        <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-900 dark:bg-gray-700 text-white text-xs rounded shadow-lg whitespace-nowrap z-10">
+        <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-900 text-white text-xs rounded shadow-lg whitespace-nowrap z-10">
           {tooltip}
-          <div className="absolute top-full left-1/2 transform -translate-x-1/2 -mt-px border-4 border-transparent border-t-gray-900 dark:border-t-gray-700"></div>
+          <div className="absolute top-full left-1/2 transform -translate-x-1/2 -mt-px border-4 border-transparent border-t-gray-900"></div>
         </div>
       )}
     </div>
