@@ -472,8 +472,8 @@ const EXAMPLES = [
 
 ### Check It Works
 
-- [ ] Example links show
-- [ ] Clicking fills input
+- [x] Example links show
+- [x] Clicking fills input
 
 ---
 
@@ -515,7 +515,7 @@ Use in button:
 
 ### Check It Works
 
-- [ ] Spinner shows when loading
+- [x] Spinner shows when loading
 
 ---
 
