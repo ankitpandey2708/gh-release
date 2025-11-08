@@ -266,8 +266,8 @@ Update `tsconfig.json`:
 
 ### Check It Works
 
-- [ ] Can import with `@/components/...`
-- [ ] TypeScript autocomplete works
+- [x] Can import with `@/components/...`
+- [x] TypeScript autocomplete works
 
 ---
 
