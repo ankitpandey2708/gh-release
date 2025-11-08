@@ -23,15 +23,11 @@ export function StatsGrid({ releases }: { releases: Release[] }) {
   );
 }
 
-function StatCard({ label, value, secondaryValue, delay, visible, tooltip }: { label: string; value: string | number; secondaryValue?: string; delay: number; visible: boolean; tooltip: string }) {
-  const [showTooltip, setShowTooltip] = useState(false);
-
+function StatCard({ label, value, secondaryValue, delay, visible }: { label: string; value: string | number; secondaryValue?: string; delay: number; visible: boolean }) {
   return (
     <div
-      className={`bg-white p-6 rounded-md border border-neutral-200 shadow-sm hover:shadow-md transition-all duration-300 ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'} relative cursor-help group`}
+      className={`bg-white p-6 rounded-md border border-neutral-200 shadow-sm hover:shadow-md transition-all duration-300 ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'}`}
       style={{ transitionDelay: `${delay}ms` }}
-      onMouseEnter={() => setShowTooltip(true)}
-      onMouseLeave={() => setShowTooltip(false)}
     >
       {/* Label - smaller, muted */}
       <p className="text-body-sm text-neutral-600 mb-2 font-medium">{label}</p>
@@ -42,14 +38,6 @@ function StatCard({ label, value, secondaryValue, delay, visible, tooltip }: { l
       {/* Secondary value - even smaller, more muted */}
       {secondaryValue && (
         <p className="text-body-sm text-neutral-500 mt-2">{secondaryValue}</p>
-      )}
-
-      {/* Tooltip on hover */}
-      {showTooltip && (
-        <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-neutral-900 text-white text-body-sm rounded-md shadow-lg whitespace-nowrap z-10 animate-slideUp">
-          {tooltip}
-          <div className="absolute top-full left-1/2 transform -translate-x-1/2 -mt-px border-4 border-transparent border-t-neutral-900"></div>
-        </div>
       )}
     </div>
   );
