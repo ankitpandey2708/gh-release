@@ -5,10 +5,11 @@ import { sanitize } from '@/lib/validation';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { owner: string; repo: string } }
+  { params }: { params: Promise<{ owner: string; repo: string }> }
 ) {
-  const owner = sanitize(params.owner);
-  const repo = sanitize(params.repo);
+  const { owner: ownerParam, repo: repoParam } = await params;
+  const owner = sanitize(ownerParam);
+  const repo = sanitize(repoParam);
   const cacheKey = `releases:${owner}:${repo}`;
 
   // Try cache first
