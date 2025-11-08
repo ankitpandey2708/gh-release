@@ -3,28 +3,11 @@
 import { useState, useEffect } from 'react';
 import { validateRepo } from '@/lib/validation';
 import { Spinner } from './Spinner';
+import { getRecentSearches, clearRecentSearches as clearSearches } from '@/lib/localStorage';
 
 interface RepoInputProps {
   onSubmit: (repo: string) => void;
   loading?: boolean;
-}
-
-
-const STORAGE_KEY = 'recent-searches';
-const MAX_RECENT = 5;
-
-function getRecentSearches(): string[] {
-  if (typeof window === 'undefined') return [];
-  const stored = localStorage.getItem(STORAGE_KEY);
-  return stored ? JSON.parse(stored) : [];
-}
-
-function saveRecentSearch(repo: string) {
-  if (typeof window === 'undefined') return;
-  const recent = getRecentSearches();
-  const filtered = recent.filter(r => r !== repo);
-  const updated = [repo, ...filtered].slice(0, MAX_RECENT);
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
 }
 
 export function RepoInput({ onSubmit, loading = false }: RepoInputProps) {
@@ -45,8 +28,7 @@ export function RepoInput({ onSubmit, loading = false }: RepoInputProps) {
     }
     setError('');
     const trimmedValue = value.trim();
-    saveRecentSearch(trimmedValue);
-    setRecentSearches(getRecentSearches());
+    // Don't save to recent searches here - only save after successful fetch
     onSubmit(trimmedValue);
   };
 
@@ -57,9 +39,8 @@ export function RepoInput({ onSubmit, loading = false }: RepoInputProps) {
     }
   };
 
-  const clearRecentSearches = () => {
-    if (typeof window === 'undefined') return;
-    localStorage.removeItem(STORAGE_KEY);
+  const handleClearRecentSearches = () => {
+    clearSearches();
     setRecentSearches([]);
   };
 
@@ -97,7 +78,7 @@ export function RepoInput({ onSubmit, loading = false }: RepoInputProps) {
           <div className="flex items-center justify-center gap-2 mb-2">
             <p className="text-sm text-gray-600 dark:text-gray-400">Recent:</p>
             <button
-              onClick={clearRecentSearches}
+              onClick={handleClearRecentSearches}
               className="text-xs text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 hover:underline transition-all duration-200"
               type="button"
               aria-label="Clear recent searches"

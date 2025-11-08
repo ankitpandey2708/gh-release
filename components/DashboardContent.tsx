@@ -10,6 +10,7 @@ import { LoadingSkeleton } from '@/components/LoadingSkeleton';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { ProgressBar } from '@/components/ProgressBar';
 import { useReleases } from '@/lib/hooks/useReleases';
+import { saveRecentSearch } from '@/lib/localStorage';
 
 const ReleaseChart = dynamic(
   () => import('@/components/ReleaseChart').then(m => ({ default: m.ReleaseChart })),
@@ -37,6 +38,13 @@ export function DashboardContent({ initialRepo }: DashboardContentProps = {}) {
       setRepoState(initialRepo);
     }
   }, [initialRepo]);
+
+  // Save to recent searches only after successful fetch
+  useEffect(() => {
+    if (data && repo && !error) {
+      saveRecentSearch(repo);
+    }
+  }, [data, repo, error]);
 
   // Update URL when repo changes - use path-based routing
   const setRepo = (newRepo: string | null) => {
