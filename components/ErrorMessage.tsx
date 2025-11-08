@@ -3,11 +3,36 @@ interface ErrorMessageProps {
   onRetry?: () => void;
 }
 
+function getErrorTips(message: string): string[] {
+  if (message.includes('not found') || message.includes('404')) {
+    return ['Check spelling', 'Verify repo exists', 'Try a different repo'];
+  }
+  if (message.includes('Rate limit') || message.includes('403')) {
+    return ['Wait a few minutes', 'Rate limit will reset soon'];
+  }
+  if (message.includes('Network error')) {
+    return ['Check internet connection', 'Try again'];
+  }
+  return [];
+}
+
 export function ErrorMessage({ message, onRetry }: ErrorMessageProps) {
+  const tips = getErrorTips(message);
+
   return (
     <div className="p-6 bg-red-50 border border-red-200 rounded">
       <h3 className="font-bold text-red-900 mb-2">Error</h3>
       <p className="text-sm text-red-700 mb-4">{message}</p>
+      {tips.length > 0 && (
+        <ul className="mt-2 mb-4 text-sm text-red-700 space-y-1">
+          {tips.map(tip => (
+            <li key={tip} className="flex items-start">
+              <span className="mr-2">•</span>
+              <span>{tip}</span>
+            </li>
+          ))}
+        </ul>
+      )}
       {onRetry && (
         <button
           onClick={onRetry}
