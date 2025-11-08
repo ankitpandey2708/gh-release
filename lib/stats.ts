@@ -40,8 +40,15 @@ export function calculateStats(releases: Release[]) {
   const threeMonthsAgo = new Date();
   threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
   const recentReleases = sorted.filter(r => r.date >= threeMonthsAgo);
-  const recentDays = differenceInDays(new Date(), threeMonthsAgo);
-  const velocity = recentDays > 0 ? ((recentReleases.length / recentDays) * 7).toFixed(2) : '0';
+
+  // Use the most recent release date as end point, not today
+  const velocityEndDate = recentReleases.length > 0
+    ? recentReleases[recentReleases.length - 1].date
+    : last;
+  const recentDays = differenceInDays(velocityEndDate, threeMonthsAgo);
+  const velocity = recentDays > 0 && recentReleases.length > 0
+    ? ((recentReleases.length / recentDays) * 7).toFixed(2)
+    : '0';
 
   // Calculate consistency (standard deviation of days between releases)
   if (total < 2) {
