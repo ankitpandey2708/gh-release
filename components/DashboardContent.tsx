@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import { RepoInput } from '@/components/RepoInput';
 import { StatsGrid } from '@/components/StatsGrid';
@@ -19,28 +19,32 @@ const ReleaseChart = dynamic(
   }
 );
 
-export function DashboardContent() {
+interface DashboardContentProps {
+  initialRepo?: string;
+}
+
+export function DashboardContent({ initialRepo }: DashboardContentProps = {}) {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const [repo, setRepoState] = useState<string | null>(null);
+  const [repo, setRepoState] = useState<string | null>(initialRepo || null);
   const { data, loading, error, cached } = useReleases(repo);
   const [showPreReleases, setShowPreReleases] = useState(true);
   const [startDate, setStartDate] = useState<string>('');
   const [endDate, setEndDate] = useState<string>('');
 
-  // Load repo from URL on mount
+  // Initialize with initialRepo if provided
   useEffect(() => {
-    const repoFromUrl = searchParams.get('repo');
-    if (repoFromUrl) {
-      setRepoState(repoFromUrl);
+    if (initialRepo) {
+      setRepoState(initialRepo);
     }
-  }, [searchParams]);
+  }, [initialRepo]);
 
-  // Update URL when repo changes
+  // Update URL when repo changes - use path-based routing
   const setRepo = (newRepo: string | null) => {
     setRepoState(newRepo);
     if (newRepo) {
-      router.push(`?repo=${encodeURIComponent(newRepo)}`);
+      // Convert owner/repo to /owner/repo path
+      const [owner, repoName] = newRepo.split('/');
+      router.push(`/${owner}/${repoName}`);
     } else {
       router.push('/');
     }
