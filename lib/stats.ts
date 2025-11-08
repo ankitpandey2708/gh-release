@@ -9,10 +9,10 @@ export function groupByMonth(releases: Release[]) {
     groups.set(month, (groups.get(month) || 0) + 1);
   });
 
-  // Sort oldest to newest for chronological left-to-right display
+  // Sort newest to oldest (will display left to right as oldest to newest)
   return Array.from(groups.entries())
     .map(([month, count]) => ({ month, count }))
-    .sort((a, b) => new Date(a.month).getTime() - new Date(b.month).getTime());
+    .sort((a, b) => new Date(b.month).getTime() - new Date(a.month).getTime());
 }
 
 export function calculateStats(releases: Release[]) {
