@@ -14,11 +14,11 @@ export function StatsGrid({ releases }: { releases: Release[] }) {
 
   return (
     <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
-      <StatCard label="Total releases" value={stats.total} delay={0} visible={visible} tooltip="Total number of releases" />
-      <StatCard label="Average days between" value={stats.avgDays} delay={50} visible={visible} tooltip="Average days between releases" />
-      <StatCard label="Releases per month" value={stats.perMonth} delay={100} visible={visible} tooltip="Average releases per month" />
-      <StatCard label="Last release" value={stats.lastReleaseDate} secondaryValue={stats.lastRelease} delay={150} visible={visible} tooltip="Time since last release" />
-      <StatCard label="Consistency" value={stats.consistency} delay={200} visible={visible} tooltip="How consistent the release schedule is" />
+      <StatCard label="Total releases" value={stats.total} delay={0} visible={visible} />
+      <StatCard label="Average days between releases" value={stats.avgDays} delay={50} visible={visible} />
+      <StatCard label="Avg Releases per month" value={stats.perMonth} delay={100} visible={visible} />
+      <StatCard label="Last release" value={stats.lastReleaseDate} secondaryValue={stats.lastRelease} delay={150} visible={visible} />
+      <StatCard label="How consistent the release schedule is*" value={stats.consistency} delay={200} visible={visible} />
     </div>
   );
 }
