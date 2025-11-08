@@ -1,15 +1,26 @@
 'use client';
 
 import { useState } from 'react';
+import { validateRepo } from '@/lib/validation';
 
-export function RepoInput({ onSubmit, loading = false }) {
+interface RepoInputProps {
+  onSubmit: (repo: string) => void;
+  loading?: boolean;
+}
+
+export function RepoInput({ onSubmit, loading = false }: RepoInputProps) {
   const [value, setValue] = useState('');
+  const [error, setError] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (value.trim()) {
-      onSubmit(value.trim());
+    const result = validateRepo(value);
+    if (!result.valid) {
+      setError(result.error || '');
+      return;
     }
+    setError('');
+    onSubmit(value.trim());
   };
 
   return (
@@ -31,6 +42,7 @@ export function RepoInput({ onSubmit, loading = false }) {
           {loading ? 'Loading...' : 'Analyze'}
         </button>
       </div>
+      {error && <p className="text-sm text-red-600 mt-2">{error}</p>}
     </form>
   );
 }

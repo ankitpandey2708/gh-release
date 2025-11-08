@@ -434,9 +434,9 @@ const handleSubmit = (e) => {
 
 ### Check It Works
 
-- [ ] "invalid" shows error
-- [ ] "facebook/react" works
-- [ ] Error clears when fixed
+- [x] "invalid" shows error
+- [x] "facebook/react" works
+- [x] Error clears when fixed
 
 ---
 
