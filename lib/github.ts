@@ -31,6 +31,11 @@ export async function fetchReleases(owner: string, repo: string) {
         : 'Rate limit exceeded';
       throw new GitHubError(message, 403);
     }
+    if (response.status === 422) {
+      // GitHub API limit: only first 1000 results are available
+      // Break gracefully and return what we have
+      break;
+    }
     if (!response.ok) {
       throw new GitHubError('Failed to fetch releases', response.status);
     }
