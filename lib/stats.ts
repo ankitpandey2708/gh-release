@@ -21,6 +21,7 @@ export function calculateStats(releases: Release[]) {
       avgDays: 0,
       perMonth: '0',
       lastRelease: 'N/A',
+      lastReleaseDate: 'N/A',
       velocity: 'N/A',
       consistency: 'N/A'
     };
@@ -35,12 +36,11 @@ export function calculateStats(releases: Release[]) {
   const avgDays = total > 1 ? Math.round(totalDays / (total - 1)) : 0;
   const perMonth = totalDays > 30 ? (total / (totalDays / 30)).toFixed(1) : '0';
 
-  // Calculate velocity (releases per week in last 3 months)
-  const threeMonthsAgo = new Date();
-  threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
-  const recentReleases = sorted.filter(r => r.date >= threeMonthsAgo);
-  const recentDays = differenceInDays(new Date(), threeMonthsAgo);
-  const velocity = recentDays > 0 ? ((recentReleases.length / recentDays) * 7).toFixed(2) : '0';
+  // Calculate velocity (releases per week across the filtered range)
+  const velocityDays = differenceInDays(last, first);
+  const velocity = velocityDays > 0 && total > 0
+    ? ((total / velocityDays) * 7).toFixed(2)
+    : '0';
 
   // Calculate consistency (standard deviation of days between releases)
   if (total < 2) {
@@ -49,6 +49,7 @@ export function calculateStats(releases: Release[]) {
       avgDays,
       perMonth,
       lastRelease: formatDistanceToNow(last, { addSuffix: true }),
+      lastReleaseDate: format(last, 'MMM d, yyyy'),
       velocity: velocity + '/wk',
       consistency: 'N/A'
     };
@@ -71,6 +72,7 @@ export function calculateStats(releases: Release[]) {
     avgDays,
     perMonth,
     lastRelease: formatDistanceToNow(last, { addSuffix: true }),
+    lastReleaseDate: format(last, 'MMM d, yyyy'),
     velocity: velocity + '/wk',
     consistency: consistencyScore
   };
