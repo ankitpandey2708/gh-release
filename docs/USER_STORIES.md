@@ -376,10 +376,10 @@ export default function Home() {
 
 ### Check It Works
 
-- [ ] Input shows on page
-- [ ] Can type in it
-- [ ] Button disables when empty
-- [ ] Form submits
+- [x] Input shows on page
+- [x] Can type in it
+- [x] Button disables when empty
+- [x] Form submits
 
 ---
 
