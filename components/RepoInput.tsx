@@ -9,8 +9,7 @@ interface RepoInputProps {
   loading?: boolean;
 }
 
-const EXAMPLES = [
-];
+const EXAMPLES: { repo: string; label: string }[] = [];
 
 const STORAGE_KEY = 'recent-searches';
 const MAX_RECENT = 5;
