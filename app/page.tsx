@@ -26,7 +26,13 @@ export default function Home() {
           <LoadingSkeleton />
         </div>
       )}
-      {data && !loading && (
+      {data && !loading && data.length === 0 && (
+        <div className="mt-8 w-full max-w-4xl p-8 bg-blue-50 rounded text-center">
+          <h3 className="font-bold mb-2">No Releases Found</h3>
+          <p className="text-sm">This repo has no releases yet</p>
+        </div>
+      )}
+      {data && !loading && data.length > 0 && (
         <div className="mt-8 w-full max-w-4xl space-y-8">
           <StatsGrid releases={data} />
           <ReleaseChart releases={data} />
