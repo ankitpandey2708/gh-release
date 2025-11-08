@@ -46,14 +46,15 @@ export function RepoInput({ onSubmit, loading = false }: RepoInputProps) {
 
   return (
     <form onSubmit={handleSubmit} className="w-full max-w-2xl">
-      <div className="flex gap-2">
+      {/* Primary input area */}
+      <div className="flex flex-col sm:flex-row gap-2">
         <input
           type="text"
           value={value}
           onChange={(e) => setValue(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder="facebook/react"
-          className="flex-1 px-4 py-2 border rounded bg-white text-gray-900 border-gray-300"
+          placeholder="owner/repository (e.g., facebook/react)"
+          className="flex-1 px-4 py-3 border border-neutral-300 rounded-md bg-white text-neutral-900 text-body placeholder:text-neutral-500 focus:border-primary focus:ring-2 focus:ring-primary/20 disabled:bg-neutral-100 disabled:cursor-not-allowed transition-all duration-200"
           disabled={loading}
           aria-label="GitHub repository name"
           aria-invalid={!!error}
@@ -62,41 +63,46 @@ export function RepoInput({ onSubmit, loading = false }: RepoInputProps) {
         <button
           type="submit"
           disabled={loading || !value.trim()}
-          className="px-6 py-2 bg-blue-500 text-white rounded flex items-center justify-center gap-2 hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="px-6 py-3 bg-primary text-white font-medium text-body rounded-md flex items-center justify-center gap-2 hover:bg-primary-hover disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-sm hover:shadow-md min-w-[120px]"
         >
           {loading ? <Spinner /> : 'Analyze'}
         </button>
       </div>
+
+      {/* Inline error message - actionable and specific */}
       {error && (
-        <p id="input-error" role="alert" className="text-sm text-red-600 mt-2">
+        <p id="input-error" role="alert" className="text-body-sm text-red-600 mt-2 font-medium">
           {error}
         </p>
       )}
 
+      {/* Recent searches - lower visual weight */}
       {recentSearches.length > 0 && (
-        <div className="mt-4 text-center">
-          <div className="flex items-center justify-center gap-2 mb-2">
-            <p className="text-sm text-gray-600">Recent:</p>
+        <div className="mt-6 p-4 bg-neutral-50 rounded-md border border-neutral-200">
+          <div className="flex items-center gap-2 mb-3">
+            <p className="text-body-sm text-neutral-700 font-medium">Recent searches</p>
             <button
               onClick={handleClearRecentSearches}
-              className="text-xs text-red-600 hover:text-red-700 hover:underline transition-all duration-200"
+              className="text-body-sm text-neutral-600 hover:text-red-600 underline transition-colors min-h-0"
               type="button"
               aria-label="Clear recent searches"
             >
               Clear
             </button>
           </div>
-          {recentSearches.map((repo) => (
-            <button
-              key={repo}
-              onClick={() => setValue(repo)}
-              className="text-xs text-gray-600 hover:text-blue-600 hover:underline mx-2 transition-all duration-200"
-              type="button"
-              aria-label={`Recent search: ${repo}`}
-            >
-              {repo}
-            </button>
-          ))}
+          <div className="flex flex-wrap gap-2">
+            {recentSearches.map((repo) => (
+              <button
+                key={repo}
+                onClick={() => setValue(repo)}
+                className="px-3 py-1 text-body-sm text-neutral-700 bg-white border border-neutral-300 rounded-md hover:border-primary hover:text-primary transition-all duration-200 min-h-0"
+                type="button"
+                aria-label={`Recent search: ${repo}`}
+              >
+                {repo}
+              </button>
+            ))}
+          </div>
         </div>
       )}
     </form>
