@@ -7,7 +7,18 @@ import { groupByMonth } from '@/lib/stats';
 
 type ChartType = 'bar' | 'line' | 'area';
 
-const CustomTooltip = ({ active, payload }: any) => {
+interface CustomTooltipProps {
+  active?: boolean;
+  payload?: Array<{
+    value: number;
+    payload: {
+      month: string;
+      count: number;
+    };
+  }>;
+}
+
+const CustomTooltip = ({ active, payload }: CustomTooltipProps) => {
   if (active && payload && payload.length) {
     return (
       <div className="bg-white dark:bg-gray-800 p-3 rounded shadow-lg border border-gray-300 dark:border-gray-600">
