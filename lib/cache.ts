@@ -8,7 +8,7 @@ const isRedisConfigured =
   env.redisToken &&
   env.redisToken !== 'your_token';
 
-export const redis = isRedisConfigured ? new Redis({
+const redis = isRedisConfigured ? new Redis({
   url: env.redisUrl,
   token: env.redisToken,
 }) : null;

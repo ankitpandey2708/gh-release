@@ -1,4 +1,4 @@
-import { Release } from './types';
+import { Release, Stats } from './types';
 import { format, differenceInDays, formatDistanceToNow } from 'date-fns';
 
 export function groupByMonth(releases: Release[]) {
@@ -15,7 +15,7 @@ export function groupByMonth(releases: Release[]) {
     .sort((a, b) => new Date(a.month).getTime() - new Date(b.month).getTime());
 }
 
-export function calculateStats(releases: Release[]) {
+export function calculateStats(releases: Release[]): Stats {
   if (releases.length === 0) {
     return {
       total: 0,
