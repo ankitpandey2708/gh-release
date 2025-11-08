@@ -630,8 +630,8 @@ export async function fetchReleases(owner: string, repo: string) {
 
 ### Check It Works
 
-- [ ] Can fetch facebook/react
-- [ ] Errors throw correctly
+- [x] Can fetch facebook/react
+- [x] Errors throw correctly
 
 ---
 
@@ -685,9 +685,9 @@ export async function GET(
 
 ### Check It Works
 
-- [ ] Visit /api/releases/facebook/react
-- [ ] Get JSON response
-- [ ] Second request is cached
+- [x] Visit /api/releases/facebook/react
+- [x] Get JSON response
+- [x] Second request is cached (when Redis configured)
 
 ---
 
@@ -752,8 +752,8 @@ export default function Home() {
 
 ### Check It Works
 
-- [ ] Submit repo name
-- [ ] See release count
+- [x] Submit repo name
+- [x] See release count
 
 ---
 
