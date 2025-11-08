@@ -885,7 +885,7 @@ import { BarChart, Bar } from 'recharts';
 
 ### Check It Works
 
-- [ ] Chart renders
+- [x] Chart renders
 
 ---
 
@@ -917,7 +917,7 @@ export function groupByMonth(releases: Release[]) {
 
 ### Check It Works
 
-- [ ] Groups releases correctly
+- [x] Groups releases correctly
 
 ---
 
@@ -966,7 +966,7 @@ Use it:
 
 ### Check It Works
 
-- [ ] Chart shows
+- [x] Chart shows
 - [ ] Bars display correctly
 
 ---

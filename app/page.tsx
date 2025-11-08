@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { RepoInput } from '@/components/RepoInput';
+import { ReleaseChart } from '@/components/ReleaseChart';
 import { useReleases } from '@/lib/hooks/useReleases';
 
 export default function Home() {
@@ -13,7 +14,11 @@ export default function Home() {
       <h1 className="text-3xl font-bold mb-8">GitHub Releases Dashboard</h1>
       <RepoInput onSubmit={setRepo} loading={loading} />
       {error && <p className="text-red-600 mt-4">{error}</p>}
-      {data && <p className="mt-4">Found {data.length} releases</p>}
+      {data && (
+        <div className="mt-8 w-full max-w-4xl">
+          <ReleaseChart releases={data} />
+        </div>
+      )}
     </main>
   );
 }
