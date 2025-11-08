@@ -52,10 +52,10 @@ npx create-next-app@14 gh-releases-dashboard --typescript --tailwind --app
 
 ### Check It Works
 
-- [x] `npm run dev` starts
-- [x] Open localhost:3000
-- [x] See Next.js welcome page
-- [x] Make first commit
+- [ ] `npm run dev` starts
+- [ ] Open localhost:3000
+- [ ] See Next.js welcome page
+- [ ] Make first commit
 
 ---
 
@@ -90,8 +90,8 @@ npm install -D eslint prettier
 
 ### Check It Works
 
-- [x] `npm run lint` works
-- [x] `npm run format` works
+- [ ] `npm run lint` works
+- [ ] `npm run format` works
 
 ---
 
@@ -139,8 +139,8 @@ export interface Stats {
 
 ### Check It Works
 
-- [x] Folders exist
-- [x] TypeScript compiles
+- [ ] Folders exist
+- [ ] TypeScript compiles
 
 ---
 
@@ -158,8 +158,8 @@ npm install recharts date-fns @upstash/redis
 
 ### Check It Works
 
-- [x] `npm run dev` still works
-- [x] No errors in console
+- [ ] `npm run dev` still works
+- [ ] No errors in console
 
 ---
 
@@ -192,8 +192,8 @@ export const env = {
 
 ### Check It Works
 
-- [x] `.env.local` not in git
-- [x] Env vars load in code
+- [ ] `.env.local` not in git
+- [ ] Env vars load in code
 
 ---
 
@@ -238,8 +238,8 @@ export async function setCached<T>(key: string, value: T, ttl = 86400) {
 
 ### Check It Works
 
-- [x] Redis connection works (needs real credentials in .env.local)
-- [x] Can get/set values (code compiles and ready to use)
+- [ ] Redis connection works
+- [ ] Can get/set values
 
 ---
 
@@ -264,8 +264,8 @@ Update `tsconfig.json`:
 
 ### Check It Works
 
-- [x] Can import with `@/components/...`
-- [x] TypeScript autocomplete works
+- [ ] Can import with `@/components/...`
+- [ ] TypeScript autocomplete works
 
 ---
 
@@ -297,9 +297,9 @@ jobs:
 
 ### Check It Works
 
-- [x] Push code
-- [x] GitHub Actions runs
-- [x] Build passes
+- [ ] Push code
+- [ ] GitHub Actions runs
+- [ ] Build passes
 
 ---
 
@@ -374,10 +374,10 @@ export default function Home() {
 
 ### Check It Works
 
-- [x] Input shows on page
-- [x] Can type in it
-- [x] Button disables when empty
-- [x] Form submits
+- [ ] Input shows on page
+- [ ] Can type in it
+- [ ] Button disables when empty
+- [ ] Form submits
 
 ---
 
@@ -432,9 +432,9 @@ const handleSubmit = (e) => {
 
 ### Check It Works
 
-- [x] "invalid" shows error
-- [x] "facebook/react" works
-- [x] Error clears when fixed
+- [ ] "invalid" shows error
+- [ ] "facebook/react" works
+- [ ] Error clears when fixed
 
 ---
 
@@ -470,8 +470,8 @@ const EXAMPLES = [
 
 ### Check It Works
 
-- [x] Example links show
-- [x] Clicking fills input
+- [ ] Example links show
+- [ ] Clicking fills input
 
 ---
 
@@ -513,7 +513,7 @@ Use in button:
 
 ### Check It Works
 
-- [x] Spinner shows when loading
+- [ ] Spinner shows when loading
 
 ---
 
@@ -628,8 +628,8 @@ export async function fetchReleases(owner: string, repo: string) {
 
 ### Check It Works
 
-- [x] Can fetch facebook/react
-- [x] Errors throw correctly
+- [ ] Can fetch facebook/react
+- [ ] Errors throw correctly
 
 ---
 
@@ -683,9 +683,9 @@ export async function GET(
 
 ### Check It Works
 
-- [x] Visit /api/releases/facebook/react
-- [x] Get JSON response
-- [x] Second request is cached (when Redis configured)
+- [ ] Visit /api/releases/facebook/react
+- [ ] Get JSON response
+- [ ] Second request is cached
 
 ---
 
@@ -750,8 +750,8 @@ export default function Home() {
 
 ### Check It Works
 
-- [x] Submit repo name
-- [x] See release count
+- [ ] Submit repo name
+- [ ] See release count
 
 ---
 
@@ -883,7 +883,7 @@ import { BarChart, Bar } from 'recharts';
 
 ### Check It Works
 
-- [x] Chart renders
+- [ ] Chart renders
 
 ---
 
@@ -915,7 +915,7 @@ export function groupByMonth(releases: Release[]) {
 
 ### Check It Works
 
-- [x] Groups releases correctly
+- [ ] Groups releases correctly
 
 ---
 
@@ -964,7 +964,7 @@ Use it:
 
 ### Check It Works
 
-- [x] Chart shows
+- [ ] Chart shows
 - [ ] Bars display correctly
 
 ---
@@ -1083,7 +1083,7 @@ export function calculateStats(releases: Release[]) {
 
 ### Check It Works
 
-- [x] Math is correct
+- [ ] Math is correct
 
 ---
 
@@ -1132,7 +1132,7 @@ Use it:
 
 ### Check It Works
 
-- [x] Stats show correctly
+- [ ] Stats show correctly
 
 ---
 
