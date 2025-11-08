@@ -46,8 +46,8 @@ export function DashboardContent({ initialRepo }: DashboardContentProps = {}) {
   }, [data, repo, error]);
 
   // Update URL when repo changes - use path-based routing
+  // Navigation will mount new component with initialRepo, preventing duplicate fetches
   const setRepo = (newRepo: string | null) => {
-    setRepoState(newRepo);
     if (newRepo) {
       // Convert owner/repo to /owner/repo path
       const [owner, repoName] = newRepo.split('/');
