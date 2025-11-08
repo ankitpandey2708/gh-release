@@ -45,6 +45,13 @@ export function RepoInput({ onSubmit, loading = false }: RepoInputProps) {
     setRecentSearches([]);
   };
 
+  const handleRecentSearchClick = (repo: string) => {
+    setValue(repo);
+    setError('');
+    // Recent searches are already validated, so directly submit
+    onSubmit(repo);
+  };
+
   return (
     <form onSubmit={handleSubmit} className="w-full max-w-2xl">
       {/* Primary input area */}
@@ -95,7 +102,7 @@ export function RepoInput({ onSubmit, loading = false }: RepoInputProps) {
             {recentSearches.map((repo) => (
               <button
                 key={repo}
-                onClick={() => setValue(repo)}
+                onClick={() => handleRecentSearchClick(repo)}
                 className="px-3 py-1 text-body-sm text-neutral-700 bg-white border border-neutral-300 rounded-md hover:border-primary hover:text-primary transition-all duration-200 min-h-0"
                 type="button"
                 aria-label={`Recent search: ${repo}`}
