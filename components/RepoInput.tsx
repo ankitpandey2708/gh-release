@@ -70,7 +70,7 @@ export function RepoInput({ onSubmit, loading = false, currentRepo }: RepoInputP
           onChange={(e) => setValue(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder="owner/repo or paste GitHub URL (e.g., facebook/react)"
-          className="flex-1 px-4 py-3 border border-neutral-200 rounded-lg bg-white text-neutral-900 text-base placeholder:text-neutral-500 focus:border-primary-500 focus:ring-4 focus:ring-primary-500/10 disabled:bg-gray-50 disabled:cursor-not-allowed transition-all duration-200"
+          className="flex-1 px-4 py-3 border border-neutral-200/60 rounded-lg bg-white text-neutral-900 text-base placeholder:text-neutral-500 focus:border-primary-500 focus:ring-4 focus:ring-primary-500/10 disabled:bg-gray-50 disabled:cursor-not-allowed transition-all duration-200"
           disabled={loading}
           autoFocus
           aria-label="GitHub repository name"
@@ -95,7 +95,7 @@ export function RepoInput({ onSubmit, loading = false, currentRepo }: RepoInputP
 
       {/* Recent searches - lower visual weight */}
       {recentSearches.length > 0 && (
-        <div className="mt-6 p-6 bg-white rounded-lg border border-neutral-200 shadow-sm">
+        <div className="mt-6 p-6 bg-white rounded-lg border border-neutral-200/60 shadow-md hover:shadow-lg transition-all duration-300">
           <div className="flex items-center justify-between mb-4">
             <div className="flex-1"></div>
             <p className="text-sm text-neutral-600 font-semibold flex-1 text-center">Recent searches</p>
@@ -128,7 +128,7 @@ export function RepoInput({ onSubmit, loading = false, currentRepo }: RepoInputP
               <button
                 key={repo}
                 onClick={() => handleRecentSearchClick(repo)}
-                className="px-4 py-2 text-sm text-neutral-600 bg-white border border-neutral-200 rounded-lg hover:border-primary-500 hover:text-primary-600 transition-all duration-200 min-h-0"
+                className="px-4 py-2 text-sm text-neutral-600 bg-white border border-neutral-200/60 rounded-lg hover:border-primary-500 hover:text-primary-600 transition-all duration-200 min-h-0"
                 type="button"
                 aria-label={`Recent search: ${repo}`}
               >
