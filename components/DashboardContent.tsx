@@ -21,7 +21,7 @@ const ReleaseChart = dynamic(
       <div className="h-64 md:h-96 bg-neutral-100 rounded-md animate-pulse" />
     ),
     ssr: false,
-  },
+  }
 );
 
 interface DashboardContentProps {
@@ -86,7 +86,7 @@ export function DashboardContent({ initialRepo }: DashboardContentProps = {}) {
           r.version,
           new Date(r.date).toISOString().split("T")[0],
           r.prerelease ? "Yes" : "No",
-        ].join(","),
+        ].join(",")
       ),
     ].join("\n");
 
@@ -161,10 +161,6 @@ export function DashboardContent({ initialRepo }: DashboardContentProps = {}) {
                 Clear dates
               </button>
             )}
-          </div>
-
-          {/* Secondary action */}
-          <div className="flex gap-2 pt-2 border-t border-neutral-200">
             <button
               onClick={exportToCSV}
               className="px-4 py-2 text-body-sm font-medium border border-neutral-300 text-neutral-700 bg-white rounded-md hover:bg-neutral-50 hover:border-neutral-400 transition-all duration-200"
