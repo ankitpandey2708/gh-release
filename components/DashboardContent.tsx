@@ -122,7 +122,21 @@ export function DashboardContent({ initialRepo }: DashboardContentProps = {}) {
       {data && !loading && data.length > 0 && (
         <div className="mt-4 w-full max-w-4xl">
           <div className="flex flex-col sm:flex-row gap-2 sm:items-center">
-            <div className="flex-1 flex flex-col sm:flex-row gap-2 sm:items-center p-4 bg-white rounded-md border border-neutral-200">
+            <div className="flex-1 flex flex-col sm:flex-row gap-2 sm:items-center p-4 bg-white rounded-md border border-neutral-200 relative">
+              {(startDate || endDate) && (
+                <button
+                  onClick={() => {
+                    setStartDate("");
+                    setEndDate("");
+                  }}
+                  className="absolute top-2 right-2 text-red-600 hover:text-red-700 transition-colors"
+                  aria-label="Clear dates"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                  </svg>
+                </button>
+              )}
               <label className="flex items-center gap-2 text-body">
                 <span className="text-neutral-700 font-medium">From:</span>
                 <input
@@ -141,17 +155,6 @@ export function DashboardContent({ initialRepo }: DashboardContentProps = {}) {
                   className="px-3 py-3 border border-neutral-300 rounded-md bg-white text-neutral-900 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-colors"
                 />
               </label>
-              {(startDate || endDate) && (
-                <button
-                  onClick={() => {
-                    setStartDate("");
-                    setEndDate("");
-                  }}
-                  className="text-body-sm text-primary hover:text-primary-hover underline transition-colors min-h-0"
-                >
-                  Clear dates
-                </button>
-              )}
             </div>
             <button
               onClick={exportToCSV}
