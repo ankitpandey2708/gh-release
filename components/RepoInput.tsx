@@ -79,7 +79,7 @@ export function RepoInput({ onSubmit, loading = false, currentRepo }: RepoInputP
         <button
           type="submit"
           disabled={loading || !value.trim()}
-          className="px-6 py-3 bg-primary text-white font-medium text-body rounded-md flex items-center justify-center gap-2 hover:bg-primary-hover disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-sm hover:shadow-md min-w-[120px]"
+          className="px-6 py-3 bg-primary text-white font-medium text-body rounded-md flex items-center justify-center gap-2 hover:bg-primary-hover disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-sm hover:shadow-md w-[160px]"
         >
           {loading ? <Spinner /> : 'Analyze'}
         </button>
