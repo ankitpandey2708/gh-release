@@ -63,7 +63,7 @@ export function RepoInput({ onSubmit, loading = false, currentRepo }: RepoInputP
   return (
     <form onSubmit={handleSubmit} className="w-full max-w-2xl">
       {/* Primary input area */}
-      <div className="flex flex-col sm:flex-row gap-2">
+      <div className="flex flex-col sm:flex-row gap-2 sm:items-center">
         <input
           type="text"
           value={value}
