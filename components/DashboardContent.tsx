@@ -131,7 +131,7 @@ export function DashboardContent({ initialRepo }: DashboardContentProps = {}) {
             <span>Show pre-releases</span>
           </label>  */}
 
-          <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
+          <div className="flex flex-col sm:flex-row gap-2">
             <label className="flex items-center gap-2 text-body">
               <span className="text-neutral-700 font-medium">From:</span>
               <input
