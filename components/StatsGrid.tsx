@@ -13,7 +13,7 @@ export function StatsGrid({ releases }: { releases: Release[] }) {
   }, []);
 
   return (
-    <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
+    <div className="grid grid-cols-2 lg:grid-cols-3 gap-6">
       <StatCard label="Total releases" value={stats.total} delay={0} visible={visible} />
       <StatCard label="Average days between releases" value={stats.avgDays} delay={50} visible={visible} />
       <StatCard label="Avg Releases per month" value={stats.perMonth} delay={100} visible={visible} />
@@ -26,18 +26,18 @@ export function StatsGrid({ releases }: { releases: Release[] }) {
 function StatCard({ label, value, secondaryValue, delay, visible }: { label: string; value: string | number; secondaryValue?: string; delay: number; visible: boolean }) {
   return (
     <div
-      className={`bg-white p-6 rounded-md border border-neutral-200 shadow-sm hover:shadow-md transition-all duration-300 ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'}`}
+      className={`bg-white p-6 rounded-lg border border-gray-200 shadow-sm hover:shadow-lg transition-all duration-300 ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'}`}
       style={{ transitionDelay: `${delay}ms` }}
     >
       {/* Label - smaller, muted */}
-      <p className="text-body-sm text-neutral-600 mb-2 font-medium">{label}</p>
+      <p className="text-sm text-gray-600 mb-2 font-semibold">{label}</p>
 
       {/* Primary value - large, bold, high contrast */}
-      <p className="text-h1 font-bold text-neutral-900 leading-none">{value}</p>
+      <p className="text-3xl font-bold text-gray-900 leading-none">{value}</p>
 
       {/* Secondary value - even smaller, more muted */}
       {secondaryValue && (
-        <p className="text-body-sm text-neutral-500 mt-2">{secondaryValue}</p>
+        <p className="text-sm text-gray-500 mt-2">{secondaryValue}</p>
       )}
     </div>
   );

@@ -63,14 +63,14 @@ export function RepoInput({ onSubmit, loading = false, currentRepo }: RepoInputP
   return (
     <form onSubmit={handleSubmit} className="w-full max-w-4xl">
       {/* Primary input area */}
-      <div className="flex flex-col sm:flex-row gap-2 sm:items-center">
+      <div className="flex flex-col sm:flex-row gap-4 sm:items-center">
         <input
           type="text"
           value={value}
           onChange={(e) => setValue(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder="owner/repo or paste GitHub URL (e.g., facebook/react)"
-          className="flex-1 px-4 py-3 border border-neutral-300 rounded-md bg-white text-neutral-900 text-body placeholder:text-neutral-500 focus:border-primary focus:ring-2 focus:ring-primary/20 disabled:bg-neutral-100 disabled:cursor-not-allowed transition-all duration-200"
+          className="flex-1 px-4 py-3 border border-gray-200 rounded-lg bg-white text-gray-900 text-base placeholder:text-gray-500 focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10 disabled:bg-gray-50 disabled:cursor-not-allowed transition-all duration-200"
           disabled={loading}
           autoFocus
           aria-label="GitHub repository name"
@@ -80,7 +80,7 @@ export function RepoInput({ onSubmit, loading = false, currentRepo }: RepoInputP
         <button
           type="submit"
           disabled={loading || !value.trim()}
-          className="px-6 py-3 bg-primary text-white font-medium text-body rounded-md flex items-center justify-center gap-2 hover:bg-primary-hover disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-sm hover:shadow-md w-[160px]"
+          className="px-6 py-3 bg-brand-500 text-white font-semibold text-base rounded-lg flex items-center justify-center gap-2 hover:bg-brand-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-md hover:shadow-lg w-[160px]"
         >
           {loading ? <Spinner /> : 'Analyze'}
         </button>
@@ -88,21 +88,21 @@ export function RepoInput({ onSubmit, loading = false, currentRepo }: RepoInputP
 
       {/* Inline error message - actionable and specific */}
       {error && (
-        <p id="input-error" role="alert" className="text-body-sm text-red-600 mt-2 font-medium">
+        <p id="input-error" role="alert" className="text-sm text-error mt-2 font-semibold">
           {error}
         </p>
       )}
 
       {/* Recent searches - lower visual weight */}
       {recentSearches.length > 0 && (
-        <div className="mt-6 p-4 bg-neutral-50 rounded-md border border-neutral-200">
-          <div className="flex items-center justify-between mb-3">
+        <div className="mt-6 p-6 bg-white rounded-lg border border-gray-200 shadow-sm">
+          <div className="flex items-center justify-between mb-4">
             <div className="flex-1"></div>
-            <p className="text-body-sm text-neutral-700 font-medium flex-1 text-center">Recent searches</p>
+            <p className="text-sm text-gray-600 font-semibold flex-1 text-center">Recent searches</p>
             <div className="flex-1 flex justify-end">
               <button
                 onClick={handleClearRecentSearches}
-                className="text-red-600 hover:text-red-700 transition-colors min-h-0 p-1"
+                className="text-error hover:text-red-700 transition-colors min-h-0 p-1"
                 type="button"
                 aria-label="Clear recent searches"
               >
@@ -128,7 +128,7 @@ export function RepoInput({ onSubmit, loading = false, currentRepo }: RepoInputP
               <button
                 key={repo}
                 onClick={() => handleRecentSearchClick(repo)}
-                className="px-3 py-1 text-body-sm text-neutral-700 bg-white border border-neutral-300 rounded-md hover:border-primary hover:text-primary transition-all duration-200 min-h-0"
+                className="px-4 py-2 text-sm text-gray-600 bg-white border border-gray-200 rounded-lg hover:border-brand-500 hover:text-brand-600 transition-all duration-200 min-h-0"
                 type="button"
                 aria-label={`Recent search: ${repo}`}
               >

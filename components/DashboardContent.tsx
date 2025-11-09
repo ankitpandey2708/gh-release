@@ -18,7 +18,7 @@ const ReleaseChart = dynamic(
     })),
   {
     loading: () => (
-      <div className="h-64 md:h-96 bg-neutral-100 rounded-md animate-pulse" />
+      <div className="h-64 md:h-96 bg-gray-200 rounded-lg animate-pulse" />
     ),
     ssr: false,
   }
@@ -104,13 +104,13 @@ export function DashboardContent({ initialRepo }: DashboardContentProps = {}) {
   return (
     <main
       id="main"
-      className="min-h-screen px-4 py-8 md:px-8 flex flex-col items-center bg-neutral-50 text-neutral-900 transition-colors duration-200"
+      className="min-h-screen px-4 py-8 md:px-8 flex flex-col items-center bg-gray-50 text-gray-900 transition-colors duration-200"
     >
       <ProgressBar loading={loading} />
 
       {/* Header with clear hierarchy */}
       <div className="flex flex-col sm:flex-row items-center gap-3 mb-8">
-        <h1 className="text-h1 font-bold animate-fadeIn">
+        <h1 className="text-3xl font-bold animate-fade-in">
           GitHub releases dashboard
         </h1>
       </div>
@@ -120,25 +120,25 @@ export function DashboardContent({ initialRepo }: DashboardContentProps = {}) {
 
       {/* Filters section - grouped with consistent spacing */}
       {data && !loading && data.length > 0 && (
-        <div className="mt-4 w-full max-w-4xl">
-          <div className="flex flex-col sm:flex-row gap-2 sm:items-center">
-            <div className="flex-1 flex flex-col sm:flex-row gap-2 sm:items-center p-4 bg-white rounded-md border border-neutral-200">
-              <label className="flex items-center gap-2 text-body">
-                <span className="text-neutral-700 font-medium">From:</span>
+        <div className="mt-6 w-full max-w-4xl">
+          <div className="flex flex-col sm:flex-row gap-4 sm:items-center">
+            <div className="flex-1 flex flex-col sm:flex-row gap-4 sm:items-center p-6 bg-white rounded-lg border border-gray-200">
+              <label className="flex items-center gap-2 text-base">
+                <span className="text-gray-600 font-semibold">From:</span>
                 <input
                   type="date"
                   value={startDate}
                   onChange={(e) => setStartDate(e.target.value)}
-                  className="px-3 py-3 border border-neutral-300 rounded-md bg-white text-neutral-900 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-colors"
+                  className="px-4 py-3 border border-gray-200 rounded-lg bg-white text-gray-900 focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10 transition-all duration-200"
                 />
               </label>
-              <label className="flex items-center gap-2 text-body">
-                <span className="text-neutral-700 font-medium">To:</span>
+              <label className="flex items-center gap-2 text-base">
+                <span className="text-gray-600 font-semibold">To:</span>
                 <input
                   type="date"
                   value={endDate}
                   onChange={(e) => setEndDate(e.target.value)}
-                  className="px-3 py-3 border border-neutral-300 rounded-md bg-white text-neutral-900 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-colors"
+                  className="px-4 py-3 border border-gray-200 rounded-lg bg-white text-gray-900 focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10 transition-all duration-200"
                 />
               </label>
               {(startDate || endDate) && (
@@ -147,7 +147,7 @@ export function DashboardContent({ initialRepo }: DashboardContentProps = {}) {
                     setStartDate("");
                     setEndDate("");
                   }}
-                  className="text-body-sm text-primary hover:text-primary-hover underline transition-colors min-h-0"
+                  className="text-sm text-brand-600 hover:text-brand-500 underline transition-colors min-h-0"
                 >
                   Clear dates
                 </button>
@@ -155,7 +155,7 @@ export function DashboardContent({ initialRepo }: DashboardContentProps = {}) {
             </div>
             <button
               onClick={exportToCSV}
-              className="px-6 py-3 bg-primary text-white font-medium text-body rounded-md flex items-center justify-center gap-2 hover:bg-primary-hover disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-sm hover:shadow-md w-[160px]"
+              className="px-6 py-3 bg-brand-500 text-white font-semibold text-base rounded-lg flex items-center justify-center gap-2 hover:bg-brand-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-md hover:shadow-lg w-[160px]"
             >
               Export to CSV
             </button>
@@ -179,11 +179,11 @@ export function DashboardContent({ initialRepo }: DashboardContentProps = {}) {
 
       {/* Empty state - guide users on next steps */}
       {data && !loading && data.length === 0 && (
-        <div className="mt-8 w-full max-w-4xl p-8 bg-primary-light rounded-md text-center border border-primary/20">
-          <h3 className="text-h3 font-medium text-neutral-900 mb-2">
+        <div className="mt-8 w-full max-w-4xl p-8 bg-brand-50 rounded-lg text-center border border-brand-500/20">
+          <h3 className="text-xl font-semibold text-gray-900 mb-2">
             No releases found
           </h3>
-          <p className="text-body text-neutral-600">
+          <p className="text-base text-gray-600">
             This repository has no releases yet
           </p>
         </div>
@@ -195,11 +195,11 @@ export function DashboardContent({ initialRepo }: DashboardContentProps = {}) {
         filteredData.length === 0 &&
         data &&
         data.length > 0 && (
-          <div className="mt-8 w-full max-w-4xl p-8 bg-yellow-50 rounded-md text-center border border-yellow-200">
-            <h3 className="text-h3 font-medium text-neutral-900 mb-2">
+          <div className="mt-8 w-full max-w-4xl p-8 bg-yellow-50 rounded-lg text-center border border-yellow-200">
+            <h3 className="text-xl font-semibold text-gray-900 mb-2">
               No releases match filters
             </h3>
-            <p className="text-body text-neutral-600">
+            <p className="text-base text-gray-600">
               Try adjusting your filters above
             </p>
           </div>
