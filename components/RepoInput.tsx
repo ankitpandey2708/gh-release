@@ -95,18 +95,34 @@ export function RepoInput({ onSubmit, loading = false, currentRepo }: RepoInputP
       {/* Recent searches - lower visual weight */}
       {recentSearches.length > 0 && (
         <div className="mt-6 p-4 bg-neutral-50 rounded-md border border-neutral-200">
-          <div className="flex items-center gap-2 mb-3">
-            <p className="text-body-sm text-neutral-700 font-medium">Recent searches</p>
-            <button
-              onClick={handleClearRecentSearches}
-              className="text-body-sm text-neutral-600 hover:text-red-600 underline transition-colors min-h-0"
-              type="button"
-              aria-label="Clear recent searches"
-            >
-              Clear
-            </button>
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex-1"></div>
+            <p className="text-body-sm text-neutral-700 font-medium flex-1 text-center">Recent searches</p>
+            <div className="flex-1 flex justify-end">
+              <button
+                onClick={handleClearRecentSearches}
+                className="text-red-600 hover:text-red-700 transition-colors min-h-0 p-1"
+                type="button"
+                aria-label="Clear recent searches"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <line x1="18" y1="6" x2="6" y2="18"></line>
+                  <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+              </button>
+            </div>
           </div>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-2 justify-center">
             {recentSearches.map((repo) => (
               <button
                 key={repo}
