@@ -1,604 +1,506 @@
-# UI Design Guide
+# Premium SaaS UI Design System
 
-**Purpose**: Practical guide to build professional UIs.
+**Purpose**: Build world-class, premium SaaS interfaces like Stripe, Plaid, and Linear.
 
-**Use this for**: Any web project.
+**Philosophy**: Sophisticated simplicity through depth, refinement, and attention to detail.
 
 ---
 
-## 1. Spacing
+## 1. Color System
 
-**Rule**: Use 8px as your base unit.
+### Core Philosophy
+Premium SaaS uses **sophisticated color palettes** with depth, not flat colors. Think indigo/purple richness, not basic blue.
 
-**Scale**:
+### Primary Palette (Indigo-based)
+
+```typescript
+colors: {
+  // Primary brand - Deep indigo (Stripe-inspired)
+  primary: {
+    50:  '#eef2ff',  // Lightest backgrounds
+    100: '#e0e7ff',  // Light hover states
+    200: '#c7d2fe',  // Subtle accents
+    300: '#a5b4fc',  // Muted elements
+    400: '#818cf8',  // Interactive elements
+    500: '#6366f1',  // Primary actions (main brand)
+    600: '#4f46e5',  // Primary hover
+    700: '#4338ca',  // Primary active
+    800: '#3730a3',  // Deep accents
+    900: '#312e81',  // Darkest accents
+  },
+
+  // Neutral scale - Warmer, more sophisticated
+  neutral: {
+    0:   '#ffffff',  // Pure white (cards on colored bg)
+    50:  '#fafbfc',  // Off-white (main background) - warmer than pure white
+    100: '#f5f7fa',  // Subtle backgrounds
+    200: '#e4e7eb',  // Borders, dividers
+    300: '#cbd2d9',  // Disabled text
+    400: '#9aa5b1',  // Placeholder text
+    500: '#7b8794',  // Secondary text
+    600: '#616e7c',  // Body text (muted)
+    700: '#52606d',  // Strong text
+    800: '#3e4c59',  // Headings
+    900: '#323f4b',  // Primary text
+    950: '#1f2933',  // Darkest text
+  },
+
+  // Accent - Complement primary (purple/pink)
+  accent: {
+    500: '#a855f7',  // Purple accent
+    600: '#9333ea',  // Purple hover
+  },
+
+  // Semantic colors (refined)
+  success: {
+    50:  '#ecfdf5',
+    500: '#10b981',
+    600: '#059669',
+  },
+  error: {
+    50:  '#fef2f2',
+    500: '#ef4444',
+    600: '#dc2626',
+  },
+  warning: {
+    50:  '#fffbeb',
+    500: '#f59e0b',
+    600: '#d97706',
+  },
+}
 ```
-4px  → Tight (icons, borders)
-8px  → Base (small gaps)
-16px → Standard (between elements)
-24px → Large (between groups)
-48px → Section breaks
-96px → Between major sections
-```
 
-**How to use**:
-- Padding inside components: 16px or 24px
-- Gap between elements: 8px or 16px
-- Margin between sections: 48px or 96px
-- Keep it consistent everywhere
+### Background Strategy
 
-**Example**:
+**Never use pure white (#ffffff) for main backgrounds**. Use off-white for warmth and depth:
+
 ```jsx
-<div className="p-6 space-y-4">  {/* 24px padding, 16px gaps */}
-  <h2>Title</h2>
-  <p>Content</p>
+// Main app background
+<body className="bg-neutral-50" /> // #fafbfc
+
+// Cards on main background
+<div className="bg-white" /> // Pure white creates contrast
+
+// Subtle section backgrounds
+<section className="bg-neutral-100" />
+
+// With gradient overlay for premium feel
+<div className="bg-gradient-to-b from-neutral-50 to-white" />
+```
+
+### Gradient Overlays (Premium Touch)
+
+```jsx
+// Subtle gradient backgrounds
+<div className="bg-gradient-to-br from-primary-50 via-white to-accent-50/30" />
+
+// Card with gradient border effect
+<div className="relative overflow-hidden">
+  <div className="absolute inset-0 bg-gradient-to-br from-primary-500/10 to-accent-500/10" />
+  <div className="relative bg-white/80 backdrop-blur-sm" />
 </div>
+
+// Button gradients (subtle, not garish)
+<button className="bg-gradient-to-b from-primary-500 to-primary-600" />
 ```
 
 ---
 
 ## 2. Typography
 
-**Rule**: One font. Three weights max.
+### Font Selection
 
-**Recommended**: System fonts (fast, free)
+**System fonts** for speed, **premium weights** for sophistication:
+
 ```css
-font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+font-family:
+  -apple-system,
+  BlinkMacSystemFont,
+  'Segoe UI',
+  'Roboto',
+  'Helvetica Neue',
+  sans-serif;
 ```
 
-**Type scale** (use these sizes only):
-```
-12px → Captions, labels
-14px → Secondary text
-16px → Body text (default)
-20px → Small headings
-24px → Medium headings
-32px → Large headings
-48px → Hero text
-```
+**Or use Inter** (Stripe's choice) for refined feel:
 
-**Weights**:
-- 400 (normal) → Body text
-- 600 (semibold) → Emphasis
-- 700 (bold) → Headings
-
-**Line height**:
-- Body: 1.6
-- Headings: 1.2
-
-**Max width for reading**: 65 characters (use `max-w-prose`)
-
-**Example**:
 ```jsx
-<h1 className="text-5xl font-bold">Main Heading</h1>
-<h2 className="text-3xl font-semibold">Section Title</h2>
-<p className="text-base leading-relaxed">Body text here.</p>
-<p className="text-sm text-gray-600">Secondary info</p>
+import { Inter } from 'next/font/google';
+
+const inter = Inter({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  display: 'swap',
+});
 ```
 
----
+### Type Scale (Premium Sizing)
 
-## 3. Colors
-
-**Rule**: Start with gray. Add one brand color. Add semantic colors.
-
-**Gray scale** (use for most UI):
 ```typescript
-gray: {
-  50:  '#fafafa',  // Subtle backgrounds
-  200: '#e5e5e5',  // Borders
-  500: '#737373',  // Secondary text
-  900: '#171717',  // Primary text
+fontSize: {
+  xs:   ['0.75rem', { lineHeight: '1.5', letterSpacing: '0.02em' }],  // 12px - Labels
+  sm:   ['0.875rem', { lineHeight: '1.5', letterSpacing: '0.01em' }], // 14px - Secondary
+  base: ['1rem', { lineHeight: '1.6', letterSpacing: '0' }],          // 16px - Body
+  lg:   ['1.125rem', { lineHeight: '1.5', letterSpacing: '0' }],      // 18px - Lead text
+  xl:   ['1.25rem', { lineHeight: '1.4', letterSpacing: '-0.01em' }], // 20px - Small headings
+  '2xl': ['1.5rem', { lineHeight: '1.3', letterSpacing: '-0.02em' }], // 24px - Headings
+  '3xl': ['2rem', { lineHeight: '1.2', letterSpacing: '-0.02em' }],   // 32px - Large headings
+  '4xl': ['2.5rem', { lineHeight: '1.1', letterSpacing: '-0.03em' }], // 40px - Hero
+  '5xl': ['3rem', { lineHeight: '1.1', letterSpacing: '-0.03em' }],   // 48px - Display
 }
 ```
 
-**Brand color** (pick one):
+**Key premium details**:
+- **Letter-spacing**: Tighter on large text (-0.02em to -0.03em)
+- **Line height**: Lower for headings (1.1-1.3), generous for body (1.6)
+- **Font weights**: 500 (medium) for subtle emphasis
+
+### Premium Typography Patterns
+
+```jsx
+// Page title with tight spacing
+<h1 className="text-4xl font-bold text-neutral-950 tracking-tight">
+  Dashboard
+</h1>
+
+// Section heading with subtle weight
+<h2 className="text-2xl font-semibold text-neutral-900 tracking-tight">
+  Recent activity
+</h2>
+
+// Body text with optimal readability
+<p className="text-base text-neutral-700 leading-relaxed max-w-prose">
+  Your content here
+</p>
+
+// Label with letter-spacing
+<label className="text-sm font-medium text-neutral-700 tracking-wide uppercase">
+  Email address
+</label>
+
+// Muted secondary text
+<p className="text-sm text-neutral-500">
+  Optional description
+</p>
+```
+
+---
+
+## 3. Shadows & Elevation
+
+### Premium Shadow System
+
+Stripe/Plaid use **layered shadows** for depth, not single-color shadows:
+
 ```typescript
-brand: {
-  50:  '#f0f9ff',  // Light backgrounds
-  500: '#0ea5e9',  // Main color
-  600: '#0284c7',  // Hover state
+boxShadow: {
+  // Subtle elevation (cards at rest)
+  'sm': '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
+
+  // Standard elevation (cards, dropdowns)
+  'DEFAULT': '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1)',
+
+  // Medium elevation (hoverable cards)
+  'md': '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1)',
+
+  // Large elevation (modals, popovers)
+  'lg': '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1)',
+
+  // Extra large (elevated modals)
+  'xl': '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)',
+
+  // Premium shadow with color tint (use sparingly)
+  'primary': '0 8px 16px -4px rgba(99, 102, 241, 0.2), 0 4px 8px -2px rgba(99, 102, 241, 0.1)',
 }
 ```
 
-**Semantic colors**:
-```typescript
-success: '#10b981',  // Green
-error:   '#ef4444',  // Red
-warning: '#f59e0b',  // Yellow
-```
+### Usage Examples
 
-**Usage**:
-- Background: white or gray-50
-- Text: gray-900 (main), gray-600 (secondary)
-- Borders: gray-200
-- Primary actions: brand-500
-- Hover: brand-600
-
-**Contrast**: Minimum 4.5:1 for text (use [WebAIM checker](https://webaim.org/resources/contrastchecker/))
-
-**Example**:
 ```jsx
-<div className="bg-white border-gray-200 text-gray-900">
-  <button className="bg-brand-500 hover:bg-brand-600 text-white">
-    Click me
-  </button>
-</div>
+// Resting card
+<div className="bg-white rounded-xl shadow-sm" />
+
+// Hoverable card with elevation change
+<div className="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200" />
+
+// Premium card with colored shadow
+<div className="bg-white rounded-xl shadow-primary" />
+
+// Modal/dropdown
+<div className="bg-white rounded-xl shadow-xl" />
 ```
 
 ---
 
-## 4. Shadows
+## 4. Border Radius (Refined)
 
-**Rule**: Use 3 levels max.
-
-**Levels**:
 ```typescript
-shadow-sm  → '0 1px 2px rgba(0,0,0,0.05)'      // Subtle cards
-shadow-md  → '0 4px 6px rgba(0,0,0,0.1)'       // Default elevation
-shadow-lg  → '0 10px 15px rgba(0,0,0,0.1)'     // Hover state
+borderRadius: {
+  'sm':   '0.375rem',  // 6px  - Small elements
+  'DEFAULT': '0.5rem', // 8px  - Buttons, inputs
+  'lg':   '0.75rem',   // 12px - Cards
+  'xl':   '1rem',      // 16px - Large containers
+  '2xl':  '1.5rem',    // 24px - Hero sections
+}
 ```
 
-**When to use**:
-- Cards: `shadow-sm`
-- Modals/dropdowns: `shadow-lg`
-- Buttons on hover: `shadow-md` → `shadow-lg`
-
-**Dark mode**: Reduce shadow opacity by 50%
+**Premium pattern**: Larger radius (12px-16px) on cards for modern, friendly feel.
 
 ---
 
-## 5. Border Radius
+## 5. Buttons (Premium Variants)
 
-**Rule**: Pick 2-3 values. Use them consistently.
-
-**Recommended**:
-```typescript
-rounded-md  → 8px   // Buttons, inputs
-rounded-lg  → 12px  // Cards
-rounded-xl  → 16px  // Large containers
-```
-
-**Example**:
-```jsx
-<button className="rounded-md">Button</button>
-<div className="rounded-lg">Card</div>
-```
-
----
-
-## 6. Buttons
-
-**Rule**: 3 variants. Clear hierarchy.
-
-### Primary
-Main actions. Use once per screen.
+### Primary Button (Gradient + Shadow)
 
 ```jsx
 <button className="
+  group relative
   px-6 py-3
-  bg-brand-500 hover:bg-brand-600
-  text-white font-semibold
-  rounded-lg shadow-md
+  bg-gradient-to-b from-primary-500 to-primary-600
+  hover:from-primary-600 hover:to-primary-700
+  text-white font-semibold text-base
+  rounded-lg
+  shadow-md hover:shadow-lg
   transition-all duration-200
+  focus:ring-4 focus:ring-primary-500/20
 ">
-  Primary Action
+  <span className="relative z-10">Primary Action</span>
+  {/* Subtle highlight overlay */}
+  <div className="absolute inset-0 rounded-lg bg-white opacity-0 group-hover:opacity-10 transition-opacity" />
 </button>
 ```
 
-### Secondary
-Less important actions.
+### Secondary Button (Refined)
 
 ```jsx
 <button className="
   px-6 py-3
-  border-2 border-gray-300 hover:border-brand-500
-  text-gray-700 hover:text-brand-600
+  bg-white hover:bg-neutral-50
+  border border-neutral-200 hover:border-neutral-300
+  text-neutral-700 hover:text-neutral-900
+  font-semibold text-base
   rounded-lg
+  shadow-sm hover:shadow
   transition-all duration-200
+  focus:ring-4 focus:ring-neutral-500/10
 ">
   Secondary Action
 </button>
 ```
 
-### Ghost
-Subtle actions.
+### Ghost Button
 
 ```jsx
 <button className="
   px-4 py-2
-  text-brand-600 hover:bg-brand-50
+  text-neutral-600 hover:text-neutral-900
+  hover:bg-neutral-100
   rounded-lg
-  transition-all duration-200
+  font-medium text-sm
+  transition-all duration-150
 ">
-  Ghost Action
+  Tertiary Action
 </button>
 ```
 
-**All buttons**:
-- Min height: 44px (for touch)
-- Include focus state
-- Disable with `opacity-50 cursor-not-allowed`
+### Danger Button
+
+```jsx
+<button className="
+  px-6 py-3
+  bg-error-500 hover:bg-error-600
+  text-white font-semibold
+  rounded-lg
+  shadow-md hover:shadow-lg
+  transition-all duration-200
+">
+  Delete
+</button>
+```
 
 ---
 
-## 7. Forms
+## 6. Form Inputs (Premium)
 
-**Rules**:
-- Labels above inputs
-- Clear focus states
-- Show errors inline
-- Mark required fields with *
+### Text Input
 
-**Input**:
 ```jsx
 <div className="space-y-2">
-  <label className="block text-sm font-medium text-gray-700">
-    Email <span className="text-red-500">*</span>
+  <label className="block text-sm font-medium text-neutral-700">
+    Email address
   </label>
 
   <input
     type="email"
     className="
       w-full px-4 py-3
-      border border-gray-300 rounded-lg
-      focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10
+      bg-white
+      border border-neutral-200
+      rounded-lg
+      text-neutral-900 placeholder:text-neutral-400
+      focus:border-primary-500 focus:ring-4 focus:ring-primary-500/10
       transition-all duration-200
+      shadow-sm
     "
-    placeholder="you@example.com"
+    placeholder="you@company.com"
   />
 
-  {/* Error */}
-  <p className="text-sm text-red-600">Invalid email</p>
-
-  {/* Helper */}
-  <p className="text-sm text-gray-600">We won't spam you</p>
+  <p className="text-sm text-neutral-500">
+    We'll never share your email.
+  </p>
 </div>
 ```
 
-**Checkbox**:
+### Input with Icon
+
 ```jsx
-<label className="flex items-center gap-3 cursor-pointer">
-  <input type="checkbox" className="w-5 h-5" />
-  <span>I agree to terms</span>
-</label>
+<div className="relative">
+  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+    <SearchIcon className="h-5 w-5 text-neutral-400" />
+  </div>
+
+  <input
+    className="w-full pl-10 pr-4 py-3 border border-neutral-200 rounded-lg focus:border-primary-500 focus:ring-4 focus:ring-primary-500/10"
+    placeholder="Search..."
+  />
+</div>
 ```
 
 ---
 
-## 8. Cards
+## 7. Cards (Premium Treatment)
 
-**Rule**: White background. Subtle border. Shadow on hover.
+### Standard Premium Card
 
 ```jsx
 <div className="
   bg-white
-  border border-gray-200
-  rounded-lg
+  border border-neutral-200/60
+  rounded-xl
   p-6
-  shadow-sm hover:shadow-lg
+  shadow-sm hover:shadow-md
   transition-all duration-300
+  hover:-translate-y-0.5
 ">
-  <h3 className="text-xl font-semibold mb-2">Card Title</h3>
-  <p className="text-gray-600">Card content</p>
+  <h3 className="text-lg font-semibold text-neutral-900 mb-2">
+    Card Title
+  </h3>
+  <p className="text-neutral-600">
+    Card content with proper contrast
+  </p>
 </div>
 ```
 
-**With hover lift**:
+### Card with Gradient Border (Premium)
+
 ```jsx
-className="hover:-translate-y-1"
-```
+<div className="relative group">
+  {/* Gradient border */}
+  <div className="absolute -inset-0.5 bg-gradient-to-br from-primary-500 to-accent-500 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity blur" />
 
----
-
-## 9. Layout
-
-**Container widths**:
-```css
-640px  → Forms, narrow content
-768px  → Blog posts
-1024px → Dashboards (recommended)
-1280px → Wide layouts
-```
-
-**Center content**:
-```jsx
-<div className="container mx-auto px-6 max-w-4xl">
-  {/* Content */}
+  {/* Card content */}
+  <div className="relative bg-white rounded-xl p-6 shadow-sm">
+    <h3 className="text-lg font-semibold text-neutral-900">
+      Premium Card
+    </h3>
+  </div>
 </div>
 ```
 
-**Grid patterns**:
+### Interactive Card (Stripe-style)
+
 ```jsx
-{/* 1 column mobile, 3 desktop */}
-<div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-
-{/* Stack mobile, side-by-side desktop */}
-<div className="flex flex-col md:flex-row gap-4">
-```
-
----
-
-## 10. Responsive Design
-
-**Breakpoints**:
-```
-sm:  640px  → Phone landscape
-md:  768px  → Tablet
-lg:  1024px → Laptop
-xl:  1280px → Desktop
-```
-
-**Mobile first**: Start with mobile, add `md:` and `lg:` for larger screens.
-
-**Patterns**:
-```jsx
-{/* Responsive text */}
-<h1 className="text-4xl md:text-6xl">
-
-{/* Hide on mobile */}
-<div className="hidden md:block">Desktop only</div>
-
-{/* Show on mobile only */}
-<div className="md:hidden">Mobile only</div>
-
-{/* Responsive padding */}
-<div className="px-4 md:px-8 lg:px-12">
-```
-
-**Touch targets**: Min 44px height/width on mobile
-
----
-
-## 11. States
-
-Design these for every component:
-
-### Empty State
-```jsx
-<div className="text-center py-16">
-  <svg className="w-24 h-24 mx-auto text-gray-400 mb-4">
-    {/* Icon */}
-  </svg>
-  <h3 className="text-xl font-semibold mb-2">No data yet</h3>
-  <p className="text-gray-600 mb-6">Get started by adding an item</p>
-  <button>Add Item</button>
-</div>
-```
-
-### Loading State
-```jsx
-{/* Skeleton */}
-<div className="space-y-3 animate-pulse">
-  <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-  <div className="h-4 bg-gray-200 rounded w-1/2"></div>
-</div>
-
-{/* Spinner */}
-<div className="flex justify-center">
-  <div className="animate-spin h-8 w-8 border-4 border-brand-500 border-t-transparent rounded-full"></div>
-</div>
-```
-
-### Error State
-```jsx
-<div className="p-4 bg-red-50 border border-red-200 rounded-lg">
-  <div className="flex gap-3">
-    <svg className="w-5 h-5 text-red-500">!</svg>
+<button className="
+  w-full text-left
+  bg-white hover:bg-neutral-50
+  border border-neutral-200 hover:border-primary-300
+  rounded-xl p-6
+  shadow-sm hover:shadow-md
+  transition-all duration-200
+  group
+">
+  <div className="flex items-start justify-between">
     <div>
-      <h4 className="font-semibold text-red-900">Error</h4>
-      <p className="text-sm text-red-700">Something went wrong. Try again.</p>
+      <h3 className="text-lg font-semibold text-neutral-900 group-hover:text-primary-600 transition-colors">
+        Interactive Item
+      </h3>
+      <p className="text-neutral-600 mt-1">
+        Click to view details
+      </p>
     </div>
+    <ChevronRightIcon className="h-5 w-5 text-neutral-400 group-hover:text-primary-500 transition-colors" />
   </div>
-</div>
-```
-
-### Success State
-```jsx
-<div className="p-4 bg-green-50 border border-green-200 rounded-lg">
-  <div className="flex gap-3">
-    <svg className="w-5 h-5 text-green-500">✓</svg>
-    <p className="text-sm font-medium text-green-900">Saved successfully!</p>
-  </div>
-</div>
-```
-
----
-
-## 12. Animations
-
-**Rule**: Fast. Subtle. Purposeful.
-
-**Timing**:
-- 150ms → Micro-interactions (button hover)
-- 200ms → Standard (most transitions)
-- 300ms → Noticeable (modal open)
-
-**Easing**: Use `ease-out` for entering, `ease-in` for exiting
-
-**Common animations**:
-
-```css
-/* Fade in */
-@keyframes fade-in {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-/* Slide up */
-@keyframes slide-up {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-```
-
-**Usage**:
-```jsx
-{/* Button hover */}
-<button className="transition-all duration-200 hover:-translate-y-0.5">
-
-{/* Card entrance */}
-<div className="animate-fade-in">
-
-{/* Stagger list items */}
-<div
-  className="animate-slide-up"
-  style={{ animationDelay: `${index * 100}ms` }}
->
-```
-
-**Respect user preference**:
-```css
-@media (prefers-reduced-motion: reduce) {
-  * {
-    animation-duration: 0.01ms !important;
-    transition-duration: 0.01ms !important;
-  }
-}
-```
-
----
-
-## 13. Dark Mode
-
-**Setup** (using next-themes):
-
-```jsx
-// 1. Wrap app with ThemeProvider
-import { ThemeProvider } from 'next-themes'
-
-<ThemeProvider attribute="class">
-  {children}
-</ThemeProvider>
-
-// 2. Add toggle button
-'use client';
-import { useTheme } from 'next-themes';
-
-export function ThemeToggle() {
-  const { theme, setTheme } = useTheme();
-  return (
-    <button onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}>
-      {theme === 'dark' ? '☀️' : '🌙'}
-    </button>
-  );
-}
-
-// 3. Update components
-<div className="bg-white dark:bg-gray-900 text-gray-900 dark:text-white">
-```
-
-**Tips**:
-- Reduce shadow opacity in dark mode
-- Use `bg-white/5` for subtle surfaces
-- Test contrast in both modes
-
----
-
-## 14. Icons
-
-**Rules**:
-- Use one icon set (Heroicons, Lucide)
-- Match icon size to text height
-- Keep stroke width consistent (2px)
-- Align icons left of text
-
-**Usage**:
-```jsx
-import { ChartBarIcon } from '@heroicons/react/24/outline'
-
-<div className="flex items-center gap-2">
-  <ChartBarIcon className="w-5 h-5" />
-  <span>Analytics</span>
-</div>
-```
-
-**Icon-only buttons**: Add `aria-label`
-```jsx
-<button aria-label="Close">
-  <XIcon className="w-5 h-5" />
 </button>
 ```
 
 ---
 
-## 15. Tables
+## 8. Charts (Premium Styling)
 
-**Structure**:
-```jsx
-<table className="w-full">
-  <thead className="bg-gray-50 border-b border-gray-200">
-    <tr>
-      <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">
-        Name
-      </th>
-      <th className="px-6 py-3 text-right text-xs font-semibold text-gray-600 uppercase">
-        Amount
-      </th>
-    </tr>
-  </thead>
-  <tbody className="divide-y divide-gray-200">
-    <tr className="hover:bg-gray-50">
-      <td className="px-6 py-4 text-sm text-gray-900">Item</td>
-      <td className="px-6 py-4 text-sm text-gray-900 text-right font-mono">$1,234</td>
-    </tr>
-  </tbody>
-</table>
-```
-
-**Rules**:
-- Right-align numbers
-- Use monospace font for numbers
-- Add hover state to rows
-- Keep header sticky for long tables
-
----
-
-## 16. Charts
-
-**Styling** (using Recharts):
+### Line Chart (Recharts)
 
 ```jsx
 <LineChart data={data}>
+  {/* Subtle grid with no vertical lines */}
   <CartesianGrid
     strokeDasharray="3 3"
-    stroke="#e5e5e5"
+    stroke="#e4e7eb"
     vertical={false}
   />
 
+  {/* Refined axis styling */}
   <XAxis
     dataKey="month"
-    stroke="#9ca3af"
-    style={{ fontSize: 12 }}
-    tickLine={false}
-  />
-
-  <YAxis
-    stroke="#9ca3af"
-    style={{ fontSize: 12 }}
+    stroke="#9aa5b1"
+    style={{ fontSize: '0.75rem', fontWeight: 500 }}
     tickLine={false}
     axisLine={false}
   />
 
+  <YAxis
+    stroke="#9aa5b1"
+    style={{ fontSize: '0.75rem', fontWeight: 500 }}
+    tickLine={false}
+    axisLine={false}
+    tickFormatter={(value) => `${value}k`}
+  />
+
+  {/* Premium tooltip */}
   <Tooltip content={<CustomTooltip />} />
 
-  <Line
+  {/* Primary line with gradient */}
+  <defs>
+    <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="5%" stopColor="#6366f1" stopOpacity={0.3}/>
+      <stop offset="95%" stopColor="#6366f1" stopOpacity={0}/>
+    </linearGradient>
+  </defs>
+
+  <Area
     type="monotone"
     dataKey="value"
-    stroke="#0ea5e9"
-    strokeWidth={3}
-    dot={{ fill: '#0ea5e9', r: 4 }}
+    stroke="#6366f1"
+    strokeWidth={2.5}
+    fill="url(#colorValue)"
+    dot={false}
   />
 </LineChart>
 ```
 
-**Custom tooltip**:
+### Premium Tooltip
+
 ```jsx
 function CustomTooltip({ active, payload, label }) {
-  if (!active) return null;
+  if (!active || !payload) return null;
+
   return (
-    <div className="bg-white border border-gray-200 rounded-lg shadow-lg px-4 py-3">
-      <p className="text-sm text-gray-600">{label}</p>
-      <p className="text-lg font-bold text-brand-600">{payload[0].value}</p>
+    <div className="bg-white border border-neutral-200 rounded-lg shadow-xl px-4 py-3 backdrop-blur-sm">
+      <p className="text-xs font-medium text-neutral-500 mb-1">
+        {label}
+      </p>
+      <p className="text-lg font-bold text-neutral-900">
+        {payload[0].value.toLocaleString()}
+      </p>
     </div>
   );
 }
@@ -606,178 +508,310 @@ function CustomTooltip({ active, payload, label }) {
 
 ---
 
-## 17. Accessibility
+## 9. States (Premium)
 
-**Checklist**:
-- [ ] Semantic HTML (`<nav>`, `<main>`, `<button>`)
-- [ ] Heading hierarchy (h1 → h2 → h3)
-- [ ] Alt text for images
-- [ ] Labels for form inputs
-- [ ] ARIA labels for icon buttons
-- [ ] Keyboard navigation (Tab, Enter, Esc)
-- [ ] Focus states visible
-- [ ] Color contrast 4.5:1 minimum
-- [ ] Skip to content link
+### Empty State
 
-**Focus states**:
-```css
-button:focus-visible,
-input:focus-visible {
-  outline: 2px solid #0ea5e9;
-  outline-offset: 2px;
+```jsx
+<div className="text-center py-16 px-6 max-w-md mx-auto">
+  {/* Icon with gradient background */}
+  <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-neutral-100 to-neutral-200 mb-4">
+    <InboxIcon className="w-8 h-8 text-neutral-400" />
+  </div>
+
+  <h3 className="text-xl font-semibold text-neutral-900 mb-2">
+    No data yet
+  </h3>
+
+  <p className="text-neutral-600 mb-6">
+    Get started by creating your first item
+  </p>
+
+  <button className="bg-primary-500 hover:bg-primary-600 text-white px-6 py-3 rounded-lg font-semibold shadow-md">
+    Create Item
+  </button>
+</div>
+```
+
+### Loading Skeleton (Shimmer Effect)
+
+```jsx
+<div className="space-y-4">
+  {[1, 2, 3].map((i) => (
+    <div key={i} className="bg-neutral-100 rounded-lg h-20 relative overflow-hidden">
+      {/* Shimmer animation */}
+      <div className="absolute inset-0 -translate-x-full animate-shimmer bg-gradient-to-r from-neutral-100 via-neutral-50 to-neutral-100" />
+    </div>
+  ))}
+</div>
+
+{/* Add to tailwind.config */}
+animation: {
+  shimmer: 'shimmer 2s infinite',
+},
+keyframes: {
+  shimmer: {
+    '100%': { transform: 'translateX(100%)' },
+  },
 }
 ```
 
-**Skip link**:
+### Success Toast (Stripe-style)
+
 ```jsx
-<a href="#main" className="sr-only focus:not-sr-only">
-  Skip to content
-</a>
+<div className="bg-white border border-neutral-200 rounded-lg shadow-xl p-4 flex items-start gap-3 max-w-sm">
+  <div className="flex-shrink-0 w-8 h-8 bg-success-50 rounded-full flex items-center justify-center">
+    <CheckIcon className="w-5 h-5 text-success-600" />
+  </div>
+
+  <div className="flex-1">
+    <p className="font-semibold text-neutral-900">
+      Success
+    </p>
+    <p className="text-sm text-neutral-600 mt-0.5">
+      Your changes have been saved
+    </p>
+  </div>
+</div>
 ```
 
 ---
 
-## 18. Performance
+## 10. Spacing System
 
-**Code splitting**:
-```jsx
-const Chart = dynamic(() => import('./Chart'), {
-  loading: () => <Skeleton />,
-  ssr: false,
-});
+```typescript
+spacing: {
+  '0': '0',
+  '0.5': '0.125rem',  // 2px
+  '1': '0.25rem',     // 4px
+  '2': '0.5rem',      // 8px   - Base unit
+  '3': '0.75rem',     // 12px
+  '4': '1rem',        // 16px  - Standard gap
+  '5': '1.25rem',     // 20px
+  '6': '1.5rem',      // 24px  - Large gap
+  '8': '2rem',        // 32px
+  '10': '2.5rem',     // 40px
+  '12': '3rem',       // 48px  - Section gap
+  '16': '4rem',       // 64px
+  '20': '5rem',       // 80px
+  '24': '6rem',       // 96px  - Major sections
+}
 ```
 
-**Image optimization**:
-```jsx
-import Image from 'next/image';
+---
 
-<Image
-  src="/hero.jpg"
-  width={1200}
-  height={800}
-  alt="Hero"
-  priority  // Above fold only
-/>
+## 11. Animations (Micro-interactions)
+
+### Premium Transitions
+
+```typescript
+transitionDuration: {
+  '75': '75ms',    // Instant feedback
+  '150': '150ms',  // Micro-interactions
+  '200': '200ms',  // Standard (default)
+  '300': '300ms',  // Noticeable
+  '500': '500ms',  // Dramatic
+}
+
+transitionTimingFunction: {
+  'ease-out': 'cubic-bezier(0, 0, 0.2, 1)',     // Entering
+  'ease-in': 'cubic-bezier(0.4, 0, 1, 1)',      // Exiting
+  'ease-in-out': 'cubic-bezier(0.4, 0, 0.2, 1)', // Both
+  'spring': 'cubic-bezier(0.34, 1.56, 0.64, 1)', // Bounce
+}
 ```
 
-**Font optimization**:
-```jsx
-import { Inter } from 'next/font/google';
+### Smooth Hover Effects
 
-const inter = Inter({ subsets: ['latin'] });
+```jsx
+// Button with smooth scale
+<button className="transition-transform duration-150 hover:scale-105 active:scale-95">
+
+// Card with lift
+<div className="transition-all duration-200 hover:-translate-y-1 hover:shadow-lg">
+
+// Background color fade
+<div className="transition-colors duration-200 hover:bg-primary-50">
 ```
 
-**Targets**:
-- Lighthouse score: 90+
-- First paint: < 1.5s
-- Bundle size: < 200KB
+### Stagger Animations
+
+```jsx
+{items.map((item, index) => (
+  <div
+    key={item.id}
+    className="animate-fade-in"
+    style={{
+      animationDelay: `${index * 50}ms`,
+      animationFillMode: 'both'
+    }}
+  >
+    {item.content}
+  </div>
+))}
+```
+
+---
+
+## 12. Premium Patterns
+
+### Branded Section Divider
+
+```jsx
+<div className="relative py-24">
+  {/* Background gradient */}
+  <div className="absolute inset-0 bg-gradient-to-b from-white via-primary-50/20 to-white" />
+
+  {/* Content */}
+  <div className="relative">
+    Your section content
+  </div>
+</div>
+```
+
+### Stat Card (Premium)
+
+```jsx
+<div className="bg-white border border-neutral-200 rounded-xl p-6 shadow-sm">
+  <p className="text-sm font-medium text-neutral-500 uppercase tracking-wide mb-1">
+    Total Revenue
+  </p>
+
+  <p className="text-3xl font-bold text-neutral-900 mb-2">
+    $45,231
+  </p>
+
+  <div className="flex items-center gap-2">
+    <span className="inline-flex items-center px-2 py-1 rounded-md bg-success-50 text-success-700 text-xs font-medium">
+      <TrendingUpIcon className="w-3 h-3 mr-1" />
+      12.5%
+    </span>
+    <span className="text-xs text-neutral-500">
+      vs last month
+    </span>
+  </div>
+</div>
+```
+
+### Badge Component
+
+```jsx
+// Success badge
+<span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-success-100 text-success-800">
+  Active
+</span>
+
+// Primary badge
+<span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary-100 text-primary-800">
+  New
+</span>
+
+// Neutral badge
+<span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-neutral-100 text-neutral-700">
+  Draft
+</span>
+```
+
+---
+
+## 13. Accessibility (Premium Standards)
+
+```jsx
+// Focus visible states with brand color
+<style jsx global>{`
+  *:focus-visible {
+    outline: 2px solid #6366f1;
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+`}</style>
+
+// Reduced motion support
+<style jsx global>{`
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+`}</style>
+```
 
 ---
 
 ## Quick Reference
 
+### Premium Color Usage
+```
+Background:    bg-neutral-50 (not white!)
+Cards:         bg-white (stands out)
+Text primary:  text-neutral-900
+Text secondary: text-neutral-600
+Brand:         primary-500 (indigo)
+Borders:       border-neutral-200
+```
+
+### Typography
+```
+Heading:    font-bold tracking-tight
+Subheading: font-semibold tracking-tight
+Body:       text-neutral-700 leading-relaxed
+Label:      text-sm font-medium text-neutral-700
+Muted:      text-neutral-500
+```
+
+### Shadows
+```
+Card at rest:  shadow-sm
+Card hover:    shadow-md
+Modal:         shadow-xl
+Premium:       shadow-primary
+```
+
 ### Spacing
 ```
-gap-2  → 8px
-gap-4  → 16px
-gap-6  → 24px
-p-6    → 24px padding
-py-24  → 96px vertical
-```
-
-### Text
-```
-text-sm     → 14px
-text-base   → 16px
-text-xl     → 20px
-text-4xl    → 36px
-font-semibold → 600
-font-bold   → 700
-```
-
-### Colors
-```
-text-gray-600      → Secondary text
-text-gray-900      → Primary text
-bg-white           → Background
-bg-brand-500       → Brand color
-border-gray-200    → Borders
-```
-
-### Layout
-```
-container mx-auto px-6
-max-w-4xl
-grid grid-cols-1 md:grid-cols-3 gap-6
-flex items-center justify-between
-```
-
-### Responsive
-```
-sm:  → Phone landscape (640px)
-md:  → Tablet (768px)
-lg:  → Laptop (1024px)
+Card padding:  p-6
+Section gap:   space-y-12
+Grid gap:      gap-6
 ```
 
 ---
 
-## Checklist Before Shipping
+## Inspiration
 
-### Visual
-- [ ] Consistent spacing throughout
-- [ ] Readable text (16px+ for body)
-- [ ] Clear visual hierarchy
-- [ ] Professional look in screenshots
-
-### Functional
-- [ ] Works on mobile
-- [ ] Fast loading (< 3s)
-- [ ] Keyboard navigable
-- [ ] Error states handled
-
-### Polish
-- [ ] All images have alt text
-- [ ] Meta tags added
-- [ ] Favicon added
-- [ ] Loading states smooth
-
----
-
-## Tools
-
-**Design**:
-- [Figma](https://figma.com) - Mockups
-- [Tailwind UI](https://tailwindui.com) - Components
-- [Heroicons](https://heroicons.com) - Icons
-
-**Colors**:
-- [Coolors](https://coolors.co) - Palettes
-- [Contrast Checker](https://webaim.org/resources/contrastchecker/) - A11y
-
-**Testing**:
-- [Lighthouse](https://developers.google.com/web/tools/lighthouse) - Performance
-- [WAVE](https://wave.webaim.org) - Accessibility
+**Study these premium SaaS products**:
+- [Stripe](https://stripe.com) - Color, shadows, refinement
+- [Linear](https://linear.app) - Typography, spacing, polish
+- [Plaid](https://plaid.com) - Gradients, depth, sophistication
+- [Vercel](https://vercel.com) - Minimalism, shadows, borders
+- [Raycast](https://raycast.com) - Animations, micro-interactions
 
 ---
 
 ## Summary
 
-**Good design is**:
-1. Simple
-2. Consistent
-3. Fast
-4. Accessible
+**Premium SaaS design is**:
+1. **Sophisticated** - Rich colors (indigo), not flat blue
+2. **Refined** - Off-white backgrounds, layered shadows
+3. **Polished** - Tight letter-spacing, proper weights
+4. **Detailed** - Gradients, hover states, micro-interactions
+5. **Accessible** - Proper contrast, focus states, motion preferences
 
-**Start with**:
-1. Gray colors
-2. System fonts
-3. 8px spacing
-4. Basic components
+**Start premium**:
+1. Indigo primary palette
+2. Off-white (#fafbfc) background
+3. Layered shadow system
+4. 8px spacing base
+5. Refined typography
 
-**Add later**:
-1. Brand colors
-2. Custom fonts
-3. Animations
-4. Advanced features
+**Premium touches**:
+1. Gradient buttons
+2. Colored shadows
+3. Gradient borders on hover
+4. Shimmer loading states
+5. Smooth micro-interactions
 
-**Remember**: Ship fast. Iterate. Perfect is the enemy of done.
+**Remember**: Premium design is about **refinement and attention to detail**, not complexity.
