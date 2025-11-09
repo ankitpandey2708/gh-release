@@ -138,7 +138,7 @@ export function DashboardContent({ initialRepo }: DashboardContentProps = {}) {
                 type="date"
                 value={startDate}
                 onChange={(e) => setStartDate(e.target.value)}
-                className="px-3 py-2 border border-neutral-300 rounded-md bg-white text-neutral-900 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-colors"
+                className="px-3 py-3 border border-neutral-300 rounded-md bg-white text-neutral-900 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-colors"
               />
             </label>
             <label className="flex items-center gap-2 text-body">
@@ -147,7 +147,7 @@ export function DashboardContent({ initialRepo }: DashboardContentProps = {}) {
                 type="date"
                 value={endDate}
                 onChange={(e) => setEndDate(e.target.value)}
-                className="px-3 py-2 border border-neutral-300 rounded-md bg-white text-neutral-900 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-colors"
+                className="px-3 py-3 border border-neutral-300 rounded-md bg-white text-neutral-900 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-colors"
               />
             </label>
             {(startDate || endDate) && (
