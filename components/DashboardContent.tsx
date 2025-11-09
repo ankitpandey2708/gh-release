@@ -132,35 +132,37 @@ export function DashboardContent({ initialRepo }: DashboardContentProps = {}) {
           </label>  */}
 
           <div className="flex flex-col sm:flex-row gap-2 sm:items-center">
-            <label className="flex items-center gap-2 text-body">
-              <span className="text-neutral-700 font-medium">From:</span>
-              <input
-                type="date"
-                value={startDate}
-                onChange={(e) => setStartDate(e.target.value)}
-                className="px-3 py-3 border border-neutral-300 rounded-md bg-white text-neutral-900 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-colors"
-              />
-            </label>
-            <label className="flex items-center gap-2 text-body">
-              <span className="text-neutral-700 font-medium">To:</span>
-              <input
-                type="date"
-                value={endDate}
-                onChange={(e) => setEndDate(e.target.value)}
-                className="px-3 py-3 border border-neutral-300 rounded-md bg-white text-neutral-900 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-colors"
-              />
-            </label>
-            {(startDate || endDate) && (
-              <button
-                onClick={() => {
-                  setStartDate("");
-                  setEndDate("");
-                }}
-                className="text-body-sm text-primary hover:text-primary-hover underline transition-colors min-h-0"
-              >
-                Clear dates
-              </button>
-            )}
+            <div className="flex-1 flex flex-col sm:flex-row gap-2 sm:items-center">
+              <label className="flex items-center gap-2 text-body">
+                <span className="text-neutral-700 font-medium">From:</span>
+                <input
+                  type="date"
+                  value={startDate}
+                  onChange={(e) => setStartDate(e.target.value)}
+                  className="px-3 py-3 border border-neutral-300 rounded-md bg-white text-neutral-900 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-colors"
+                />
+              </label>
+              <label className="flex items-center gap-2 text-body">
+                <span className="text-neutral-700 font-medium">To:</span>
+                <input
+                  type="date"
+                  value={endDate}
+                  onChange={(e) => setEndDate(e.target.value)}
+                  className="px-3 py-3 border border-neutral-300 rounded-md bg-white text-neutral-900 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-colors"
+                />
+              </label>
+              {(startDate || endDate) && (
+                <button
+                  onClick={() => {
+                    setStartDate("");
+                    setEndDate("");
+                  }}
+                  className="text-body-sm text-primary hover:text-primary-hover underline transition-colors min-h-0"
+                >
+                  Clear dates
+                </button>
+              )}
+            </div>
             <button
               onClick={exportToCSV}
               className="px-6 py-3 bg-primary text-white font-medium text-body rounded-md flex items-center justify-center gap-2 hover:bg-primary-hover disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-sm hover:shadow-md min-w-[120px]"
