@@ -163,7 +163,7 @@ export function DashboardContent({ initialRepo }: DashboardContentProps = {}) {
             )}
             <button
               onClick={exportToCSV}
-              className="px-4 py-2 text-body-sm font-medium border border-neutral-300 text-neutral-700 bg-white rounded-md hover:bg-neutral-50 hover:border-neutral-400 transition-all duration-200"
+              className="px-6 py-3 bg-primary text-white font-medium text-body rounded-md flex items-center justify-center gap-2 hover:bg-primary-hover disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-sm hover:shadow-md min-w-[120px]"
             >
               Export to CSV
             </button>
