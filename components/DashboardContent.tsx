@@ -120,19 +120,9 @@ export function DashboardContent({ initialRepo }: DashboardContentProps = {}) {
 
       {/* Filters section - grouped with consistent spacing */}
       {data && !loading && data.length > 0 && (
-        <div className="mt-4 w-full max-w-4xl space-y-4 py-4 pl-4 bg-white rounded-md border border-neutral-200">
-          {/* <label className="flex items-center gap-2 text-body cursor-pointer hover:text-neutral-900 transition-colors">
-            <input
-              type="checkbox"
-              checked={showPreReleases}
-              onChange={(e) => setShowPreReleases(e.target.checked)}
-              className="w-5 h-5 text-primary rounded-sm focus:ring-2 focus:ring-primary"
-            />
-            <span>Show pre-releases</span>
-          </label>  */}
-
+        <div className="mt-4 w-full max-w-4xl">
           <div className="flex flex-col sm:flex-row gap-2 sm:items-center">
-            <div className="flex-1 flex flex-col sm:flex-row gap-2 sm:items-center">
+            <div className="flex-1 flex flex-col sm:flex-row gap-2 sm:items-center p-4 bg-white rounded-md border border-neutral-200">
               <label className="flex items-center gap-2 text-body">
                 <span className="text-neutral-700 font-medium">From:</span>
                 <input
