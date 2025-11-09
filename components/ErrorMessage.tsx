@@ -20,7 +20,7 @@ export function ErrorMessage({ message, onRetry }: ErrorMessageProps) {
   const tips = getErrorTips(message);
 
   return (
-    <div className="p-6 bg-red-50 border border-red-200 rounded-lg shadow-sm">
+    <div className="p-6 bg-red-50 border border-red-200/60 rounded-lg shadow-md">
       {/* Error heading */}
       <div className="flex items-start gap-3 mb-3">
         <svg className="w-6 h-6 text-error flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -34,7 +34,7 @@ export function ErrorMessage({ message, onRetry }: ErrorMessageProps) {
 
       {/* Actionable tips - help users fix the problem */}
       {tips.length > 0 && (
-        <div className="mt-4 mb-4 p-4 bg-red-100/50 rounded-lg border border-red-200">
+        <div className="mt-4 mb-4 p-4 bg-red-100/50 rounded-lg border border-red-200/60">
           <p className="text-sm font-semibold text-red-900 mb-2">Suggestions:</p>
           <ul className="text-sm text-red-700 space-y-1">
             {tips.map(tip => (
