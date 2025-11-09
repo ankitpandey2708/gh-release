@@ -72,6 +72,7 @@ export function RepoInput({ onSubmit, loading = false, currentRepo }: RepoInputP
           placeholder="owner/repo or paste GitHub URL (e.g., facebook/react)"
           className="flex-1 px-4 py-3 border border-neutral-300 rounded-md bg-white text-neutral-900 text-body placeholder:text-neutral-500 focus:border-primary focus:ring-2 focus:ring-primary/20 disabled:bg-neutral-100 disabled:cursor-not-allowed transition-all duration-200"
           disabled={loading}
+          autoFocus
           aria-label="GitHub repository name"
           aria-invalid={!!error}
           aria-describedby={error ? 'input-error' : undefined}
