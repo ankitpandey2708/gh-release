@@ -121,8 +121,6 @@ export function DashboardContent({ initialRepo }: DashboardContentProps = {}) {
       {/* Filters section - grouped with consistent spacing */}
       {data && !loading && data.length > 0 && (
         <div className="mt-4 w-full max-w-2xl space-y-4 p-4 bg-white rounded-md border border-neutral-200">
-          <h3 className="text-h3 font-medium text-neutral-700">Filters</h3>
-
           {/* <label className="flex items-center gap-2 text-body cursor-pointer hover:text-neutral-900 transition-colors">
             <input
               type="checkbox"
