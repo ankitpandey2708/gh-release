@@ -110,19 +110,7 @@ colors: {
 
 ### Font Selection
 
-**System fonts** for speed, **premium weights** for sophistication:
-
-```css
-font-family:
-  -apple-system,
-  BlinkMacSystemFont,
-  'Segoe UI',
-  'Roboto',
-  'Helvetica Neue',
-  sans-serif;
-```
-
-**Or use Inter** (Stripe's choice) for refined feel:
+**Inter font** (Stripe's choice) for premium, refined feel:
 
 ```jsx
 import { Inter } from 'next/font/google';
@@ -131,7 +119,25 @@ const inter = Inter({
   subsets: ['latin'],
   weight: ['400', '500', '600', '700'],
   display: 'swap',
+  variable: '--font-inter',
 });
+
+// Apply in layout
+<html className={inter.variable}>
+  <body className={inter.className}>
+```
+
+**With system font fallback** for reliability:
+
+```css
+font-family:
+  var(--font-inter),
+  -apple-system,
+  BlinkMacSystemFont,
+  'Segoe UI',
+  'Roboto',
+  'Helvetica Neue',
+  sans-serif;
 ```
 
 ### Type Scale (Premium Sizing)
