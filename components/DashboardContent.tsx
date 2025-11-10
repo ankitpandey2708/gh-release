@@ -10,6 +10,7 @@ import { LoadingSkeleton } from "@/components/LoadingSkeleton";
 import { ProgressBar } from "@/components/ProgressBar";
 import { useReleases } from "@/lib/hooks/useReleases";
 import { saveRecentSearch } from "@/lib/localStorage";
+import DateRangePicker from "@/components/DateRangePicker";
 
 const ReleaseChart = dynamic(
   () =>
@@ -123,35 +124,16 @@ export function DashboardContent({ initialRepo }: DashboardContentProps = {}) {
         <div className="mt-6 w-full max-w-4xl">
           <div className="flex flex-col sm:flex-row gap-4 sm:items-center">
             <div className="flex-1 flex flex-col sm:flex-row gap-4 sm:items-center p-6 bg-white rounded-lg border border-neutral-200">
-              <label className="flex items-center gap-2 text-base">
-                <span className="text-neutral-600 font-semibold">From:</span>
-                <input
-                  type="date"
-                  value={startDate}
-                  onChange={(e) => setStartDate(e.target.value)}
-                  className="px-4 py-3 border border-neutral-200 rounded-lg bg-white text-neutral-900 focus:border-primary-500 focus:ring-4 focus:ring-primary-500/10 transition-all duration-200"
-                />
-              </label>
-              <label className="flex items-center gap-2 text-base">
-                <span className="text-neutral-600 font-semibold">To:</span>
-                <input
-                  type="date"
-                  value={endDate}
-                  onChange={(e) => setEndDate(e.target.value)}
-                  className="px-4 py-3 border border-neutral-200 rounded-lg bg-white text-neutral-900 focus:border-primary-500 focus:ring-4 focus:ring-primary-500/10 transition-all duration-200"
-                />
-              </label>
-              {(startDate || endDate) && (
-                <button
-                  onClick={() => {
-                    setStartDate("");
-                    setEndDate("");
-                  }}
-                  className="text-sm text-primary-600 hover:text-primary-500 underline transition-colors min-h-0"
-                >
-                  Clear dates
-                </button>
-              )}
+              <DateRangePicker
+                startDate={startDate}
+                endDate={endDate}
+                onStartDateChange={setStartDate}
+                onEndDateChange={setEndDate}
+                onClear={() => {
+                  setStartDate("");
+                  setEndDate("");
+                }}
+              />
             </div>
             <button
               onClick={exportToCSV}
