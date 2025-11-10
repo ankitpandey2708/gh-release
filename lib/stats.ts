@@ -57,7 +57,7 @@ export function calculateStats(releases: Release[]): Stats {
   const avgDays = Math.round(mean); // Rounded only for display
 
   // Use accurate month length: 365.25 / 12 = 30.4375 days per month
-  const perMonth = totalDays > 0 ? (total / (totalDays / 30.4375)).toFixed(1) : 'N/A';
+  const perMonth = totalDays > 0 ? Math.round(total / (totalDays / 30.4375)).toString() : 'N/A';
 
 
 
