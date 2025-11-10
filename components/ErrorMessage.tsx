@@ -51,7 +51,7 @@ export function ErrorMessage({ message, onRetry }: ErrorMessageProps) {
       {onRetry && (
         <button
           onClick={onRetry}
-          className="px-6 py-3 bg-error text-white font-semibold text-base rounded-lg hover:bg-red-700 transition-colors duration-200 shadow-md hover:shadow-lg"
+          className="px-6 py-3 bg-error-500 hover:bg-error-600 text-white font-semibold text-base rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg"
         >
           Try again
         </button>
