@@ -45,6 +45,7 @@ export default function DateRangePicker({
       range: true,
       multipleDatesSeparator: " - ",
       dateFormat: "MMM dd, yyyy",
+      maxDate: new Date(), // Prevent selecting future dates
       onSelect: ({ datepicker }) => {
         const selectedDates = datepicker.selectedDates;
 
