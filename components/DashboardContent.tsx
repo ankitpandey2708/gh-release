@@ -72,8 +72,20 @@ export function DashboardContent({ initialRepo }: DashboardContentProps = {}) {
 
   const filteredData = data?.filter((r) => {
     if (!showPreReleases && r.prerelease) return false;
-    if (startDate && new Date(r.date) < new Date(startDate)) return false;
-    if (endDate && new Date(r.date) > new Date(endDate)) return false;
+
+    // Start date: beginning of day (midnight)
+    if (startDate) {
+      const start = new Date(startDate);
+      if (new Date(r.date) < start) return false;
+    }
+
+    // End date: end of day (23:59:59.999) to include all releases on that day
+    if (endDate) {
+      const end = new Date(endDate);
+      end.setHours(23, 59, 59, 999);
+      if (new Date(r.date) > end) return false;
+    }
+
     return true;
   });
 
