@@ -2,6 +2,7 @@
 
 import React, { useRef, useEffect } from "react";
 import AirDatepicker from "air-datepicker";
+import localeEn from "air-datepicker/locale/en";
 import "air-datepicker/air-datepicker.css";
 import { format } from "date-fns";
 
@@ -40,6 +41,7 @@ export default function DateRangePicker({
 
     // Initialize Air Datepicker
     datepickerRef.current = new AirDatepicker(inputRef.current, {
+      locale: localeEn,
       range: true,
       multipleDatesSeparator: " - ",
       dateFormat: "MMM dd, yyyy",
