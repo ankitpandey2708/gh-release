@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from "react";
-import { DayPicker, DateRange } from "react-day-picker";
+import React, { useRef, useEffect } from "react";
+import AirDatepicker from "air-datepicker";
+import "air-datepicker/air-datepicker.css";
 import { format } from "date-fns";
-import "react-day-picker/style.css";
 
 interface DateRangePickerProps {
   startDate: string;
@@ -20,32 +20,8 @@ export default function DateRangePicker({
   onEndDateChange,
   onClear,
 }: DateRangePickerProps) {
-  const [isOpen, setIsOpen] = useState(false);
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  const range: DateRange | undefined = {
-    from: startDate ? new Date(startDate) : undefined,
-    to: endDate ? new Date(endDate) : undefined,
-  };
-
-  const handleRangeSelect = (selectedRange: DateRange | undefined) => {
-    if (selectedRange?.from) {
-      onStartDateChange(format(selectedRange.from, "yyyy-MM-dd"));
-    } else {
-      onStartDateChange("");
-    }
-
-    if (selectedRange?.to) {
-      onEndDateChange(format(selectedRange.to, "yyyy-MM-dd"));
-    } else {
-      onEndDateChange("");
-    }
-
-    // Close the picker when both dates are selected
-    if (selectedRange?.from && selectedRange?.to) {
-      setIsOpen(false);
-    }
-  };
+  const inputRef = useRef<HTMLInputElement>(null);
+  const datepickerRef = useRef<AirDatepicker<HTMLInputElement> | null>(null);
 
   const formatDateDisplay = () => {
     if (startDate && endDate) {
@@ -59,37 +35,118 @@ export default function DateRangePicker({
     return "Select date range";
   };
 
-  // Close picker when clicking outside
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        containerRef.current &&
-        !containerRef.current.contains(event.target as Node)
-      ) {
-        setIsOpen(false);
-      }
-    };
+    if (!inputRef.current) return;
 
-    if (isOpen) {
-      document.addEventListener("mousedown", handleClickOutside);
+    // Initialize Air Datepicker
+    datepickerRef.current = new AirDatepicker(inputRef.current, {
+      range: true,
+      multipleDatesSeparator: " - ",
+      dateFormat: "MMM dd, yyyy",
+      onSelect: ({ datepicker }) => {
+        const selectedDates = datepicker.selectedDates;
+
+        if (selectedDates.length > 0) {
+          const start = selectedDates[0];
+          onStartDateChange(format(start, "yyyy-MM-dd"));
+        } else {
+          onStartDateChange("");
+        }
+
+        if (selectedDates.length > 1) {
+          const end = selectedDates[1];
+          onEndDateChange(format(end, "yyyy-MM-dd"));
+        } else {
+          onEndDateChange("");
+        }
+      },
+    });
+
+    // Set initial selected dates if they exist
+    const initialDates: Date[] = [];
+    if (startDate) {
+      initialDates.push(new Date(startDate));
+    }
+    if (endDate) {
+      initialDates.push(new Date(endDate));
+    }
+    if (initialDates.length > 0) {
+      datepickerRef.current.selectDate(initialDates);
     }
 
+    // Cleanup
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
+      if (datepickerRef.current) {
+        datepickerRef.current.destroy();
+      }
     };
-  }, [isOpen]);
+  }, []); // Only initialize once
+
+  // Update selected dates when props change
+  useEffect(() => {
+    if (!datepickerRef.current) return;
+
+    const dates: Date[] = [];
+    if (startDate) {
+      dates.push(new Date(startDate));
+    }
+    if (endDate) {
+      dates.push(new Date(endDate));
+    }
+
+    // Clear and set new dates
+    datepickerRef.current.clear({ silent: true });
+    if (dates.length > 0) {
+      datepickerRef.current.selectDate(dates, { silent: true });
+    }
+  }, [startDate, endDate]);
+
+  const handleClear = () => {
+    if (datepickerRef.current) {
+      datepickerRef.current.clear();
+    }
+    onClear();
+  };
 
   return (
-    <div className="relative" ref={containerRef}>
-      <div className="flex items-center gap-2">
-        <button
-          type="button"
-          onClick={() => setIsOpen(!isOpen)}
-          className="px-4 py-3 border border-neutral-200 rounded-lg bg-white text-neutral-900 focus:border-primary-500 focus:ring-4 focus:ring-primary-500/10 transition-all duration-200 text-left min-w-[280px] flex items-center justify-between"
-        >
-          <span className={startDate || endDate ? "text-neutral-900" : "text-neutral-400"}>
-            {formatDateDisplay()}
-          </span>
+    <div className="flex items-center gap-2">
+      <style jsx global>{`
+        .air-datepicker {
+          --adp-color: #3b82f6;
+          --adp-background-color: #ffffff;
+          --adp-background-color-hover: #f3f4f6;
+          --adp-background-color-selected: #3b82f6;
+          --adp-background-color-selected-other-month-focused: #2563eb;
+          --adp-background-color-in-range: #dbeafe;
+          --adp-font-size: 14px;
+          --adp-border-radius: 0.375rem;
+          border-radius: 0.5rem;
+          box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+          border: 1px solid #e5e7eb;
+        }
+        .air-datepicker-cell.-selected- {
+          background: #3b82f6;
+          color: white;
+        }
+        .air-datepicker-cell.-in-range- {
+          background: #dbeafe;
+          color: #1f2937;
+        }
+        .air-datepicker-cell.-range-from-,
+        .air-datepicker-cell.-range-to- {
+          background: #3b82f6;
+          color: white;
+        }
+      `}</style>
+      <div className="relative">
+        <input
+          ref={inputRef}
+          type="text"
+          readOnly
+          placeholder="Select date range"
+          className="px-4 py-3 border border-neutral-200 rounded-lg bg-white text-neutral-900 focus:border-primary-500 focus:ring-4 focus:ring-primary-500/10 transition-all duration-200 min-w-[280px] cursor-pointer"
+        />
+        <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
           <svg
             className="w-5 h-5 text-neutral-400"
             fill="none"
@@ -103,50 +160,16 @@ export default function DateRangePicker({
               d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
             />
           </svg>
-        </button>
-        {(startDate || endDate) && (
-          <button
-            type="button"
-            onClick={onClear}
-            className="text-sm text-primary-600 hover:text-primary-500 underline transition-colors"
-          >
-            Clear
-          </button>
-        )}
-      </div>
-
-      {isOpen && (
-        <div className="absolute top-full left-0 mt-2 z-50 bg-white rounded-lg shadow-lg border border-neutral-200 p-4">
-          <style jsx global>{`
-            .rdp {
-              --rdp-accent-color: #3b82f6;
-              --rdp-background-color: #dbeafe;
-              --rdp-accent-color-dark: #2563eb;
-              --rdp-background-color-dark: #1e40af;
-              --rdp-outline: 2px solid var(--rdp-accent-color);
-              --rdp-outline-selected: 2px solid var(--rdp-accent-color);
-            }
-            .rdp-day_button {
-              border-radius: 0.375rem;
-            }
-            .rdp-day_button:hover:not([disabled]):not(.rdp-day_selected) {
-              background-color: #f3f4f6;
-            }
-            .rdp-selected {
-              background-color: #3b82f6 !important;
-              color: white !important;
-            }
-            .rdp-range_middle {
-              background-color: #dbeafe !important;
-            }
-          `}</style>
-          <DayPicker
-            mode="range"
-            selected={range}
-            onSelect={handleRangeSelect}
-            numberOfMonths={2}
-          />
         </div>
+      </div>
+      {(startDate || endDate) && (
+        <button
+          type="button"
+          onClick={handleClear}
+          className="text-sm text-primary-600 hover:text-primary-500 underline transition-colors"
+        >
+          Clear
+        </button>
       )}
     </div>
   );
