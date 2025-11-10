@@ -49,19 +49,19 @@ export default function DateRangePicker({
       onSelect: ({ datepicker }) => {
         const selectedDates = datepicker.selectedDates;
 
-        if (selectedDates.length > 0) {
+        // Only update parent state when we have a complete range (both dates)
+        // This prevents the "to" date from being cleared when starting a new selection
+        if (selectedDates.length === 2) {
           const start = selectedDates[0];
-          onStartDateChange(format(start, "yyyy-MM-dd"));
-        } else {
-          onStartDateChange("");
-        }
-
-        if (selectedDates.length > 1) {
           const end = selectedDates[1];
+          onStartDateChange(format(start, "yyyy-MM-dd"));
           onEndDateChange(format(end, "yyyy-MM-dd"));
-        } else {
+        } else if (selectedDates.length === 0) {
+          // Only clear if user explicitly cleared (no dates selected)
+          onStartDateChange("");
           onEndDateChange("");
         }
+        // If length === 1, user is mid-selection, don't update parent state yet
       },
     });
 
