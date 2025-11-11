@@ -109,7 +109,7 @@ export default function DateRangePicker({
   };
 
   return (
-    <div className="flex items-center gap-3 flex-wrap">
+    <div className="flex items-center gap-6 w-full">
       <style jsx global>{`
         .air-datepicker {
           --adp-color: #3b82f6;
@@ -139,18 +139,18 @@ export default function DateRangePicker({
         }
       `}</style>
 
-      <div className="flex items-center gap-2">
+      <div className="flex-1 flex items-center gap-2">
         <label htmlFor="start-date" className="text-sm font-medium text-neutral-700 whitespace-nowrap">
           From:
         </label>
-        <div className="relative">
+        <div className="relative flex-1">
           <input
             id="start-date"
             ref={startInputRef}
             type="text"
             readOnly
             placeholder="Select start date"
-            className="px-3 py-2 border border-neutral-200 rounded-lg bg-white text-neutral-900 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all duration-200 text-sm cursor-pointer min-w-[140px]"
+            className="w-full px-3 py-2 border border-neutral-200 rounded-lg bg-white text-neutral-900 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all duration-200 text-sm cursor-pointer"
           />
           <div className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none">
             <svg
@@ -170,18 +170,18 @@ export default function DateRangePicker({
         </div>
       </div>
 
-      <div className="flex items-center gap-2">
+      <div className="flex-1 flex items-center gap-2">
         <label htmlFor="end-date" className="text-sm font-medium text-neutral-700 whitespace-nowrap">
           To:
         </label>
-        <div className="relative">
+        <div className="relative flex-1">
           <input
             id="end-date"
             ref={endInputRef}
             type="text"
             readOnly
             placeholder="Select end date"
-            className="px-3 py-2 border border-neutral-200 rounded-lg bg-white text-neutral-900 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all duration-200 text-sm cursor-pointer min-w-[140px]"
+            className="w-full px-3 py-2 border border-neutral-200 rounded-lg bg-white text-neutral-900 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all duration-200 text-sm cursor-pointer"
           />
           <div className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none">
             <svg
@@ -205,7 +205,7 @@ export default function DateRangePicker({
         <button
           type="button"
           onClick={handleClear}
-          className="text-sm text-primary-600 hover:text-primary-500 underline transition-colors font-medium"
+          className="text-sm text-primary-600 hover:text-primary-500 underline transition-colors font-medium whitespace-nowrap"
         >
           Clear
         </button>
