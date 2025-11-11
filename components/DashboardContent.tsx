@@ -135,7 +135,7 @@ export function DashboardContent({ initialRepo }: DashboardContentProps = {}) {
       {data && !loading && data.length > 0 && (
         <div className="mt-6 w-full max-w-4xl">
           <div className="flex flex-col sm:flex-row gap-4 sm:items-center">
-            <div className="flex-1 flex flex-col sm:flex-row gap-4 sm:items-center p-6 bg-white rounded-lg border border-neutral-200">
+            <div className="flex-1 flex flex-col sm:flex-row gap-4 sm:items-center p-4 bg-white rounded-lg border border-neutral-200">
               <DateRangePicker
                 startDate={startDate}
                 endDate={endDate}
