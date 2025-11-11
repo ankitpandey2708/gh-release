@@ -24,8 +24,16 @@ export function groupByMonth(releases: Release[]) {
     return [];
   }
 
-  // Sort releases chronologically (oldest first)
-  const sortedReleases = [...releases].sort((a, b) => a.date.getTime() - b.date.getTime());
+  // Filter out 0.x.x releases first
+  const validReleases = releases.filter(release => extractMajorVersion(release.version) !== null);
+
+  // If all releases are 0.x.x, return empty array
+  if (validReleases.length === 0) {
+    return [];
+  }
+
+  // Sort valid releases chronologically (oldest first)
+  const sortedReleases = [...validReleases].sort((a, b) => a.date.getTime() - b.date.getTime());
 
   // Track which months have major releases (when first integer changes)
   const monthsWithMajorReleases = new Set<string>();
@@ -40,19 +48,15 @@ export function groupByMonth(releases: Release[]) {
     }
   });
 
-  // Count all releases per month (including 0.x.x for counting, but they won't trigger major release)
+  // Count all valid releases per month
   const groups = new Map<string, number>();
-  releases.forEach(release => {
-    const majorVersion = extractMajorVersion(release.version);
-    // Only count releases with valid major versions (not 0.x.x)
-    if (majorVersion !== null) {
-      const month = format(release.date, 'MMM yyyy');
-      groups.set(month, (groups.get(month) || 0) + 1);
-    }
+  validReleases.forEach(release => {
+    const month = format(release.date, 'MMM yyyy');
+    groups.set(month, (groups.get(month) || 0) + 1);
   });
 
-  // Find earliest and latest release dates
-  const dates = releases.map(r => r.date);
+  // Find earliest and latest release dates from valid releases only
+  const dates = validReleases.map(r => r.date);
   const earliest = new Date(Math.min(...dates.map(d => d.getTime())));
   const latest = new Date(Math.max(...dates.map(d => d.getTime())));
 
@@ -79,7 +83,10 @@ export function groupByMonth(releases: Release[]) {
 }
 
 export function calculateStats(releases: Release[]): Stats {
-  if (releases.length === 0) {
+  // Filter out 0.x.x releases to match chart behavior
+  const validReleases = releases.filter(release => extractMajorVersion(release.version) !== null);
+
+  if (validReleases.length === 0) {
     return {
       total: 0,
       avgDays: 0,
@@ -90,7 +97,7 @@ export function calculateStats(releases: Release[]): Stats {
     };
   }
 
-  const sorted = [...releases].sort((a, b) => a.date.getTime() - b.date.getTime());
+  const sorted = [...validReleases].sort((a, b) => a.date.getTime() - b.date.getTime());
   const total = sorted.length;
   const first = sorted[0].date;
   const last = sorted[total - 1].date;
