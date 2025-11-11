@@ -236,11 +236,11 @@ export function ReleaseChart({ releases }: { releases: Release[] }) {
                             <h4 className="font-semibold text-neutral-900 group-hover:text-primary-600 transition-colors">
                               {release.version}
                             </h4>
-                            {release.prerelease && (
+                            {/* {release.prerelease && (
                               <span className="px-2 py-0.5 text-xs font-medium bg-yellow-100 text-yellow-800 rounded">
                                 Pre-release
                               </span>
-                            )}
+                            )} */}
                             <svg
                               className="w-4 h-4 text-neutral-400 group-hover:text-primary-500 transition-colors"
                               fill="none"

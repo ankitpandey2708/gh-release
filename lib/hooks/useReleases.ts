@@ -6,7 +6,7 @@ import { Release } from '../types';
 interface ReleaseDTO {
   version: string;
   date: string;
-  prerelease: boolean;
+  // prerelease: boolean;
   url: string;
 }
 

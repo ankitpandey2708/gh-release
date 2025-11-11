@@ -1,7 +1,7 @@
 export interface GitHubRelease {
   tag_name: string;
   published_at: string;
-  prerelease: boolean;
+  // prerelease: boolean;
   draft: boolean;
   html_url: string;
 }
@@ -9,7 +9,7 @@ export interface GitHubRelease {
 export interface Release {
   version: string;
   date: Date;
-  prerelease: boolean;
+  // prerelease: boolean;
   url: string;
 }
 

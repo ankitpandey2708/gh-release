@@ -52,7 +52,7 @@ export async function fetchReleases(owner: string, repo: string) {
   return allReleases.filter(r => !r.draft).map(r => ({
     version: r.tag_name,
     date: new Date(r.published_at),
-    prerelease: r.prerelease,
+    // prerelease: r.prerelease,
     url: r.html_url,
   }));
 }
