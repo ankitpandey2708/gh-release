@@ -36,12 +36,6 @@ const CustomTooltip = ({ active, payload }: CustomTooltipProps) => {
         <p className="text-sm text-neutral-600 mt-1">
           {payload[0].value} {payload[0].value === 1 ? 'release' : 'releases'}
         </p>
-        {data.isMajorRelease && (
-          <p className="text-xs text-red-500 mt-1 font-medium">
-            Major release
-          </p>
-        )}
-        <p className="text-xs text-neutral-500 mt-1">Click to view details</p>
       </div>
     );
   }
