@@ -15,7 +15,7 @@ export function extractRepoFromInput(input: string): string {
 
   // If it doesn't contain github.com or a protocol, assume it's already owner/repo format
   if (!trimmed.includes('github.com') && !trimmed.startsWith('http')) {
-    return trimmed;
+    return trimmed.toLowerCase();
   }
 
   try {
@@ -31,7 +31,7 @@ export function extractRepoFromInput(input: string): string {
 
     // Verify it's a github.com URL
     if (!url.hostname.includes('github.com')) {
-      return trimmed; // Return original if not github.com
+      return trimmed.toLowerCase(); // Return original if not github.com
     }
 
     // Extract pathname: /owner/repo or /owner/repo/anything
@@ -39,13 +39,13 @@ export function extractRepoFromInput(input: string): string {
 
     // Need at least owner and repo
     if (pathParts.length >= 2) {
-      return `${pathParts[0]}/${pathParts[1]}`;
+      return `${pathParts[0].toLowerCase()}/${pathParts[1].toLowerCase()}`;
     }
 
-    return trimmed; // Return original if can't extract
+    return trimmed.toLowerCase(); // Return original if can't extract
   } catch {
     // If URL parsing fails, return original input
-    return trimmed;
+    return trimmed.toLowerCase();
   }
 }
 
