@@ -33,7 +33,7 @@ export function DashboardContent({ initialRepo }: DashboardContentProps = {}) {
   const router = useRouter();
   const [repo, setRepoState] = useState<string | null>(initialRepo || null);
   const { data, loading, error, cached } = useReleases(repo);
-  const [showPreReleases, setShowPreReleases] = useState(true);
+  // const [showPreReleases, setShowPreReleases] = useState(true);
   const [startDate, setStartDate] = useState<string>("");
   const [endDate, setEndDate] = useState<string>("");
 
@@ -66,12 +66,12 @@ export function DashboardContent({ initialRepo }: DashboardContentProps = {}) {
   const handleReset = () => {
     setStartDate("");
     setEndDate("");
-    setShowPreReleases(true);
+    // setShowPreReleases(true);
     setRepo(null);
   };
 
   const filteredData = data?.filter((r) => {
-    if (!showPreReleases && r.prerelease) return false;
+    // if (!showPreReleases && r.prerelease) return false;
 
     // Start date: beginning of day (midnight)
     if (startDate) {
@@ -93,12 +93,12 @@ export function DashboardContent({ initialRepo }: DashboardContentProps = {}) {
     if (!filteredData) return;
 
     const csvContent = [
-      ["Version", "Date", "Pre-release"].join(","),
+      ["Version", "Date"/*, "Pre-release"*/].join(","),
       ...filteredData.map((r) =>
         [
           r.version,
           new Date(r.date).toISOString().split("T")[0],
-          r.prerelease ? "Yes" : "No",
+          // r.prerelease ? "Yes" : "No",
         ].join(",")
       ),
     ].join("\n");
