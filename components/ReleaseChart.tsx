@@ -6,32 +6,13 @@ import { Release } from '@/lib/types';
 import { groupByMonth } from '@/lib/stats';
 import { format } from 'date-fns';
 
-// Color palette for different major versions
-const MAJOR_VERSION_COLORS: Record<number, string> = {
-  1: '#ef4444',  // Red-500
-  2: '#f97316',  // Orange-500
-  3: '#f59e0b',  // Amber-500
-  4: '#84cc16',  // Lime-500
-  5: '#10b981',  // Emerald-500
-  6: '#14b8a6',  // Teal-500
-  7: '#06b6d4',  // Cyan-500
-  8: '#0ea5e9',  // Sky-500
-  9: '#3b82f6',  // Blue-500
-  10: '#6366f1', // Indigo-500
-  11: '#8b5cf6', // Violet-500
-  12: '#a855f7', // Purple-500
-  13: '#d946ef', // Fuchsia-500
-  14: '#ec4899', // Pink-500
-};
+// Two colors: one for regular releases, one for major releases
+const REGULAR_RELEASE_COLOR = '#6366f1'; // Indigo-500
+const MAJOR_RELEASE_COLOR = '#ef4444';   // Red-500
 
-// Get color for a major version
-function getMajorVersionColor(majorVersion: number | null): string {
-  if (majorVersion === null) {
-    return '#9ca3af'; // Gray-400 for months with no releases
-  }
-  // Use modulo to cycle through colors if we have more than 14 major versions
-  const colorIndex = ((majorVersion - 1) % 14) + 1;
-  return MAJOR_VERSION_COLORS[colorIndex] || '#6366f1';
+// Get color based on whether it's a major release month
+function getDotColor(isMajorRelease: boolean): string {
+  return isMajorRelease ? MAJOR_RELEASE_COLOR : REGULAR_RELEASE_COLOR;
 }
 
 interface CustomTooltipProps {
@@ -41,7 +22,7 @@ interface CustomTooltipProps {
     payload: {
       month: string;
       count: number;
-      majorVersion: number | null;
+      isMajorRelease: boolean;
     };
   }>;
 }
@@ -55,9 +36,9 @@ const CustomTooltip = ({ active, payload }: CustomTooltipProps) => {
         <p className="text-sm text-neutral-600 mt-1">
           {payload[0].value} {payload[0].value === 1 ? 'release' : 'releases'}
         </p>
-        {data.majorVersion !== null && (
-          <p className="text-xs text-neutral-500 mt-1">
-            Major version: {data.majorVersion}
+        {data.isMajorRelease && (
+          <p className="text-xs text-red-500 mt-1 font-medium">
+            Major release
           </p>
         )}
         <p className="text-xs text-neutral-500 mt-1">Click to view details</p>
@@ -67,12 +48,12 @@ const CustomTooltip = ({ active, payload }: CustomTooltipProps) => {
   return null;
 };
 
-// Custom dot component that colors based on major version
+// Custom dot component that colors based on whether it's a major release
 const CustomDot = (props: any) => {
   const { cx, cy, payload } = props;
   if (payload.count === 0) return null;
 
-  const color = getMajorVersionColor(payload.majorVersion);
+  const color = getDotColor(payload.isMajorRelease);
 
   return (
     <circle
@@ -89,7 +70,7 @@ const CustomDot = (props: any) => {
 // Custom active dot for hover state
 const CustomActiveDot = (props: any) => {
   const { cx, cy, payload } = props;
-  const color = getMajorVersionColor(payload.majorVersion);
+  const color = getDotColor(payload.isMajorRelease);
 
   return (
     <circle
