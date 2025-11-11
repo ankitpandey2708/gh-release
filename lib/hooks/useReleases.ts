@@ -47,7 +47,7 @@ export function useReleases(repo: string | null) {
     return result;
   }, []);
 
-  const analyzeRepo = useCallback(async (repoPath: string, userProvidedToken?: string) => {
+  const analyzeRepo = useCallback(async (repoPath: string, userProvidedToken?: string, shouldRememberToken?: boolean) => {
     setLoading(true);
     setError(null);
     setErrorCode(null);
@@ -87,8 +87,8 @@ export function useReleases(repo: string | null) {
             setData(releases);
             setIsPrivate(true);
 
-            // Save PAT if user provided it
-            if (userProvidedToken) {
+            // Save PAT only if user provided it AND wants to remember it
+            if (userProvidedToken && shouldRememberToken) {
               savePAT(userProvidedToken);
             }
           } catch (patError: any) {
@@ -127,9 +127,9 @@ export function useReleases(repo: string | null) {
     analyzeRepo(repo);
   }, [repo, analyzeRepo]);
 
-  const retryWithPAT = useCallback((token: string) => {
+  const retryWithPAT = useCallback((token: string, remember: boolean = true) => {
     if (!repo) return;
-    analyzeRepo(repo, token);
+    analyzeRepo(repo, token, remember);
   }, [repo, analyzeRepo]);
 
   const clearToken = useCallback(() => {

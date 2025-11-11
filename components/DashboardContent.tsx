@@ -72,8 +72,8 @@ export function DashboardContent({ initialRepo }: DashboardContentProps = {}) {
     setRepo(null);
   };
 
-  const handlePATSubmit = (token: string) => {
-    retryWithPAT(token);
+  const handlePATSubmit = (token: string, remember: boolean) => {
+    retryWithPAT(token, remember);
   };
 
   const handleClearToken = () => {
