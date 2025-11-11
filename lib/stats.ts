@@ -1,16 +1,46 @@
 import { Release, Stats } from './types';
 import { format, differenceInDays, formatDistanceToNow, startOfMonth, addMonths, isBefore, isAfter } from 'date-fns';
 
+// Extract major version from a version string (e.g., "v2.1.3" -> 2, "3.0.0-beta" -> 3)
+// Returns null if version is 0.x.x or cannot be parsed
+function extractMajorVersion(versionString: string): number | null {
+  // Remove leading 'v' or 'V' if present
+  const cleanVersion = versionString.replace(/^v/i, '');
+
+  // Extract first number before a dot or dash
+  const match = cleanVersion.match(/^(\d+)/);
+  if (!match) return null;
+
+  const majorVersion = parseInt(match[1], 10);
+
+  // Ignore version 0
+  if (majorVersion === 0) return null;
+
+  return majorVersion;
+}
+
 export function groupByMonth(releases: Release[]) {
   if (releases.length === 0) {
     return [];
   }
 
-  // Count releases per month
+  // Count releases per month and track major versions
   const groups = new Map<string, number>();
+  const majorVersions = new Map<string, Set<number>>();
+
   releases.forEach(release => {
     const month = format(release.date, 'MMM yyyy');
-    groups.set(month, (groups.get(month) || 0) + 1);
+    const majorVersion = extractMajorVersion(release.version);
+
+    // Only count releases with valid major versions (not 0.x.x)
+    if (majorVersion !== null) {
+      groups.set(month, (groups.get(month) || 0) + 1);
+
+      if (!majorVersions.has(month)) {
+        majorVersions.set(month, new Set());
+      }
+      majorVersions.get(month)!.add(majorVersion);
+    }
   });
 
   // Find earliest and latest release dates
@@ -19,15 +49,22 @@ export function groupByMonth(releases: Release[]) {
   const latest = new Date(Math.max(...dates.map(d => d.getTime())));
 
   // Generate all months from earliest to latest
-  const allMonths: Array<{ month: string; count: number }> = [];
+  const allMonths: Array<{ month: string; count: number; majorVersion: number | null }> = [];
   let currentMonth = startOfMonth(earliest);
   const endMonth = startOfMonth(latest);
 
   while (isBefore(currentMonth, endMonth) || currentMonth.getTime() === endMonth.getTime()) {
     const monthKey = format(currentMonth, 'MMM yyyy');
+    const count = groups.get(monthKey) || 0;
+
+    // Get the highest major version for this month
+    const versions = majorVersions.get(monthKey);
+    const majorVersion = versions && versions.size > 0 ? Math.max(...Array.from(versions)) : null;
+
     allMonths.push({
       month: monthKey,
-      count: groups.get(monthKey) || 0
+      count,
+      majorVersion
     });
     currentMonth = addMonths(currentMonth, 1);
   }

@@ -6,6 +6,34 @@ import { Release } from '@/lib/types';
 import { groupByMonth } from '@/lib/stats';
 import { format } from 'date-fns';
 
+// Color palette for different major versions
+const MAJOR_VERSION_COLORS: Record<number, string> = {
+  1: '#ef4444',  // Red-500
+  2: '#f97316',  // Orange-500
+  3: '#f59e0b',  // Amber-500
+  4: '#84cc16',  // Lime-500
+  5: '#10b981',  // Emerald-500
+  6: '#14b8a6',  // Teal-500
+  7: '#06b6d4',  // Cyan-500
+  8: '#0ea5e9',  // Sky-500
+  9: '#3b82f6',  // Blue-500
+  10: '#6366f1', // Indigo-500
+  11: '#8b5cf6', // Violet-500
+  12: '#a855f7', // Purple-500
+  13: '#d946ef', // Fuchsia-500
+  14: '#ec4899', // Pink-500
+};
+
+// Get color for a major version
+function getMajorVersionColor(majorVersion: number | null): string {
+  if (majorVersion === null) {
+    return '#9ca3af'; // Gray-400 for months with no releases
+  }
+  // Use modulo to cycle through colors if we have more than 14 major versions
+  const colorIndex = ((majorVersion - 1) % 14) + 1;
+  return MAJOR_VERSION_COLORS[colorIndex] || '#6366f1';
+}
+
 interface CustomTooltipProps {
   active?: boolean;
   payload?: Array<{
@@ -13,23 +41,67 @@ interface CustomTooltipProps {
     payload: {
       month: string;
       count: number;
+      majorVersion: number | null;
     };
   }>;
 }
 
 const CustomTooltip = ({ active, payload }: CustomTooltipProps) => {
   if (active && payload && payload.length) {
+    const data = payload[0].payload;
     return (
       <div className="bg-white p-4 rounded-lg shadow-lg border border-neutral-200/60">
-        <p className="font-semibold text-neutral-900">{payload[0].payload.month}</p>
+        <p className="font-semibold text-neutral-900">{data.month}</p>
         <p className="text-sm text-neutral-600 mt-1">
           {payload[0].value} {payload[0].value === 1 ? 'release' : 'releases'}
         </p>
+        {data.majorVersion !== null && (
+          <p className="text-xs text-neutral-500 mt-1">
+            Major version: {data.majorVersion}
+          </p>
+        )}
         <p className="text-xs text-neutral-500 mt-1">Click to view details</p>
       </div>
     );
   }
   return null;
+};
+
+// Custom dot component that colors based on major version
+const CustomDot = (props: any) => {
+  const { cx, cy, payload } = props;
+  if (payload.count === 0) return null;
+
+  const color = getMajorVersionColor(payload.majorVersion);
+
+  return (
+    <circle
+      cx={cx}
+      cy={cy}
+      r={4}
+      fill={color}
+      stroke="none"
+      style={{ cursor: 'pointer' }}
+    />
+  );
+};
+
+// Custom active dot for hover state
+const CustomActiveDot = (props: any) => {
+  const { cx, cy, payload } = props;
+  const color = getMajorVersionColor(payload.majorVersion);
+
+  return (
+    <circle
+      cx={cx}
+      cy={cy}
+      r={6}
+      fill={color}
+      stroke="white"
+      strokeWidth={2}
+      style={{ cursor: 'pointer' }}
+    />
+  );
 };
 
 export function ReleaseChart({ releases }: { releases: Release[] }) {
@@ -125,8 +197,8 @@ export function ReleaseChart({ releases }: { releases: Release[] }) {
                 dataKey="count"
                 stroke="#6366f1"
                 strokeWidth={2.5}
-                dot={{ fill: '#6366f1', r: 4, cursor: 'pointer' }}
-                activeDot={{ r: 6, fill: '#4f46e5', cursor: 'pointer' }}
+                dot={<CustomDot />}
+                activeDot={<CustomActiveDot />}
               />
             </LineChart>
           </ResponsiveContainer>
