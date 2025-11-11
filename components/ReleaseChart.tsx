@@ -50,10 +50,9 @@ export function ReleaseChart({ releases }: { releases: Release[] }) {
     }).sort((a, b) => b.date.getTime() - a.date.getTime()); // Sort newest first
   }, [selectedMonth, releases]);
 
-  const handleChartClick = (data: any) => {
-    if (data && data.activePayload && data.activePayload.length > 0) {
-      const month = data.activePayload[0].payload.month;
-      setSelectedMonth(month);
+  const handleDotClick = (data: any) => {
+    if (data && data.month) {
+      setSelectedMonth(data.month);
     }
   };
 
@@ -86,8 +85,6 @@ export function ReleaseChart({ releases }: { releases: Release[] }) {
             <LineChart
               data={data}
               margin={{ top: 5, right: 5, left: 0, bottom: 5 }}
-              onClick={handleChartClick}
-              className="cursor-pointer"
             >
               <defs>
                 <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
@@ -125,8 +122,8 @@ export function ReleaseChart({ releases }: { releases: Release[] }) {
                 dataKey="count"
                 stroke="#6366f1"
                 strokeWidth={2.5}
-                dot={{ fill: '#6366f1', r: 4, cursor: 'pointer' }}
-                activeDot={{ r: 6, fill: '#4f46e5', cursor: 'pointer' }}
+                dot={{ fill: '#6366f1', r: 4, cursor: 'pointer', onClick: handleDotClick }}
+                activeDot={{ r: 6, fill: '#4f46e5', cursor: 'pointer', onClick: handleDotClick }}
               />
             </LineChart>
           </ResponsiveContainer>

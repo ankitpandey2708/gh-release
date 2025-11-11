@@ -21,75 +21,89 @@ export default function DateRangePicker({
   onEndDateChange,
   onClear,
 }: DateRangePickerProps) {
-  const inputRef = useRef<HTMLInputElement>(null);
-  const datepickerRef = useRef<AirDatepicker<HTMLInputElement> | null>(null);
+  const startInputRef = useRef<HTMLInputElement>(null);
+  const endInputRef = useRef<HTMLInputElement>(null);
+  const startPickerRef = useRef<AirDatepicker<HTMLInputElement> | null>(null);
+  const endPickerRef = useRef<AirDatepicker<HTMLInputElement> | null>(null);
 
   useEffect(() => {
-    if (!inputRef.current) return;
+    if (!startInputRef.current || !endInputRef.current) return;
 
-    // Initialize Air Datepicker with range mode
-    datepickerRef.current = new AirDatepicker(inputRef.current, {
+    // Initialize start date picker
+    startPickerRef.current = new AirDatepicker(startInputRef.current, {
       locale: localeEn,
-      range: true,
-      multipleDatesSeparator: " - ",
       dateFormat: "MMM dd, yyyy",
-      maxDate: new Date(),
-      onSelect: ({ datepicker }) => {
-        const selectedDates = datepicker.selectedDates;
-
-        if (selectedDates.length === 2) {
-          const start = selectedDates[0];
-          const end = selectedDates[1];
-          onStartDateChange(format(start, "yyyy-MM-dd"));
-          onEndDateChange(format(end, "yyyy-MM-dd"));
-        } else if (selectedDates.length === 0) {
-          onStartDateChange("");
-          onEndDateChange("");
+      maxDate: endDate ? new Date(endDate) : new Date(),
+      onSelect: ({ date }) => {
+        if (date) {
+          onStartDateChange(format(date as Date, "yyyy-MM-dd"));
+          // Update end picker's minDate
+          if (endPickerRef.current) {
+            endPickerRef.current.update({ minDate: date as Date });
+          }
         }
       },
     });
 
-    // Set initial selected dates if they exist
-    const initialDates: Date[] = [];
+    // Initialize end date picker
+    endPickerRef.current = new AirDatepicker(endInputRef.current, {
+      locale: localeEn,
+      dateFormat: "MMM dd, yyyy",
+      minDate: startDate ? new Date(startDate) : undefined,
+      maxDate: new Date(),
+      onSelect: ({ date }) => {
+        if (date) {
+          onEndDateChange(format(date as Date, "yyyy-MM-dd"));
+          // Update start picker's maxDate
+          if (startPickerRef.current) {
+            startPickerRef.current.update({ maxDate: date as Date });
+          }
+        }
+      },
+    });
+
+    // Set initial dates
     if (startDate) {
-      initialDates.push(new Date(startDate));
+      startPickerRef.current.selectDate(new Date(startDate));
     }
     if (endDate) {
-      initialDates.push(new Date(endDate));
-    }
-    if (initialDates.length > 0) {
-      datepickerRef.current.selectDate(initialDates);
+      endPickerRef.current.selectDate(new Date(endDate));
     }
 
     // Cleanup
     return () => {
-      if (datepickerRef.current) {
-        datepickerRef.current.destroy();
+      if (startPickerRef.current) {
+        startPickerRef.current.destroy();
+      }
+      if (endPickerRef.current) {
+        endPickerRef.current.destroy();
       }
     };
   }, []);
 
   // Update selected dates when props change
   useEffect(() => {
-    if (!datepickerRef.current) return;
+    if (!startPickerRef.current || !endPickerRef.current) return;
 
-    const dates: Date[] = [];
     if (startDate) {
-      dates.push(new Date(startDate));
-    }
-    if (endDate) {
-      dates.push(new Date(endDate));
+      startPickerRef.current.selectDate(new Date(startDate), { silent: true });
+    } else {
+      startPickerRef.current.clear({ silent: true });
     }
 
-    datepickerRef.current.clear({ silent: true });
-    if (dates.length > 0) {
-      datepickerRef.current.selectDate(dates, { silent: true });
+    if (endDate) {
+      endPickerRef.current.selectDate(new Date(endDate), { silent: true });
+    } else {
+      endPickerRef.current.clear({ silent: true });
     }
   }, [startDate, endDate]);
 
   const handleClear = () => {
-    if (datepickerRef.current) {
-      datepickerRef.current.clear();
+    if (startPickerRef.current) {
+      startPickerRef.current.clear();
+    }
+    if (endPickerRef.current) {
+      endPickerRef.current.clear();
     }
     onClear();
   };
@@ -126,16 +140,48 @@ export default function DateRangePicker({
       `}</style>
 
       <div className="flex items-center gap-2">
-        <label className="text-sm font-medium text-neutral-700 whitespace-nowrap">
-          Date Range:
+        <label htmlFor="start-date" className="text-sm font-medium text-neutral-700 whitespace-nowrap">
+          From:
         </label>
         <div className="relative">
           <input
-            ref={inputRef}
+            id="start-date"
+            ref={startInputRef}
             type="text"
             readOnly
-            placeholder="Select date range"
-            className="px-3 py-2 border border-neutral-200 rounded-lg bg-white text-neutral-900 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all duration-200 text-sm cursor-pointer min-w-[280px]"
+            placeholder="Select start date"
+            className="px-3 py-2 border border-neutral-200 rounded-lg bg-white text-neutral-900 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all duration-200 text-sm cursor-pointer min-w-[140px]"
+          />
+          <div className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none">
+            <svg
+              className="w-4 h-4 text-neutral-400"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+              />
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <div className="flex items-center gap-2">
+        <label htmlFor="end-date" className="text-sm font-medium text-neutral-700 whitespace-nowrap">
+          To:
+        </label>
+        <div className="relative">
+          <input
+            id="end-date"
+            ref={endInputRef}
+            type="text"
+            readOnly
+            placeholder="Select end date"
+            className="px-3 py-2 border border-neutral-200 rounded-lg bg-white text-neutral-900 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all duration-200 text-sm cursor-pointer min-w-[140px]"
           />
           <div className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none">
             <svg
