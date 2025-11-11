@@ -164,7 +164,11 @@ export function ReleaseChart({ releases }: { releases: Release[] }) {
                       href={release.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="block p-4 border border-neutral-200 rounded-lg hover:border-primary-500 hover:bg-primary-50/50 transition-all group"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        // Allow default link behavior
+                      }}
+                      className="block p-4 border border-neutral-200 rounded-lg hover:border-primary-500 hover:bg-primary-50/50 transition-all group cursor-pointer"
                     >
                       <div className="flex items-start justify-between gap-4">
                         <div className="flex-1">
