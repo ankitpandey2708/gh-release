@@ -1,8 +1,8 @@
 import { Release, Stats } from './types';
 import { format, differenceInDays, formatDistanceToNow, startOfMonth, addMonths, isBefore, isAfter } from 'date-fns';
 
-// Extract major version from a version string (e.g., "v2.1.3" -> 2, "3.0.0-beta" -> 3)
-// Returns null if version is 0.x.x or cannot be parsed
+// Extract major version from a version string (e.g., "v2.1.3" -> 2, "3.0.0-beta" -> 3, "v0.1.0" -> 0)
+// Returns null only if cannot be parsed
 function extractMajorVersion(versionString: string): number | null {
   // Remove leading 'v' or 'V' if present
   const cleanVersion = versionString.replace(/^v/i, '');
@@ -12,9 +12,6 @@ function extractMajorVersion(versionString: string): number | null {
   if (!match) return null;
 
   const majorVersion = parseInt(match[1], 10);
-
-  // Ignore version 0
-  if (majorVersion === 0) return null;
 
   return majorVersion;
 }
@@ -29,7 +26,7 @@ export function groupByMonth(releases: Release[]) {
 
   // Track which months have major releases (when first integer changes)
   const monthsWithMajorReleases = new Set<string>();
-  let highestMajorVersionSeen = 0;
+  let highestMajorVersionSeen = -1; // Start at -1 so 0 is considered a major release
 
   sortedReleases.forEach(release => {
     const majorVersion = extractMajorVersion(release.version);
@@ -40,15 +37,11 @@ export function groupByMonth(releases: Release[]) {
     }
   });
 
-  // Count all releases per month (including 0.x.x for counting, but they won't trigger major release)
+  // Count all releases per month
   const groups = new Map<string, number>();
   releases.forEach(release => {
-    const majorVersion = extractMajorVersion(release.version);
-    // Only count releases with valid major versions (not 0.x.x)
-    if (majorVersion !== null) {
-      const month = format(release.date, 'MMM yyyy');
-      groups.set(month, (groups.get(month) || 0) + 1);
-    }
+    const month = format(release.date, 'MMM yyyy');
+    groups.set(month, (groups.get(month) || 0) + 1);
   });
 
   // Find earliest and latest release dates
