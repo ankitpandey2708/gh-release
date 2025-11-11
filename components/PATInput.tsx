@@ -3,7 +3,7 @@
 import { useState } from 'react';
 
 interface PATInputProps {
-  onSubmit: (token: string) => void;
+  onSubmit: (token: string, remember: boolean) => void;
   onCancel?: () => void;
   loading?: boolean;
   errorMessage?: string;
@@ -18,7 +18,7 @@ export function PATInput({ onSubmit, onCancel, loading = false, errorMessage, re
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!token.trim()) return;
-    onSubmit(token.trim());
+    onSubmit(token.trim(), remember);
   };
 
   return (
