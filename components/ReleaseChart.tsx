@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo, useState, useEffect } from 'react';
-import { LineChart, Line, Area, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Tooltip } from 'recharts';
+import { LineChart, Line, Area, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Tooltip, Legend } from 'recharts';
 import { Release } from '@/lib/types';
 import { groupByMonth } from '@/lib/stats';
 import { format } from 'date-fns';
@@ -79,6 +79,18 @@ const CustomActiveDot = (props: any) => {
   );
 };
 
+// Custom legend renderer
+const renderLegend = () => {
+  return (
+    <div className="flex justify-end items-center gap-4 mb-2">
+      <div className="flex items-center gap-2">
+        <div className="w-3 h-3 rounded-full" style={{ backgroundColor: MAJOR_RELEASE_COLOR }}></div>
+        <span className="text-xs font-medium text-neutral-700">Major Release</span>
+      </div>
+    </div>
+  );
+};
+
 export function ReleaseChart({ releases }: { releases: Release[] }) {
   const data = useMemo(() => groupByMonth(releases), [releases]);
   const [visible, setVisible] = useState(false);
@@ -129,14 +141,7 @@ export function ReleaseChart({ releases }: { releases: Release[] }) {
     <>
       <div className={`w-full bg-white p-4 md:p-6 rounded-lg border border-neutral-200/60 shadow-md hover:shadow-lg transition-all duration-300 ${visible ? 'opacity-100' : 'opacity-0'}`}>
         <h2 className="text-2xl font-bold mb-6 text-neutral-900 tracking-tight">Releases per month</h2>
-        <div className="h-64 md:h-96 relative">
-          {/* Legend */}
-          <div className="absolute top-0 right-0 z-10 bg-white/90 backdrop-blur-sm px-3 py-2 rounded-lg border border-neutral-200/60 shadow-sm">
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 rounded-full" style={{ backgroundColor: MAJOR_RELEASE_COLOR }}></div>
-              <span className="text-xs font-medium text-neutral-700">Major Release</span>
-            </div>
-          </div>
+        <div className="h-64 md:h-96">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart
               data={data}
@@ -168,6 +173,7 @@ export function ReleaseChart({ releases }: { releases: Release[] }) {
                 axisLine={false}
               />
               <Tooltip content={<CustomTooltip />} />
+              <Legend content={renderLegend} verticalAlign="top" align="right" />
               <Area
                 type="monotone"
                 dataKey="count"
