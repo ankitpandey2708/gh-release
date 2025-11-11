@@ -6,6 +6,15 @@ import { Release } from '@/lib/types';
 import { groupByMonth } from '@/lib/stats';
 import { format } from 'date-fns';
 
+// Two colors: one for regular releases, one for major releases
+const REGULAR_RELEASE_COLOR = '#6366f1'; // Indigo-500
+const MAJOR_RELEASE_COLOR = '#ef4444';   // Red-500
+
+// Get color based on whether it's a major release month
+function getDotColor(isMajorRelease: boolean): string {
+  return isMajorRelease ? MAJOR_RELEASE_COLOR : REGULAR_RELEASE_COLOR;
+}
+
 interface CustomTooltipProps {
   active?: boolean;
   payload?: Array<{
@@ -13,23 +22,67 @@ interface CustomTooltipProps {
     payload: {
       month: string;
       count: number;
+      isMajorRelease: boolean;
     };
   }>;
 }
 
 const CustomTooltip = ({ active, payload }: CustomTooltipProps) => {
   if (active && payload && payload.length) {
+    const data = payload[0].payload;
     return (
       <div className="bg-white p-4 rounded-lg shadow-lg border border-neutral-200/60">
-        <p className="font-semibold text-neutral-900">{payload[0].payload.month}</p>
+        <p className="font-semibold text-neutral-900">{data.month}</p>
         <p className="text-sm text-neutral-600 mt-1">
           {payload[0].value} {payload[0].value === 1 ? 'release' : 'releases'}
         </p>
+        {data.isMajorRelease && (
+          <p className="text-xs text-red-500 mt-1 font-medium">
+            Major release
+          </p>
+        )}
         <p className="text-xs text-neutral-500 mt-1">Click to view details</p>
       </div>
     );
   }
   return null;
+};
+
+// Custom dot component that colors based on whether it's a major release
+const CustomDot = (props: any) => {
+  const { cx, cy, payload } = props;
+  if (payload.count === 0) return null;
+
+  const color = getDotColor(payload.isMajorRelease);
+
+  return (
+    <circle
+      cx={cx}
+      cy={cy}
+      r={4}
+      fill={color}
+      stroke="none"
+      style={{ cursor: 'pointer' }}
+    />
+  );
+};
+
+// Custom active dot for hover state
+const CustomActiveDot = (props: any) => {
+  const { cx, cy, payload } = props;
+  const color = getDotColor(payload.isMajorRelease);
+
+  return (
+    <circle
+      cx={cx}
+      cy={cy}
+      r={6}
+      fill={color}
+      stroke="white"
+      strokeWidth={2}
+      style={{ cursor: 'pointer' }}
+    />
+  );
 };
 
 export function ReleaseChart({ releases }: { releases: Release[] }) {
@@ -125,8 +178,8 @@ export function ReleaseChart({ releases }: { releases: Release[] }) {
                 dataKey="count"
                 stroke="#6366f1"
                 strokeWidth={2.5}
-                dot={{ fill: '#6366f1', r: 4, cursor: 'pointer' }}
-                activeDot={{ r: 6, fill: '#4f46e5', cursor: 'pointer' }}
+                dot={<CustomDot />}
+                activeDot={<CustomActiveDot />}
               />
             </LineChart>
           </ResponsiveContainer>
