@@ -32,7 +32,8 @@ export function groupByMonth(releases: Release[]) {
     currentMonth = addMonths(currentMonth, 1);
   }
 
-  return allMonths;
+  // Reverse so newest is first (chart has reversed={true} to show newest on right)
+  return allMonths.reverse();
 }
 
 export function calculateStats(releases: Release[]): Stats {
