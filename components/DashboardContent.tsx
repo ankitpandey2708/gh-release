@@ -202,7 +202,7 @@ export function DashboardContent({ initialRepo }: DashboardContentProps = {}) {
       {/* Main content - staggered with clear vertical rhythm */}
       {filteredData && !loading && filteredData.length > 0 && (
         <div className="mt-8 w-full max-w-4xl space-y-8">
-          <StatsGrid releases={filteredData} />
+          <StatsGrid releases={filteredData} totalReleases={data?.length || 0} />
           <ReleaseChart releases={filteredData} />
         </div>
       )}
