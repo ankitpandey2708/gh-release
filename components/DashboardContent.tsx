@@ -37,7 +37,6 @@ export function DashboardContent({ initialRepo }: DashboardContentProps = {}) {
   // const [showPreReleases, setShowPreReleases] = useState(true);
   const [startDate, setStartDate] = useState<string>("");
   const [endDate, setEndDate] = useState<string>("");
-  const [showTokenManager, setShowTokenManager] = useState(false);
 
   // Initialize with initialRepo if provided
   useEffect(() => {
@@ -74,11 +73,6 @@ export function DashboardContent({ initialRepo }: DashboardContentProps = {}) {
 
   const handlePATSubmit = (token: string, remember: boolean) => {
     retryWithPAT(token, remember);
-  };
-
-  const handleClearToken = () => {
-    clearToken();
-    setShowTokenManager(false);
   };
 
   const filteredData = data?.filter((r) => {
@@ -139,34 +133,16 @@ export function DashboardContent({ initialRepo }: DashboardContentProps = {}) {
         </h1>
         {hasSavedPAT() && (
           <button
-            onClick={() => setShowTokenManager(!showTokenManager)}
-            className="px-4 py-2 text-sm bg-white hover:bg-neutral-50 text-neutral-700 font-semibold rounded-lg border border-neutral-300 transition-all duration-200 flex items-center gap-2"
+            onClick={clearToken}
+            className="px-4 py-2 text-sm bg-red-50 hover:bg-red-100 text-red-700 font-semibold rounded-lg border border-red-300 transition-all duration-200 flex items-center gap-2"
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
             </svg>
-            Manage Token
+            Clear Saved Token
           </button>
         )}
       </div>
-
-      {/* Token Manager */}
-      {showTokenManager && hasSavedPAT() && (
-        <div className="w-full max-w-4xl mb-6">
-          <div className="p-6 bg-white border border-neutral-200 rounded-lg shadow-md">
-            <h3 className="text-lg font-semibold text-neutral-900 mb-3">Token Management</h3>
-            <p className="text-sm text-neutral-600 mb-4">
-              You have a saved GitHub Personal Access Token. This allows you to access private repositories.
-            </p>
-            <button
-              onClick={handleClearToken}
-              className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-semibold text-sm rounded-lg transition-all duration-200"
-            >
-              Clear Saved Token
-            </button>
-          </div>
-        </div>
-      )}
 
       {/* Primary action area */}
       <RepoInput onSubmit={setRepo} loading={loading} currentRepo={repo} />
