@@ -53,14 +53,21 @@ export function ReleaseChart({ releases }: { releases: Release[] }) {
     return filtered;
   }, [selectedMonth, releases]);
 
-  const handleDotClick = (data: any) => {
-    console.log('[ReleaseChart] handleDotClick called with data:', data);
-    console.log('[ReleaseChart] data.month:', data?.month);
-    if (data && data.month) {
-      console.log('[ReleaseChart] Setting selectedMonth to:', data.month);
-      setSelectedMonth(data.month);
+  const handleChartClick = (event: any) => {
+    console.log('[ReleaseChart] handleChartClick called with event:', event);
+    console.log('[ReleaseChart] event.activePayload:', event?.activePayload);
+
+    if (event && event.activePayload && event.activePayload.length > 0) {
+      const payload = event.activePayload[0].payload;
+      console.log('[ReleaseChart] payload:', payload);
+      console.log('[ReleaseChart] payload.month:', payload.month);
+
+      if (payload.month) {
+        console.log('[ReleaseChart] Setting selectedMonth to:', payload.month);
+        setSelectedMonth(payload.month);
+      }
     } else {
-      console.log('[ReleaseChart] No month found in data');
+      console.log('[ReleaseChart] No activePayload found');
     }
   };
 
@@ -113,6 +120,7 @@ export function ReleaseChart({ releases }: { releases: Release[] }) {
             <LineChart
               data={data}
               margin={{ top: 5, right: 5, left: 0, bottom: 5 }}
+              onClick={handleChartClick}
             >
               <defs>
                 <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
@@ -150,8 +158,8 @@ export function ReleaseChart({ releases }: { releases: Release[] }) {
                 dataKey="count"
                 stroke="#6366f1"
                 strokeWidth={2.5}
-                dot={{ fill: '#6366f1', r: 4, cursor: 'pointer', onClick: handleDotClick }}
-                activeDot={{ r: 6, fill: '#4f46e5', cursor: 'pointer', onClick: handleDotClick }}
+                dot={{ fill: '#6366f1', r: 4, cursor: 'pointer' }}
+                activeDot={{ r: 6, fill: '#4f46e5', cursor: 'pointer' }}
               />
             </LineChart>
           </ResponsiveContainer>
