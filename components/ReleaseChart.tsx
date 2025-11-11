@@ -43,16 +43,11 @@ export function ReleaseChart({ releases }: { releases: Release[] }) {
 
   // Get releases for selected month
   const selectedMonthReleases = useMemo(() => {
-    console.log('[ReleaseChart] Computing selectedMonthReleases for month:', selectedMonth);
     if (!selectedMonth) return [];
     const filtered = releases.filter(release => {
       const releaseMonth = format(release.date, 'MMM yyyy');
       return releaseMonth === selectedMonth;
     }).sort((a, b) => b.date.getTime() - a.date.getTime()); // Sort newest first
-    console.log('[ReleaseChart] Found releases for month:', filtered.length);
-    filtered.forEach((r, i) => {
-      console.log(`[ReleaseChart] Release ${i}:`, { version: r.version, url: r.url, hasUrl: !!r.url });
-    });
     return filtered;
   }, [selectedMonth, releases]);
 
@@ -142,10 +137,7 @@ export function ReleaseChart({ releases }: { releases: Release[] }) {
       {selectedMonth && (
         <div
           className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
-          onClick={() => {
-            console.log('[ReleaseChart] Modal backdrop clicked');
-            closeModal();
-          }}
+          onClick={closeModal}
         >
           <div
             className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[80vh] overflow-hidden"
@@ -167,26 +159,15 @@ export function ReleaseChart({ releases }: { releases: Release[] }) {
             <div className="p-6 overflow-y-auto max-h-[calc(80vh-120px)]">
               {selectedMonthReleases.length > 0 ? (
                 <div className="space-y-3">
-                  {selectedMonthReleases.map((release, index) => {
-                    console.log(`[ReleaseChart] Rendering link for ${release.version}, URL:`, release.url);
-                    return (
+                  {selectedMonthReleases.map((release, index) => (
                       <a
                         key={index}
                         href={release.url}
                         target="_blank"
                         rel="noopener noreferrer"
                         onClick={(e) => {
-                          console.log('[ReleaseChart] Link clicked!', {
-                            version: release.version,
-                            url: release.url,
-                            href: e.currentTarget.href,
-                            target: e.currentTarget.target
-                          });
                           e.stopPropagation();
-                          console.log('[ReleaseChart] After stopPropagation');
-                          // Allow default link behavior
                         }}
-                        onMouseEnter={() => console.log('[ReleaseChart] Mouse entered link:', release.version)}
                         className="block p-4 border border-neutral-200 rounded-lg hover:border-primary-500 hover:bg-primary-50/50 transition-all group cursor-pointer"
                       >
                       <div className="flex items-start justify-between gap-4">
@@ -220,8 +201,7 @@ export function ReleaseChart({ releases }: { releases: Release[] }) {
                         </div>
                       </div>
                       </a>
-                    );
-                  })}
+                  ))}
                 </div>
               ) : (
                 <p className="text-neutral-600 text-center py-8">

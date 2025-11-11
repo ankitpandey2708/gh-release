@@ -8,8 +8,8 @@ export async function GET(
   { params }: { params: Promise<{ owner: string; repo: string }> }
 ) {
   const { owner: ownerParam, repo: repoParam } = await params;
-  const owner = sanitize(ownerParam);
-  const repo = sanitize(repoParam);
+  const owner = sanitize(ownerParam).toLowerCase();
+  const repo = sanitize(repoParam).toLowerCase();
   const cacheKey = `releases:${owner}:${repo}`;
 
   // Try cache first

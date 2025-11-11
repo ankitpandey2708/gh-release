@@ -11,7 +11,7 @@ interface PageProps {
 
 export default async function RepoPage({ params }: PageProps) {
   const { owner, repo } = await params;
-  const repoFullName = `${owner}/${repo}`;
+  const repoFullName = `${owner.toLowerCase()}/${repo.toLowerCase()}`;
 
   return (
     <Suspense fallback={
