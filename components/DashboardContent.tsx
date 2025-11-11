@@ -8,8 +8,9 @@ import { StatsGrid } from "@/components/StatsGrid";
 import { ErrorMessage } from "@/components/ErrorMessage";
 import { LoadingSkeleton } from "@/components/LoadingSkeleton";
 import { ProgressBar } from "@/components/ProgressBar";
+import { PATInput } from "@/components/PATInput";
 import { useReleases } from "@/lib/hooks/useReleases";
-import { saveRecentSearch } from "@/lib/localStorage";
+import { saveRecentSearch, hasSavedPAT } from "@/lib/localStorage";
 import DateRangePicker from "@/components/DateRangePicker";
 
 const ReleaseChart = dynamic(
@@ -32,10 +33,11 @@ interface DashboardContentProps {
 export function DashboardContent({ initialRepo }: DashboardContentProps = {}) {
   const router = useRouter();
   const [repo, setRepoState] = useState<string | null>(initialRepo || null);
-  const { data, loading, error, cached } = useReleases(repo);
+  const { data, loading, error, cached, needsPAT, isPrivate, retryWithPAT, clearToken } = useReleases(repo);
   // const [showPreReleases, setShowPreReleases] = useState(true);
   const [startDate, setStartDate] = useState<string>("");
   const [endDate, setEndDate] = useState<string>("");
+  const [showTokenManager, setShowTokenManager] = useState(false);
 
   // Initialize with initialRepo if provided
   useEffect(() => {
@@ -68,6 +70,15 @@ export function DashboardContent({ initialRepo }: DashboardContentProps = {}) {
     setEndDate("");
     // setShowPreReleases(true);
     setRepo(null);
+  };
+
+  const handlePATSubmit = (token: string) => {
+    retryWithPAT(token);
+  };
+
+  const handleClearToken = () => {
+    clearToken();
+    setShowTokenManager(false);
   };
 
   const filteredData = data?.filter((r) => {
@@ -122,14 +133,70 @@ export function DashboardContent({ initialRepo }: DashboardContentProps = {}) {
       <ProgressBar loading={loading} />
 
       {/* Header with clear hierarchy */}
-      <div className="flex flex-col sm:flex-row items-center gap-3 mb-8">
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-3 mb-8 w-full max-w-4xl">
         <h1 className="text-3xl font-bold animate-fade-in">
           GitHub releases dashboard
         </h1>
+        {hasSavedPAT() && (
+          <button
+            onClick={() => setShowTokenManager(!showTokenManager)}
+            className="px-4 py-2 text-sm bg-white hover:bg-neutral-50 text-neutral-700 font-semibold rounded-lg border border-neutral-300 transition-all duration-200 flex items-center gap-2"
+          >
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
+            </svg>
+            Manage Token
+          </button>
+        )}
       </div>
+
+      {/* Token Manager */}
+      {showTokenManager && hasSavedPAT() && (
+        <div className="w-full max-w-4xl mb-6">
+          <div className="p-6 bg-white border border-neutral-200 rounded-lg shadow-md">
+            <h3 className="text-lg font-semibold text-neutral-900 mb-3">Token Management</h3>
+            <p className="text-sm text-neutral-600 mb-4">
+              You have a saved GitHub Personal Access Token. This allows you to access private repositories.
+            </p>
+            <button
+              onClick={handleClearToken}
+              className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-semibold text-sm rounded-lg transition-all duration-200"
+            >
+              Clear Saved Token
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Primary action area */}
       <RepoInput onSubmit={setRepo} loading={loading} currentRepo={repo} />
+
+      {/* PAT Input - shown when private repo is detected */}
+      {needsPAT && repo && !loading && (
+        <div className="mt-6 w-full max-w-4xl">
+          <PATInput
+            onSubmit={handlePATSubmit}
+            loading={loading}
+            errorMessage={error || undefined}
+            repoName={repo}
+          />
+        </div>
+      )}
+
+      {/* Private repo indicator */}
+      {isPrivate && data && !loading && (
+        <div className="mt-6 w-full max-w-4xl">
+          <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg flex items-center gap-3">
+            <svg className="w-5 h-5 text-blue-600 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+            </svg>
+            <div className="flex-1">
+              <p className="text-sm font-semibold text-blue-900">Private Repository</p>
+              <p className="text-xs text-blue-700">This data is not cached and is fetched using your personal access token.</p>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Filters section - grouped with consistent spacing */}
       {data && !loading && data.length > 0 && (
@@ -157,8 +224,8 @@ export function DashboardContent({ initialRepo }: DashboardContentProps = {}) {
         </div>
       )}
 
-      {/* Error state */}
-      {error && (
+      {/* Error state - only show if NOT asking for PAT */}
+      {error && !needsPAT && (
         <div className="mt-8 w-full max-w-4xl">
           <ErrorMessage message={error} onRetry={() => setRepo(null)} />
         </div>
