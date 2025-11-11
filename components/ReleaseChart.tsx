@@ -43,22 +43,35 @@ export function ReleaseChart({ releases }: { releases: Release[] }) {
 
   // Get releases for selected month
   const selectedMonthReleases = useMemo(() => {
+    console.log('[ReleaseChart] selectedMonth changed:', selectedMonth);
     if (!selectedMonth) return [];
-    return releases.filter(release => {
+    const filtered = releases.filter(release => {
       const releaseMonth = format(release.date, 'MMM yyyy');
       return releaseMonth === selectedMonth;
     }).sort((a, b) => b.date.getTime() - a.date.getTime()); // Sort newest first
+    console.log('[ReleaseChart] selectedMonthReleases:', filtered);
+    return filtered;
   }, [selectedMonth, releases]);
 
   const handleDotClick = (data: any) => {
+    console.log('[ReleaseChart] handleDotClick called with data:', data);
+    console.log('[ReleaseChart] data.month:', data?.month);
     if (data && data.month) {
+      console.log('[ReleaseChart] Setting selectedMonth to:', data.month);
       setSelectedMonth(data.month);
+    } else {
+      console.log('[ReleaseChart] No month found in data');
     }
   };
 
   const closeModal = () => {
+    console.log('[ReleaseChart] Closing modal');
     setSelectedMonth(null);
   };
+
+  console.log('[ReleaseChart] Render - selectedMonth:', selectedMonth);
+  console.log('[ReleaseChart] Render - should show modal:', !!selectedMonth);
+  console.log('[ReleaseChart] Chart data:', data);
 
   if (releases.length === 0) {
     return (
@@ -79,7 +92,22 @@ export function ReleaseChart({ releases }: { releases: Release[] }) {
   return (
     <>
       <div className={`w-full bg-white p-4 md:p-6 rounded-lg border border-neutral-200/60 shadow-md hover:shadow-lg transition-all duration-300 ${visible ? 'opacity-100' : 'opacity-0'}`}>
-        <h2 className="text-2xl font-bold mb-6 text-neutral-900 tracking-tight">Releases per month</h2>
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-2xl font-bold text-neutral-900 tracking-tight">Releases per month</h2>
+          <button
+            onClick={() => {
+              console.log('[ReleaseChart] Test button clicked');
+              const testMonth = data[0]?.month;
+              console.log('[ReleaseChart] Test month:', testMonth);
+              if (testMonth) {
+                setSelectedMonth(testMonth);
+              }
+            }}
+            className="px-3 py-1 text-xs bg-blue-500 text-white rounded hover:bg-blue-600"
+          >
+            Test Modal
+          </button>
+        </div>
         <div className="h-64 md:h-96">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart
@@ -134,7 +162,10 @@ export function ReleaseChart({ releases }: { releases: Release[] }) {
       {selectedMonth && (
         <div
           className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
-          onClick={closeModal}
+          onClick={() => {
+            console.log('[ReleaseChart] Modal backdrop clicked');
+            closeModal();
+          }}
         >
           <div
             className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[80vh] overflow-hidden"
