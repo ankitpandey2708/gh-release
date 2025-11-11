@@ -53,5 +53,6 @@ export async function fetchReleases(owner: string, repo: string) {
     version: r.tag_name,
     date: new Date(r.published_at),
     prerelease: r.prerelease,
+    url: r.html_url,
   }));
 }

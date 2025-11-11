@@ -159,14 +159,17 @@ export function ReleaseChart({ releases }: { releases: Release[] }) {
               {selectedMonthReleases.length > 0 ? (
                 <div className="space-y-3">
                   {selectedMonthReleases.map((release, index) => (
-                    <div
+                    <a
                       key={index}
-                      className="p-4 border border-neutral-200 rounded-lg hover:border-primary-300 transition-colors"
+                      href={release.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block p-4 border border-neutral-200 rounded-lg hover:border-primary-500 hover:bg-primary-50/50 transition-all group"
                     >
                       <div className="flex items-start justify-between gap-4">
                         <div className="flex-1">
                           <div className="flex items-center gap-2">
-                            <h4 className="font-semibold text-neutral-900">
+                            <h4 className="font-semibold text-neutral-900 group-hover:text-primary-600 transition-colors">
                               {release.version}
                             </h4>
                             {release.prerelease && (
@@ -174,13 +177,26 @@ export function ReleaseChart({ releases }: { releases: Release[] }) {
                                 Pre-release
                               </span>
                             )}
+                            <svg
+                              className="w-4 h-4 text-neutral-400 group-hover:text-primary-500 transition-colors"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                              />
+                            </svg>
                           </div>
                           <p className="text-sm text-neutral-600 mt-1">
                             {format(release.date, 'MMM dd, yyyy')}
                           </p>
                         </div>
                       </div>
-                    </div>
+                    </a>
                   ))}
                 </div>
               ) : (
