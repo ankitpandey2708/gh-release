@@ -7,6 +7,7 @@ interface ReleaseDTO {
   version: string;
   date: string;
   prerelease: boolean;
+  url: string;
 }
 
 export function useReleases(repo: string | null) {

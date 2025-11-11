@@ -1,18 +1,38 @@
 import { Release, Stats } from './types';
-import { format, differenceInDays, formatDistanceToNow } from 'date-fns';
+import { format, differenceInDays, formatDistanceToNow, startOfMonth, addMonths, isBefore, isAfter } from 'date-fns';
 
 export function groupByMonth(releases: Release[]) {
-  const groups = new Map<string, number>();
+  if (releases.length === 0) {
+    return [];
+  }
 
+  // Count releases per month
+  const groups = new Map<string, number>();
   releases.forEach(release => {
     const month = format(release.date, 'MMM yyyy');
     groups.set(month, (groups.get(month) || 0) + 1);
   });
 
-  // Sort oldest to newest for chronological display (left to right)
-  return Array.from(groups.entries())
-    .map(([month, count]) => ({ month, count }))
-    .sort((a, b) => new Date(a.month).getTime() - new Date(b.month).getTime());
+  // Find earliest and latest release dates
+  const dates = releases.map(r => r.date);
+  const earliest = new Date(Math.min(...dates.map(d => d.getTime())));
+  const latest = new Date(Math.max(...dates.map(d => d.getTime())));
+
+  // Generate all months from earliest to latest
+  const allMonths: Array<{ month: string; count: number }> = [];
+  let currentMonth = startOfMonth(earliest);
+  const endMonth = startOfMonth(latest);
+
+  while (isBefore(currentMonth, endMonth) || currentMonth.getTime() === endMonth.getTime()) {
+    const monthKey = format(currentMonth, 'MMM yyyy');
+    allMonths.push({
+      month: monthKey,
+      count: groups.get(monthKey) || 0
+    });
+    currentMonth = addMonths(currentMonth, 1);
+  }
+
+  return allMonths;
 }
 
 export function calculateStats(releases: Release[]): Stats {
