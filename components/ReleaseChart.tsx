@@ -55,19 +55,14 @@ export function ReleaseChart({ releases }: { releases: Release[] }) {
 
   const handleChartClick = (event: any) => {
     console.log('[ReleaseChart] handleChartClick called with event:', event);
-    console.log('[ReleaseChart] event.activePayload:', event?.activePayload);
+    console.log('[ReleaseChart] event.activeLabel:', event?.activeLabel);
 
-    if (event && event.activePayload && event.activePayload.length > 0) {
-      const payload = event.activePayload[0].payload;
-      console.log('[ReleaseChart] payload:', payload);
-      console.log('[ReleaseChart] payload.month:', payload.month);
-
-      if (payload.month) {
-        console.log('[ReleaseChart] Setting selectedMonth to:', payload.month);
-        setSelectedMonth(payload.month);
-      }
+    // activeLabel contains the month string (e.g., "Aug 2025")
+    if (event && event.activeLabel) {
+      console.log('[ReleaseChart] Setting selectedMonth to:', event.activeLabel);
+      setSelectedMonth(event.activeLabel);
     } else {
-      console.log('[ReleaseChart] No activePayload found');
+      console.log('[ReleaseChart] No activeLabel found');
     }
   };
 
