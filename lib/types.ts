@@ -21,3 +21,17 @@ export interface Stats {
   lastReleaseDate: string;
   consistency: string;
 }
+
+export interface APIResponse {
+  owner: string;
+  repo: string;
+  releases: Release[];
+  cached?: boolean;
+  isPrivate?: boolean;
+}
+
+export interface APIErrorResponse {
+  error: string;
+  code?: string;
+  needsPAT?: boolean;
+}
