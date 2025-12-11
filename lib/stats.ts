@@ -1,5 +1,5 @@
 import { Release, Stats } from './types';
-import { format, differenceInDays, formatDistanceToNow, startOfMonth, addMonths, isBefore, isAfter } from 'date-fns';
+import { format, differenceInDays, startOfMonth, addMonths, isBefore, isAfter } from 'date-fns';
 
 // Extract major version from a version string (e.g., "v2.1.3" -> 2, "3.0.0-beta" -> 3, "v0.1.0" -> 0)
 // Returns null only if cannot be parsed
@@ -77,7 +77,6 @@ export function calculateStats(releases: Release[]): Stats {
       total: 0,
       avgDays: 0,
       perMonth: '0',
-      lastRelease: 'N/A',
       lastReleaseDate: 'N/A',
       consistency: 'N/A'
     };
@@ -96,7 +95,6 @@ export function calculateStats(releases: Release[]): Stats {
       total: 1,
       avgDays: 'N/A',
       perMonth: 'N/A',
-      lastRelease: formatDistanceToNow(last, { addSuffix: true }),
       lastReleaseDate: format(last, 'MMM d, yyyy'),
       consistency: 'N/A'
     };
@@ -137,7 +135,6 @@ export function calculateStats(releases: Release[]): Stats {
     total,
     avgDays,
     perMonth,
-    lastRelease: formatDistanceToNow(last, { addSuffix: true }),
     lastReleaseDate: format(last, 'MMM d, yyyy'),
     consistency: consistencyScore
   };
