@@ -3,6 +3,7 @@ import './globals.css';
 import { Inter } from 'next/font/google';
 import { ClientProvider } from '@/components/ClientProvider';
 import { ThemeProvider } from '@/components/ThemeProvider';
+import { StructuredData } from '@/components/StructuredData';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -12,13 +13,63 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: 'GitHub Releases Dashboard - Visualize Release History',
-  description: 'Visualize release history and patterns for any GitHub repository. Track release frequency, trends, and statistics with beautiful charts.',
-  keywords: ['github', 'releases', 'dashboard', 'analytics', 'visualization', 'charts'],
+  metadataBase: new URL('https://gh-release.vercel.app'),
+  title: {
+    default: 'GitHub Releases Dashboard - Visualize Release History & Analytics',
+    template: '%s | GitHub Releases Dashboard',
+  },
+  description: 'Visualize release history and patterns for any GitHub repository. Track release frequency, trends, and statistics with beautiful interactive charts. Export data, filter by date range, and analyze release consistency.',
+  keywords: ['github', 'releases', 'dashboard', 'analytics', 'visualization', 'charts', 'release tracker', 'github analytics', 'repository statistics', 'release frequency', 'open source', 'software releases'],
+  authors: [{ name: 'Ankit Pandey' }],
+  creator: 'Ankit Pandey',
+  publisher: 'GitHub Releases Dashboard',
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
+  viewport: {
+    width: 'device-width',
+    initialScale: 1,
+    maximumScale: 5,
+  },
+  manifest: '/manifest.json',
   openGraph: {
-    title: 'GitHub Releases Dashboard',
-    description: 'Visualize release history for any GitHub repository',
     type: 'website',
+    locale: 'en_US',
+    url: '/',
+    siteName: 'GitHub Releases Dashboard',
+    title: 'GitHub Releases Dashboard - Visualize Release History & Analytics',
+    description: 'Visualize release history and patterns for any GitHub repository. Track release frequency, trends, and statistics with beautiful interactive charts.',
+    images: [
+      {
+        url: '/og-image.png',
+        width: 1200,
+        height: 630,
+        alt: 'GitHub Releases Dashboard - Visualize Release History',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'GitHub Releases Dashboard - Visualize Release History & Analytics',
+    description: 'Visualize release history and patterns for any GitHub repository. Track release frequency, trends, and statistics.',
+    images: ['/og-image.png'],
+    creator: '@ankitpandey2708',
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  verification: {
+    google: 'your-google-verification-code',
   },
 };
 
@@ -29,6 +80,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning className={inter.variable}>
+      <head>
+        <StructuredData />
+      </head>
       <body className={`${inter.className} antialiased`}>
         <ThemeProvider>
           <a
