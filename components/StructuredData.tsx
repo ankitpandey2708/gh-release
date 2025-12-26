@@ -5,7 +5,7 @@ export function StructuredData() {
     name: 'GitHub Releases Dashboard',
     description:
       'Visualize release history and patterns for any GitHub repository. Track release frequency, trends, and statistics with beautiful interactive charts.',
-    url: 'https://gh-release.vercel.app',
+    url: 'https://release-history.vercel.app',
     applicationCategory: 'DeveloperApplication',
     operatingSystem: 'Web',
     offers: {

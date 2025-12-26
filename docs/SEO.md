@@ -200,15 +200,16 @@ You can dynamically add more repositories to the sitemap by:
 
 ## Configuration
 
-### Update Base URL
+### Base URL Configuration
 
-Before deploying, update the `metadataBase` URL in:
+The base URL has been configured to `https://release-history.vercel.app` in:
 
-1. `app/layout.tsx` - Line 15
-2. `app/sitemap.ts` - Line 3
-3. `app/robots.ts` - Line 4
+1. `app/layout.tsx` - Line 16 (metadataBase)
+2. `app/sitemap.ts` - Line 4 (baseUrl)
+3. `app/robots.ts` - Line 4 (baseUrl)
+4. `components/StructuredData.tsx` - Line 8 (url)
 
-Replace `https://gh-release.vercel.app` with your actual domain.
+If you need to change the domain, update these files accordingly.
 
 ### Google Search Console Verification
 

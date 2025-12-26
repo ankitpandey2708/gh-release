@@ -1,7 +1,7 @@
 import { MetadataRoute } from 'next';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://gh-release.vercel.app';
+  const baseUrl = 'https://release-history.vercel.app';
 
   // Static routes
   const routes = [

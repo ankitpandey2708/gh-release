@@ -13,7 +13,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://gh-release.vercel.app'),
+  metadataBase: new URL('https://release-history.vercel.app'),
   title: {
     default: 'GitHub Releases Dashboard - Visualize Release History & Analytics',
     template: '%s | GitHub Releases Dashboard',
