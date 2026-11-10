@@ -42,7 +42,16 @@ export async function GET(
       isPrivate: isPrivateRepoRequest,
     };
 
-    return NextResponse.json(response);
+    return NextResponse.json(response, {
+      headers: isPrivateRepoRequest
+        ? { 'Cache-Control': 'private, no-store' }
+        : {
+            // Public release data: let the CDN serve repeat lookups instantly
+            // and refresh in the background (also spares the 60 req/h GitHub quota).
+            'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=86400',
+            Vary: 'x-github-token',
+          },
+    });
   } catch (error) {
     if (error instanceof GitHubError) {
       return errorResponse(error.message, error.code, error.statusCode);

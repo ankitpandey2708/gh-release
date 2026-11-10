@@ -11,6 +11,9 @@ export class GitHubError extends Error {
 }
 
 const USER_AGENT = 'GitHub-Releases-Dashboard';
+const PER_PAGE = 100;
+/** GitHub only serves the first 1000 results of a list endpoint. */
+const MAX_PAGES = 10;
 
 /**
  * Validates GitHub Personal Access Token format
@@ -56,35 +59,17 @@ export async function fetchReleases(
   repo: string,
   token?: string
 ) {
-  // First, check if owner exists (only if no token provided)
-  // This helps distinguish between "owner doesn't exist" and "repo is private"
-  if (!token) {
-    const ownerExists = await checkOwnerExists(owner);
-    if (!ownerExists) {
-      throw new GitHubError(
-        `User or organization '${owner}' not found. Please check the repository URL.`,
-        404,
-        'OWNER_NOT_FOUND'
-      );
-    }
+  const headers: HeadersInit = {
+    'Accept': 'application/vnd.github.v3+json',
+    'User-Agent': USER_AGENT,
+  };
+  if (token) {
+    headers['Authorization'] = `token ${token}`;
   }
 
-  let allReleases: GitHubRelease[] = [];
-  let page = 1;
-  let hasMore = true;
-
-  while (hasMore) {
-    const url = `https://api.github.com/repos/${owner}/${repo}/releases?per_page=100&page=${page}`;
-
-    const headers: HeadersInit = {
-      'Accept': 'application/vnd.github.v3+json',
-      'User-Agent': USER_AGENT,
-    };
-
-    if (token) {
-      headers['Authorization'] = `token ${token}`;
-    }
-
+  /** Fetches one page of releases; null means GitHub's 1000-result cap was hit (422). */
+  const fetchPage = async (page: number): Promise<{ data: GitHubRelease[]; lastPage: number } | null> => {
+    const url = `https://api.github.com/repos/${owner}/${repo}/releases?per_page=${PER_PAGE}&page=${page}`;
     const response = await fetch(url, { headers });
 
     if (response.status === 401) {
@@ -96,19 +81,26 @@ export async function fetchReleases(
     }
 
     if (response.status === 404) {
-      if (!token) {
-        throw new GitHubError(
-          `Repository '${owner}/${repo}' not found. This could be a private repository. Please provide a GitHub Personal Access Token if you have access.`,
-          404,
-          'REPO_NOT_FOUND_OR_PRIVATE'
-        );
-      } else {
+      if (token) {
         throw new GitHubError(
           `Repository '${owner}/${repo}' not found or you don't have access. Please verify the repository name and your token permissions.`,
           404,
           'REPO_NOT_FOUND_OR_NO_ACCESS'
         );
       }
+      // Only now pay for the owner lookup, to tell "no such owner" from "private repo".
+      if (!(await checkOwnerExists(owner))) {
+        throw new GitHubError(
+          `User or organization '${owner}' not found. Please check the repository URL.`,
+          404,
+          'OWNER_NOT_FOUND'
+        );
+      }
+      throw new GitHubError(
+        `Repository '${owner}/${repo}' not found. This could be a private repository. Please provide a GitHub Personal Access Token if you have access.`,
+        404,
+        'REPO_NOT_FOUND_OR_PRIVATE'
+      );
     }
 
     if (response.status === 403) {
@@ -130,8 +122,7 @@ export async function fetchReleases(
     }
 
     if (response.status === 422) {
-      // GitHub API limit: only first 1000 results are available
-      break;
+      return null;
     }
 
     if (!response.ok) {
@@ -141,13 +132,18 @@ export async function fetchReleases(
       );
     }
 
-    const data: GitHubRelease[] = await response.json();
-    allReleases = [...allReleases, ...data];
+    const lastMatch = response.headers.get('Link')?.match(/[?&]page=(\d+)[^>]*>;\s*rel="last"/);
+    return { data: await response.json(), lastPage: lastMatch ? Number(lastMatch[1]) : page };
+  };
 
-    const linkHeader = response.headers.get('Link');
-    hasMore = linkHeader ? linkHeader.includes('rel="next"') : false;
-    page++;
-  }
+  // Page 1 tells us how many pages exist; fetch the rest in parallel.
+  const first = await fetchPage(1);
+  if (!first) return [];
+  const lastPage = Math.min(first.lastPage, MAX_PAGES);
+  const rest = await Promise.all(
+    Array.from({ length: lastPage - 1 }, (_, i) => fetchPage(i + 2))
+  );
+  const allReleases = [first, ...rest].flatMap(p => p?.data ?? []);
 
   return allReleases.filter(r => !r.draft).map(r => ({
     version: r.tag_name,
