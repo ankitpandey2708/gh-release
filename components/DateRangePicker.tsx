@@ -4,7 +4,7 @@ import { useRef, useEffect } from "react";
 import AirDatepicker from "air-datepicker";
 import localeEn from "air-datepicker/locale/en";
 import "air-datepicker/air-datepicker.css";
-import { format } from "date-fns";
+import { format, parseISO } from "date-fns";
 
 interface DateRangePickerProps {
   startDate: string;
@@ -40,45 +40,31 @@ export default function DateRangePicker({
   const endInputRef = useRef<HTMLInputElement>(null);
   const startPickerRef = useRef<AirDatepicker<HTMLInputElement> | null>(null);
   const endPickerRef = useRef<AirDatepicker<HTMLInputElement> | null>(null);
+  // Latest callbacks, so the pickers (created once) never call a stale closure.
+  const onStartRef = useRef(onStartDateChange);
+  const onEndRef = useRef(onEndDateChange);
+  onStartRef.current = onStartDateChange;
+  onEndRef.current = onEndDateChange;
 
+  // Props are the single source of truth. Pickers only report user input upward;
+  // the effect below pushes selection + min/max bounds back down.
   useEffect(() => {
     if (!startInputRef.current || !endInputRef.current) return;
+
+    const toValue = (date: Date | Date[] | undefined) =>
+      date instanceof Date ? format(date, "yyyy-MM-dd") : "";
 
     startPickerRef.current = new AirDatepicker(startInputRef.current, {
       locale: localeEn,
       dateFormat: "MMM dd, yyyy",
-      maxDate: endDate ? new Date(endDate) : new Date(),
-      onSelect: ({ date }) => {
-        if (date) {
-          onStartDateChange(format(date as Date, "yyyy-MM-dd"));
-          if (endPickerRef.current) {
-            endPickerRef.current.update({ minDate: date as Date });
-          }
-        }
-      },
+      onSelect: ({ date }) => onStartRef.current(toValue(date)),
     });
 
     endPickerRef.current = new AirDatepicker(endInputRef.current, {
       locale: localeEn,
       dateFormat: "MMM dd, yyyy",
-      minDate: startDate ? new Date(startDate) : undefined,
-      maxDate: new Date(),
-      onSelect: ({ date }) => {
-        if (date) {
-          onEndDateChange(format(date as Date, "yyyy-MM-dd"));
-          if (startPickerRef.current) {
-            startPickerRef.current.update({ maxDate: date as Date });
-          }
-        }
-      },
+      onSelect: ({ date }) => onEndRef.current(toValue(date)),
     });
-
-    if (startDate) {
-      startPickerRef.current.selectDate(new Date(startDate));
-    }
-    if (endDate) {
-      endPickerRef.current.selectDate(new Date(endDate));
-    }
 
     return () => {
       startPickerRef.current?.destroy();
@@ -87,26 +73,22 @@ export default function DateRangePicker({
   }, []);
 
   useEffect(() => {
-    if (!startPickerRef.current || !endPickerRef.current) return;
+    const startPicker = startPickerRef.current;
+    const endPicker = endPickerRef.current;
+    if (!startPicker || !endPicker) return;
 
-    if (startDate) {
-      startPickerRef.current.selectDate(new Date(startDate), { silent: true });
-    } else {
-      startPickerRef.current.clear({ silent: true });
-    }
+    const start = startDate ? parseISO(startDate) : null;
+    const end = endDate ? parseISO(endDate) : null;
 
-    if (endDate) {
-      endPickerRef.current.selectDate(new Date(endDate), { silent: true });
-    } else {
-      endPickerRef.current.clear({ silent: true });
-    }
+    startPicker.update({ maxDate: end ?? new Date() });
+    endPicker.update({ minDate: start ?? false, maxDate: new Date() });
+
+    if (start) startPicker.selectDate(start, { silent: true });
+    else startPicker.clear({ silent: true });
+
+    if (end) endPicker.selectDate(end, { silent: true });
+    else endPicker.clear({ silent: true });
   }, [startDate, endDate]);
-
-  const handleClear = () => {
-    startPickerRef.current?.clear();
-    endPickerRef.current?.clear();
-    onClear();
-  };
 
   return (
     <div className="flex items-center gap-6 w-full">
@@ -176,7 +158,7 @@ export default function DateRangePicker({
       {(startDate || endDate) && (
         <button
           type="button"
-          onClick={handleClear}
+          onClick={onClear}
           className="text-sm text-primary-600 hover:text-primary-500 underline transition-colors font-medium whitespace-nowrap"
         >
           Clear

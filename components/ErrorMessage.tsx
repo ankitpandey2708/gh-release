@@ -1,23 +1,23 @@
+import type { ReleasesErrorCode } from '@/lib/types';
+
 interface ErrorMessageProps {
   message: string;
+  code: ReleasesErrorCode;
   onRetry?: () => void;
 }
 
-function getErrorTips(message: string): string[] {
-  if (message.includes('not found') || message.includes('404')) {
-    return ['Check the repository name spelling', 'Verify the repository exists on GitHub', 'Try searching for a different repository'];
-  }
-  if (message.includes('Rate limit') || message.includes('403')) {
-    return ['Wait a few minutes before trying again', 'Rate limit will reset automatically'];
-  }
-  if (message.includes('Network error')) {
-    return ['Check your internet connection', 'Refresh the page and try again'];
-  }
-  return [];
-}
+const NOT_FOUND_TIPS = ['Check the repository name spelling', 'Verify the repository exists on GitHub', 'Try searching for a different repository'];
 
-export function ErrorMessage({ message, onRetry }: ErrorMessageProps) {
-  const tips = getErrorTips(message);
+const ERROR_TIPS: Partial<Record<ReleasesErrorCode, string[]>> = {
+  OWNER_NOT_FOUND: NOT_FOUND_TIPS,
+  REPO_NOT_FOUND_OR_PRIVATE: NOT_FOUND_TIPS,
+  REPO_NOT_FOUND_OR_NO_ACCESS: NOT_FOUND_TIPS,
+  RATE_LIMIT: ['Wait a few minutes before trying again', 'Rate limit will reset automatically'],
+  NETWORK_ERROR: ['Check your internet connection', 'Refresh the page and try again'],
+};
+
+export function ErrorMessage({ message, code, onRetry }: ErrorMessageProps) {
+  const tips = ERROR_TIPS[code] ?? [];
 
   return (
     <div className="p-6 bg-red-50 border border-red-200/60 rounded-lg shadow-md flex flex-col items-center text-center">

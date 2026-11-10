@@ -1,10 +1,10 @@
-import { GitHubRelease } from './types';
+import { GitHubRelease, ReleasesErrorCode } from './types';
 
 export class GitHubError extends Error {
   constructor(
     message: string,
     public statusCode: number,
-    public code?: string
+    public code: ReleasesErrorCode = 'UPSTREAM_ERROR'
   ) {
     super(message);
   }

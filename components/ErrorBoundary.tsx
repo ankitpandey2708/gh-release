@@ -7,28 +7,28 @@ interface ErrorBoundaryProps {
 }
 
 interface ErrorBoundaryState {
-  hasError: boolean;
+  /** null = rendering children; non-null = showing the fallback. */
   error: Error | null;
 }
 
 export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
   constructor(props: ErrorBoundaryProps) {
     super(props);
-    this.state = { hasError: false, error: null };
+    this.state = { error: null };
   }
 
   static getDerivedStateFromError(error: Error): ErrorBoundaryState {
-    return { hasError: true, error };
+    return { error };
   }
 
   render() {
-    if (this.state.hasError) {
+    if (this.state.error) {
       return (
         <div className="min-h-screen flex items-center justify-center p-8">
           <div className="max-w-md p-6 bg-red-50 border border-red-200 rounded">
             <h2 className="text-xl font-bold text-red-900 mb-2">Something Went Wrong</h2>
             <p className="text-sm text-red-700 mb-4">
-              {this.state.error?.message || 'An unexpected error occurred'}
+              {this.state.error.message || 'An unexpected error occurred'}
             </p>
             <button
               onClick={() => window.location.reload()}

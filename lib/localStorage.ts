@@ -36,7 +36,3 @@ export function clearPAT() {
   if (typeof window === 'undefined') return;
   localStorage.removeItem(PAT_STORAGE_KEY);
 }
-
-export function hasSavedPAT(): boolean {
-  return !!getSavedPAT();
-}

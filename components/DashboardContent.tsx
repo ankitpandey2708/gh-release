@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useEffect, ReactNode } from "react";
+import { useState, useMemo, ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
+import { endOfDay, parseISO, startOfDay } from "date-fns";
 import { RepoInput } from "@/components/RepoInput";
 import { StatsGrid } from "@/components/StatsGrid";
 import { ErrorMessage } from "@/components/ErrorMessage";
@@ -10,7 +11,6 @@ import { LoadingSkeleton } from "@/components/LoadingSkeleton";
 import { ProgressBar } from "@/components/ProgressBar";
 import { PATInput } from "@/components/PATInput";
 import { useReleases } from "@/lib/hooks/useReleases";
-import { saveRecentSearch, hasSavedPAT } from "@/lib/localStorage";
 import DateRangePicker from "@/components/DateRangePicker";
 
 const ReleaseChart = dynamic(
@@ -31,32 +31,19 @@ function Section({ mt = 'mt-6', className, children }: { mt?: string; className?
 }
 
 interface DashboardContentProps {
+  /** The repo comes from the URL. Pages key this component by it, so a new repo remounts with fresh state. */
   initialRepo?: string;
 }
 
 export function DashboardContent({ initialRepo }: DashboardContentProps = {}) {
   const router = useRouter();
-  const [repo, setRepoState] = useState<string | null>(initialRepo || null);
-  const { data, loading, error, needsPAT, isPrivate, retryWithPAT, clearToken } = useReleases(repo);
+  const repo = initialRepo ?? null;
+  const { state, hasSavedToken, retryWithPAT, clearToken } = useReleases(repo);
   const [startDate, setStartDate] = useState<string>("");
   const [endDate, setEndDate] = useState<string>("");
-  const [hasPAT, setHasPAT] = useState(false);
 
-  useEffect(() => {
-    if (initialRepo) {
-      setRepoState(initialRepo);
-    }
-  }, [initialRepo]);
-
-  useEffect(() => {
-    setHasPAT(hasSavedPAT());
-  }, []);
-
-  useEffect(() => {
-    if (data && repo && !error) {
-      saveRecentSearch(repo);
-    }
-  }, [data, repo, error]);
+  const loading = state.status === "loading";
+  const data = state.status === "success" ? state.releases : null;
 
   const setRepo = (newRepo: string | null) => {
     if (newRepo) {
@@ -67,32 +54,13 @@ export function DashboardContent({ initialRepo }: DashboardContentProps = {}) {
     }
   };
 
-  const handlePATSubmit = (token: string, remember: boolean) => {
-    retryWithPAT(token, remember);
-    if (remember) {
-      setHasPAT(true);
-    }
-  };
-
-  const handleClearToken = () => {
-    clearToken();
-    setHasPAT(false);
-  };
-
-  const filteredData = data?.filter((r) => {
-    if (startDate) {
-      const start = new Date(startDate);
-      if (new Date(r.date) < start) return false;
-    }
-
-    if (endDate) {
-      const end = new Date(endDate);
-      end.setHours(23, 59, 59, 999);
-      if (new Date(r.date) > end) return false;
-    }
-
-    return true;
-  });
+  // Dates are "yyyy-MM-dd" picked in the user's local calendar; compare in local time.
+  const filteredData = useMemo(() => {
+    if (!data) return null;
+    const start = startDate ? startOfDay(parseISO(startDate)) : null;
+    const end = endDate ? endOfDay(parseISO(endDate)) : null;
+    return data.filter((r) => (!start || r.date >= start) && (!end || r.date <= end));
+  }, [data, startDate, endDate]);
 
   const exportToCSV = () => {
     if (!filteredData) return;
@@ -121,6 +89,8 @@ export function DashboardContent({ initialRepo }: DashboardContentProps = {}) {
   return (
     <main
       id="main"
+      data-state={state.status}
+      aria-busy={loading}
       className="min-h-screen px-4 py-8 md:px-8 flex flex-col items-center bg-gray-50 text-neutral-900 transition-colors duration-200"
     >
       <ProgressBar loading={loading} />
@@ -129,9 +99,9 @@ export function DashboardContent({ initialRepo }: DashboardContentProps = {}) {
         <h1 className="text-3xl font-bold animate-fade-in">
           GitHub releases dashboard
         </h1>
-        {hasPAT && (
+        {hasSavedToken && (
           <button
-            onClick={handleClearToken}
+            onClick={clearToken}
             className="px-4 py-2 text-sm bg-red-50 hover:bg-red-100 text-red-700 font-semibold rounded-lg border border-red-300 transition-all duration-200 flex items-center gap-2"
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -144,18 +114,17 @@ export function DashboardContent({ initialRepo }: DashboardContentProps = {}) {
 
       <RepoInput onSubmit={setRepo} loading={loading} currentRepo={repo} />
 
-      {needsPAT && repo && !loading && (
+      {state.status === "needs-token" && repo && (
         <Section>
           <PATInput
-            onSubmit={handlePATSubmit}
-            loading={loading}
-            errorMessage={error || undefined}
+            onSubmit={retryWithPAT}
+            errorMessage={state.message}
             repoName={repo}
           />
         </Section>
       )}
 
-      {isPrivate && data && !loading && (
+      {state.status === "success" && state.isPrivate && (
         <Section>
           <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg flex items-center gap-3">
             <svg className="w-5 h-5 text-blue-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -169,7 +138,7 @@ export function DashboardContent({ initialRepo }: DashboardContentProps = {}) {
         </Section>
       )}
 
-      {data && !loading && data.length > 0 && (
+      {data && data.length > 0 && (
         <Section>
           <div className="flex flex-col sm:flex-row gap-4 sm:items-center">
             <div className="flex-1 flex flex-col sm:flex-row gap-4 sm:items-center p-4 bg-white rounded-lg border border-neutral-200">
@@ -194,9 +163,9 @@ export function DashboardContent({ initialRepo }: DashboardContentProps = {}) {
         </Section>
       )}
 
-      {error && !needsPAT && (
+      {state.status === "error" && (
         <Section mt="mt-8">
-          <ErrorMessage message={error} onRetry={() => setRepo(null)} />
+          <ErrorMessage message={state.message} code={state.code} onRetry={() => setRepo(null)} />
         </Section>
       )}
 
@@ -206,7 +175,7 @@ export function DashboardContent({ initialRepo }: DashboardContentProps = {}) {
         </div>
       )}
 
-      {data && !loading && data.length === 0 && (
+      {data && data.length === 0 && (
         <Section mt="mt-8" className="p-8 bg-primary-50 rounded-lg text-center border border-primary-500/20">
           <h3 className="text-xl font-semibold text-neutral-900 mb-2">
             No releases found
@@ -217,7 +186,7 @@ export function DashboardContent({ initialRepo }: DashboardContentProps = {}) {
         </Section>
       )}
 
-      {filteredData && !loading && filteredData.length === 0 && data && data.length > 0 && (
+      {filteredData && filteredData.length === 0 && data && data.length > 0 && (
         <Section mt="mt-8" className="p-8 bg-yellow-50 rounded-lg text-center border border-yellow-200">
           <h3 className="text-xl font-semibold text-neutral-900 mb-2">
             No releases match filters
@@ -228,7 +197,7 @@ export function DashboardContent({ initialRepo }: DashboardContentProps = {}) {
         </Section>
       )}
 
-      {filteredData && !loading && filteredData.length > 0 && (
+      {filteredData && filteredData.length > 0 && (
         <Section mt="mt-8" className="space-y-8">
           <StatsGrid releases={filteredData} />
           <ReleaseChart releases={filteredData} />

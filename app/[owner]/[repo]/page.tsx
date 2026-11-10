@@ -51,7 +51,7 @@ export default async function RepoPage({ params }: PageProps) {
 
   return (
     <Suspense fallback={<DashboardFallback />}>
-      <DashboardContent initialRepo={repoFullName} />
+      <DashboardContent key={repoFullName} initialRepo={repoFullName} />
     </Suspense>
   );
 }

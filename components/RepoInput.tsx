@@ -12,20 +12,14 @@ interface RepoInputProps {
 }
 
 export function RepoInput({ onSubmit, loading = false, currentRepo }: RepoInputProps) {
-  const [value, setValue] = useState('');
+  // Parent remounts per repo (keyed by URL), so the initial value is all we need.
+  const [value, setValue] = useState(currentRepo ?? '');
   const [error, setError] = useState('');
   const [recentSearches, setRecentSearches] = useState<string[]>([]);
 
   useEffect(() => {
     setRecentSearches(getRecentSearches());
   }, []);
-
-  // Update input value when currentRepo changes
-  useEffect(() => {
-    if (currentRepo) {
-      setValue(currentRepo);
-    }
-  }, [currentRepo]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
